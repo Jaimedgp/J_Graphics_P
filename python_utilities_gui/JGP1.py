@@ -426,9 +426,64 @@ class Errores(object):
 		Error = sqrt(Error_re)
 		print 'Error= '+ Error
 
+class Hamilton():
+
+	def __init__(self, m, k, l0, r0, theta0, vr, vtheta, n, dt):
+
+		self.m = m
+		self.k = k
+		self.l0 = l0
+		self.r0 = r0
+		self.theta0 = theta0
+		self.vr = vr
+		self.vtheta = vtheta 
+		self.n = n
+		self.dt = dt
+
+	def get_file(self):
+
+		path = "./File.csv"
+		fw = open(path, 'w')
+ 
+		t = 0.0
+		pr0 = self.m*self.vr
+		ptheta0 = self.m*self.r0*self.r0*self.vtheta
+		h = ptheta0*ptheta0/(2.0*self.m*self.r0*self.r0)+pr0*pr0/(2.0*self.m)+(self.k/2.0)*(self.r0-self.l0)*(self.r0-self.l0)
+
+		fw.write("Tiempo/s,Radio/cm,Angulo/rad,Hamiltoniano"+"\n")
+
+		for i in range(1,self.n):
+			derR = pr0/self.m
+			derTheta = ptheta0/(self.m*self.r0*self.r0)
+			derPr = ptheta0*ptheta0/(self.m*self.r0*self.r0*self.r0)-self.k*(self.r0-self.l0)
+			derPtheta = 0.0
+			t = t+self.dt
+			r = self.r0+self.dt*derR
+			theta = self.theta0+self.dt*derTheta
+			pr = pr0+self.dt*derPr
+			ptheta = ptheta0+self.dt*derPtheta
+			h = ptheta*ptheta/(2.0*self.m*r*r)+pr*pr/(2.0*self.m)+(self.k/2.0)*(r-self.l0)*(r-self.l0)
+			fw.write('%g' %(t)+","+'%g' %(r)+","+'%g' %(theta)+","+'%g' %(h)+"\n")
+			self.r0 = r
+			self.theta0 = theta
+			pr0 = pr
+			ptheta0 = ptheta
+		fw.close()
+		return path
+
 #############################################################
 ###########              FUNCTIONS              #############
 #############################################################
+
+def Convert_to_Column(text):
+	path = "./File.csv"
+	fw = open(path, 'w')
+	fw.write(text)
+	fw.close()
+
+	data = Open_file(path).get_all()
+	os.remove(path)
+	return data
 
 def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/Documentos/Data/ path
 
@@ -458,7 +513,7 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 		fl.write(line + '\n')
 	fl.close()
 
-	fl = open(Path+'LaTex.txt', 'w') # open and create an .ods file
+	fl = open(Path+'LaTex.tex', 'w') # open and create an .ods file
 	for x in xrange(1): # loop to write the file
 		fl.write('\\begin{table}[H]'+'\n')
 		fl.write('\t'+'\\centering'+'\n')
@@ -505,7 +560,7 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 	fl.close() # close file
 
 def medianX(column): # return the mean of DV                   
-	thisData = allData[column].get_list_values()
+	thisData = column
 	med = sum(thisData) / len(thisData) # return the DV mean
 	return med
 

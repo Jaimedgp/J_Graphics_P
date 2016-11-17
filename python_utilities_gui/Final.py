@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog
 from PyQt5.QtGui import QFont, QIcon 
 from PyQt5.QtCore import QCoreApplication, pyqtSlot, Qt, QDate, QBasicTimer
 from PyQt5 import QtCore
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -13,10 +14,8 @@ from JGP1 import *
 
 class GUI(QMainWindow):
 
-	def __init__(self, allData):
+	def __init__(self):
 		super(GUI,self).__init__()
-
-		self.allData = allData
 
 		self.menuBarsus()
 
@@ -24,9 +23,7 @@ class GUI(QMainWindow):
 		self.setWindowTitle('Just a Graphics Printer')
 		self.setWindowIcon(QIcon('./Desktop/JGP(GUI)/JGP(icon).png'))
 
-		self.function = ["Nothing", "comboBox"]
-
-		self.splitters1_widget = MySplitterWidget1(self, self.function, self.allData)
+		self.splitters1_widget = MySplitterWidget1(self)
 		self.setCentralWidget(self.splitters1_widget)
 
 		#self.table_widget = MyTableWidget(self)
@@ -120,17 +117,17 @@ class GUI(QMainWindow):
 		linearGraph = QAction('Linear', self)
 		#newAction.setShortcut('Ctrl+N')
 		linearGraph.setStatusTip('y = a*x + b')
-		"""saveAction.triggered.connect(save(Path, Title))"""
+		linearGraph.triggered.connect(self.linearing)
 
 		logGraph = QAction('Logarithmic', self)
 		#openAction.setShortcut('Ctrl+O')
 		logGraph.setStatusTip('a*log(x) + b')
-		"""saveAction.triggered.connect(save(Path, Title))"""
+		logGraph.triggered.connect(self.logarithmic)
 
 		expGraph = QAction('Exponential', self)
 		#saveAction.setShortcut('Ctrl+S')
 		expGraph.setStatusTip('b * e^(a*x)')
-		"""saveAction.triggered.connect(save(Path, Title))"""
+		expGraph.triggered.connect(self.exponential)
 
 		self.statusBar()
 
@@ -147,13 +144,17 @@ class GUI(QMainWindow):
 		formulaEntry.triggered.connect(self.formulaOperator)
 
 		errorsCalculator = QAction('Error Calculator', self)
-		errorsCalculator.setShortcut('Ctrl+C')
+		errorsCalculator.setShortcut('Ctrl+E')
 		errorsCalculator.setStatusTip('Calculate the error from an equation')
-		"""saveAction.triggered.connect(save(Path, Title))"""
+		errorsCalculator.triggered.connect(self.calculate)
 
 		refreshed = QAction('Refresh Window', self)
 		refreshed.setShortcut('Ctrl+R')
 		refreshed.triggered.connect(self.refresh)
+
+		hamiltonial = QAction('Hamiltonial', self)
+		#hamiltonial.setShortcut('Ctrl+R')
+		hamiltonial.triggered.connect(self.hamil)
 
 		self.statusBar()
 
@@ -162,25 +163,58 @@ class GUI(QMainWindow):
 		fileMenu.addAction(formulaEntry)
 		fileMenu.addAction(errorsCalculator)
 		fileMenu.addAction(refreshed)
+		fileMenu.addAction(hamiltonial)
+
+	def hamil(self):
+		projectes.add_Function("Hamilton")
+		self.refresh()
+
+	def calculate(self):
+		projectes.add_Function("Calculator")
+		self.refresh()
 
 	def graph(self):
-		self.function.append("graph")
+		projectes.add_Function("graph")
+		self.refresh()
+
+	def logarithmic(self):
+		projectes.add_Function("Logarithmic")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		self.refresh()
+
+	def exponential(self):
+		projectes.add_Function("Exponential")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
+		self.refresh()
+
+	def linearing(self):
+		projectes.add_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
 		self.refresh()
 
 	def save(self):
 		saving = True
 		while saving:
 			try:
-				Inteface(self.allData).saving()
+				Inteface().saving()
 				saving = False
 			except IndexError:
 				fname = str(QFileDialog.getExistingDirectory(self, 'Open file'))
-				info.append('Sin titulo')
-				info.append(fname+'/')
+				projectes.set_Title('Sin titulo')
+				projectes.set_Path(fname+'/')
 
 	def formulaOperator(self):
 
-		self.function.append("Formulation")
+		projectes.add_Function("Formulation")
 		self.refresh()
 
 	def newproject(self):
@@ -194,17 +228,17 @@ class GUI(QMainWindow):
 		self.refresh()
 
 	def newfile(self):
-		self.allData = 0
-
 		self.refresh()
 
 		self.show()
 
 	def openfile(self):
+		global numtabses
 		fname = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime')
 
-		self.allData = Inteface(self.allData).openingFile(fname[0])
+		Inteface().openingFile(fname[0])
 
+		numtabses +=1
 		self.refresh()
 
 		self.show()
@@ -217,12 +251,12 @@ class GUI(QMainWindow):
 			saving = True
 			while saving:
 				try:
-					Inteface(self.allData).saving()
+					Inteface().saving()
 					saving = False
 				except IndexError:
 					fname = str(QFileDialog.getExistingDirectory(self, 'Open file'))
-					info.append('Sin titulo')
-					info.append(fname+'/')
+					projectes.set_Title('Sin titulo')
+					projectes.set_Path(fname+'/')
 			event.accept()
 		elif reply == QMessageBox.Discard:
 			event.accept()
@@ -230,20 +264,17 @@ class GUI(QMainWindow):
 			event.ignore()
 
 	def refresh(self):
-		self.splitters1_widget = MySplitterWidget1(self, self.function, self.allData)
+		self.splitters1_widget = MySplitterWidget1(self)
 		self.setCentralWidget(self.splitters1_widget)
 
 class MySplitterWidget1(QWidget):
 
-	def __init__(self, parent, function, allData):
+	def __init__(self, parent):
 		global numtabses
 		super(QWidget, self).__init__()
-		self.allData = allData
 
-		self.function = function
-
-		self.table_widget = MyTableWidget(self, numtabses, self.function, self.allData)
-		self.widgets = OtherSplitterWidget(self.allData, self.function)
+		self.table_widget = MyTableWidget(self, numtabses)
+		self.widgets = OtherSplitterWidget()
 		self.table_widget.setGeometry(0,0,1300, 1000)
 
 		hbox = QHBoxLayout(self)
@@ -262,21 +293,16 @@ class MySplitterWidget1(QWidget):
 
 class MySplitterWidget(QWidget):
 
-	def __init__(self, parent, allData, function):
+	def __init__(self, parent):
 		super(QWidget, self).__init__(parent)
-
-		self.allData = allData
-		self.function = function
 
 		self.createTable()
 
-		for i in range(len(function)):
-			if function[i] == "graph":
-				self.plot = PlotCanvas(self, width=5, height=4)
-				break
-			else:
-				self.plot = QFrame(self)
-				self.plot.setFrameShape(QFrame.StyledPanel)
+		if "graph" in projectes.get_Function() and not None in projectes.get_Represent():
+			self.plot = PlotCanvas(self, width=5, height=4)
+		else:
+			self.plot = QFrame(self)
+			self.plot.setFrameShape(QFrame.StyledPanel)
 
 
 		hbox = QHBoxLayout(self)
@@ -312,30 +338,30 @@ class MySplitterWidget(QWidget):
 	def makingtable(self):
 		length = 0
 		try: # handling exception
-			length = len(self.allData[0].get_list_values())
+			length = len(projectes.get_Table()[0].get_list_values())
 
-			for i in range(len(self.allData)-1):
-				if len(self.allData[i].get_list_values()) < len(self.allData[i+1].get_list_values()):
-					length = len(self.allData[i+1].get_list_values())
+			for i in range(projectes.get_Len_Table()-1):
+				if len(projectes.get_Table()[i].get_list_values()) < len(projectes.get_Table()[i+1].get_list_values()):
+					length = len(projectes.get_Table()[i+1].get_list_values())
 
 			# Create table
 			self.tableWidget = QTableWidget()
 			self.tableWidget.setRowCount(length)
-			self.tableWidget.setColumnCount(len(self.allData))
-			titles = "self.tableWidget.setHorizontalHeaderLabels((self.allData[0].get_name()"
-			for i in range(1,len(self.allData)):
-				titles += ", self.allData["+str(i)+"].get_name()"
+			self.tableWidget.setColumnCount(projectes.get_Len_Table())
+			titles = "self.tableWidget.setHorizontalHeaderLabels((projectes.get_Table()[0].get_name()"
+			for i in range(1,projectes.get_Len_Table()):
+				titles += ", projectes.get_Table()["+str(i)+"].get_name()"
 			titles += "))"
 			eval(titles)
 
-			for n in range(len(self.allData)-1):
+			for n in range(projectes.get_Len_Table()-1):
 				for i in range(length):
 					try:
-						self.tableWidget.setItem(i,n, QTableWidgetItem(str(self.allData[n].get_values(i))))
+						self.tableWidget.setItem(i,n, QTableWidgetItem(str(projectes.get_Table()[n].get_values(i))))
 					except IndexError:
 						self.tableWidget.setItem(i,n, QTableWidgetItem(' '))
 					try:
-						self.tableWidget.setItem(i,n+1, QTableWidgetItem(str(self.allData[n+1].get_values(i))))
+						self.tableWidget.setItem(i,n+1, QTableWidgetItem(str(projectes.get_Table()[n+1].get_values(i))))
 					except IndexError:
 						self.tableWidget.setItem(i,n+1, QTableWidgetItem(' '))
 
@@ -348,33 +374,61 @@ class MySplitterWidget(QWidget):
 					self.tableWidget.setItem(i,n, QTableWidgetItem())
 
 class OtherSplitterWidget(QWidget):
-	def __init__(self, allData, function):
+	def __init__(self):
 		super(QWidget, self).__init__()
 
-		self.allData = allData
-		self.function = function
 		hbox = QHBoxLayout(self)
 
-		self.widgets = MyWidgets(self.function, self.allData)
+		self.widgets = MyWidgets()
+
+
 		self.edit = QTextEdit()
 		self.edit.setGeometry(0,0,200,500)
+		self.button1 = QPushButton('Add Columns', self)
+		self.button1.move(110, 300)
+		self.button1.clicked.connect(self.doAddColumns)
+		self.button2 = QPushButton('New Table', self)
+		self.button2.move(220, 300)
+		self.button2.clicked.connect(self.doChangeColumns)
 
-		splitter1 = QSplitter(Qt.Vertical)
-		splitter1.addWidget(self.widgets)
-		splitter1.addWidget(self.edit)
+		self.splitter1 = QSplitter(Qt.Horizontal)
+		self.splitter1.addWidget(self.button2)
+		self.splitter1.addWidget(self.button1)
+
+		splitter2 = QSplitter(Qt.Vertical)
+		splitter2.addWidget(self.widgets)
+		splitter2.addWidget(self.edit)
+		splitter2.addWidget(self.splitter1)
 		#splitter1.setGeometry(0, 0, 1500, 1500)
 
-		hbox.addWidget(splitter1)
+		hbox.addWidget(splitter2)
 		self.setLayout(hbox)
+
+	def doAddColumns(self):
+		textbox = self.edit.toPlainText()
+		Data = Convert_to_Column(textbox)
+		if len(Data) == 1:
+			projectes.add_Column(Data[0])
+		elif len(Data) > 1:
+			for i in range(len(Data)):
+				projectes.add_Column(Data[i])
+		GUI().refresh()
+
+	def doChangeColumns(self):
+		textbox = self.edit.toPlainText()
+		Data = Convert_to_Column(textbox)
+		if len(Data) == 1:
+			print 'error'
+		elif len(Data) > 1:
+			projectes.change_Table(Data)
+		GUI().refresh()
 
 class MyTableWidget(QWidget):
 
-	def __init__(self, parent, numtabses, function, allData):
+	def __init__(self, parent, numtabses):
 		super(QWidget, self).__init__(parent)
-		self.function = function
 		self.layout = QVBoxLayout(self)
-		self.allData = allData
-		self.splitters_widget = MySplitterWidget(self, self.allData, self.function)
+		self.splitters_widget = MySplitterWidget(self)
 
 		self.tabs = QTabWidget()
 		for i in range (1,numtabses+1):
@@ -385,7 +439,7 @@ class MyTableWidget(QWidget):
 
 	def tabses(self, numtabses):
 
-		self.splitters_widget1 = MySplitterWidget(self, self.allData, self.function)
+		self.splitters_widget1 = MySplitterWidget(self)
 		self.tab = self.splitters_widget1
 		self.tabs.addTab(self.tab, "Tabla "+str(numtabses))
 
@@ -397,25 +451,106 @@ class MyTableWidget(QWidget):
 
 class MyWidgets(QWidget):
 
-	def __init__(self, function, allData):
+	def __init__(self):
 		super(MyWidgets, self).__init__()
-		self.allData = allData
 
-		for i in range(len(function)):
-			if function[i] == "calendar":
-				self.calendar()
-			elif function[i] == "progressbar":
-				self.progressbar()
-			elif function[i] == "checkBottom":
-				self.checkBottom()
-			elif function[i] == "comboBox":
-				self.comboBox()
-			elif function[i] == "Formulation":
-				self.Formulation()
-			elif function[i] == "Nothing":
-				None
+		if "Hamilton" in projectes.get_Function():
+			self.Hamil()
+		if "calendar" in projectes.get_Function():
+			self.calendar()
+		if "progressbar" in projectes.get_Function():
+			self.progressbar()
+		if "checkBottom" in projectes.get_Function():
+			self.checkBottom()
+		if "graph" in projectes.get_Function():
+			self.comboBox()
+		if "Formulation" in projectes.get_Function():
+			self.Formulation()
+		if "Calculator" in projectes.get_Function():
+			self.Errores()
+		if "Nothing" in projectes.get_Function():
+			None
 		
 		self.show()
+
+	def Hamil(self):
+		self.lbl1 = QLabel("<i>r<sub>0<\sub><\i>", self)
+		self.lbl1.move(0, 51)
+		self.textbox1 = QLineEdit(self)
+		self.textbox1.move(50, 50)
+		self.textbox1.resize(50,20)
+
+		self.lbl2 = QLabel("<i>k<\i>", self)
+		self.lbl2.move(120, 51)
+		self.textbox2 = QLineEdit(self)
+		self.textbox2.move(140, 50)
+		self.textbox2.resize(50,20)
+
+		self.lbl3 = QLabel("<i>l<sub>0<\sub><\i>", self)
+		self.lbl3.move(200, 51)
+		self.textbox3 = QLineEdit(self)
+		self.textbox3.move(230, 50)
+		self.textbox3.resize(50,20)
+
+		self.lbl4 = QLabel("Masa/g", self)
+		self.lbl4.move(0, 101)
+		self.textbox4 = QLineEdit(self)
+		self.textbox4.move(50, 100)
+		self.textbox4.resize(50,20)
+
+		self.lbl5 = QLabel(u'\u03B8', self)
+		self.lbl5.move(120, 101)
+		self.textbox5 = QLineEdit(self)
+		self.textbox5.move(140, 100)
+		self.textbox5.resize(50,20)
+
+		self.lbl6 = QLabel("<i>V<sub>r<\sub><\i>", self)
+		self.lbl6.move(200, 101)
+		self.textbox6 = QLineEdit(self)
+		self.textbox6.move(230, 100)
+		self.textbox6.resize(50,20)
+
+		self.lbl7 = QLabel("<i>V<sub> u'\u03B8'<\sub><\i>", self)
+		self.lbl7.move(0, 151)
+		self.textbox7 = QLineEdit(self)
+		self.textbox7.move(50, 150)
+		self.textbox7.resize(50,20)
+
+		self.lbl8 = QLabel("<i>n<\i>", self)
+		self.lbl8.move(120, 151)
+		self.textbox8 = QLineEdit(self)
+		self.textbox8.move(140, 150)
+		self.textbox8.resize(50,20)
+
+		self.lbl9 = QLabel("<i>dt<\i>", self)
+		self.lbl9.move(200, 151)
+		self.textbox9 = QLineEdit(self)
+		self.textbox9.move(230, 150)
+		self.textbox9.resize(50,20)
+
+		self.button4 = QPushButton('Calculate', self)
+		self.button4.move(220,180)
+
+		# connect button to function on_click
+		self.button4.clicked.connect(self.Rosberg)
+
+	def Rosberg(self):
+		m = float(self.textbox4.text())  
+		k = float(self.textbox2.text())
+		l0 = float(self.textbox3.text())
+		r0 = float(self.textbox1.text())
+		theta0 = float(self.textbox5.text())
+		vr = float(self.textbox6.text())
+		vtheta = float(self.textbox7.text())
+		n = int(self.textbox8.text())
+		dt = float(self.textbox9.text())
+
+		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
+		projectes.change_Table(Open_file(hamilton).get_all())
+		projectes.del_Function("Hamilton")		
+
+	def Errores(self):
+		print "Guille feo"
 
 	def calendar(self):
 		cal = QCalendarWidget(self)
@@ -423,13 +558,13 @@ class MyWidgets(QWidget):
 		cal.move(0, 0)
 		cal.clicked[QDate].connect(self.showDate)
 
-		self.lbl = QLabel(self)
+		self.lbl10 = QLabel(self)
 		date = cal.selectedDate()
-		self.lbl.setText(date.toString())
-		self.lbl.move(100, 160)
+		self.lbl10.setText(date.toString())
+		self.lbl10.move(100, 160)
 
 	def showDate(self, date):
-		self.lbl.setText(date.toString())
+		self.lbl10.setText(date.toString())
 
 	def progressbar(self):
 		self.pbar = QProgressBar(self)
@@ -456,95 +591,61 @@ class MyWidgets(QWidget):
 		if self.timer.isActive():
 			self.timer.stop()
 			self.btn.setText('Start')
-			GUI(self.allData).newproject()
+			GUI().newproject()
 		else:
 			self.timer.start(100, self)
 			self.btn.setText('Stop')
-	"""
-	def checkBottom(self):
-		
-		self.lbl = QLabel("X", self)
-		self.lbl.move(20, 720)
-		self.lbl1 = QLabel("Y", self)
-		self.lbl1.move(70, 720)
-		
-		a1 = QCheckBox('', self)
-		a1.move(20, 740)
-		a1.toggle()
-		a1.stateChanged.connect(self.value)
-		
-		a2 = QCheckBox(self.allData[0].get_name(), self)
-		a2.move(70, 740)
-		a2.toggle()
-		a2.stateChanged.connect(self.value)
-		
-		b1 = QCheckBox('', self)
-		b1.move(20, 760)
-		b1.toggle()
-		b1.stateChanged.connect(self.value)
-		
-		b2 = QCheckBox(self.allData[1].get_name(), self)
-		b2.move(70, 760)
-		b2.toggle()
-		b2.stateChanged.connect(self.value)
 
-	def value(self, state):
-
-		if state == Qt.Checked:
-			print 'Hello'	
-	"""
 	def comboBox(self):
-		self.lbl = QLabel("Graphics", self)
-		self.lbl.move(0, 480)
+		self.lbl11 = QLabel("Graphics", self)
+		self.lbl11.move(0, 480)
 
-		self.lbl = QLabel("<h1>X</h1>", self)
-		self.lbl.move(100, 500)
+		self.lbl12 = QLabel("<h1>X</h1>", self)
+		self.lbl12.move(60, 500)
 
 		combo = QComboBox(self)
-		combo.move(130, 500)
-		for i in range(len(self.allData)):
-			combo.addItem(self.allData[i].get_name())
+		combo.move(90, 500)
+		for i in range(projectes.get_Len_Table()):
+			combo.addItem(projectes.get_Table()[i].get_name())
 		combo.activated[int].connect(self.onActivatedX)
 
-		self.lbl1 = QLabel("<h1>Y</h1>", self)
-		self.lbl1.move(100, 530)
+		self.lbl13 = QLabel("<h1>Y</h1>", self)
+		self.lbl13.move(60, 530)
 
 		combo1 = QComboBox(self)
-		combo1.move(130, 530)
-		for i in range(len(self.allData)):
-			combo1.addItem(self.allData[i].get_name())
+		combo1.move(90, 530)
+		for i in range(projectes.get_Len_Table()):
+			combo1.addItem(projectes.get_Table()[i].get_name())
 		combo1.activated[int].connect(self.onActivatedY)
 
 	def onActivatedX(self, text):
-		graph[0] = text 
+		projectes.get_Represent()[0] = text
 
 	def onActivatedY(self, text):
-		graph[1] = text 
+		projectes.get_Represent()[1] = text  
 
 	def Formulation(self):
-		self.lbl = QLabel("Formula Entry", self)
-		self.lbl.move(10, 570)
+		self.lbl14 = QLabel("Formula Entry", self)
+		self.lbl14.move(10, 570)
 		#self.onActivated("Formula Entry")
-		self.textbox = QLineEdit(self)
-		self.textbox.move(20, 600)
-		self.textbox.resize(280,20)
-		self.button = QPushButton('Run', self)
-		self.button.move(220,630)
+		self.textbox13 = QLineEdit(self)
+		self.textbox13.move(20, 600)
+		self.textbox13.resize(280,20)
+		self.button3 = QPushButton('Run', self)
+		self.button3.move(220,630)
 
 		# connect button to function on_click
-		self.button.clicked.connect(self.on_click)
+		self.button3.clicked.connect(self.on_click)
 
 	@pyqtSlot()
 	def on_click(self):
-		textboxValue = self.textbox.text()
-		Inteface(self.allData).formulating(textboxValue)
-		GUI(self.allData).refresh()
+		textboxValue = self.textbox13.text()
+		Inteface().formulating(textboxValue)
+		GUI().refresh()
 
 class PlotCanvas(FigureCanvas):
 
 	def __init__(self, parent=None, width=5, height=4, dpi=100):
-		global graph, allData
-		self.allData = allData
 		self.fig = Figure(figsize=(width, height), dpi=dpi)
 		self.axes = self.fig.add_subplot(111)
 
@@ -555,79 +656,219 @@ class PlotCanvas(FigureCanvas):
 				QSizePolicy.Expanding,
 				QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)
-		self.plot(graph)
 
-	def plot(self, graph):
-		x = graph[0]
-		y = graph[1]
-		X = self.allData[x].get_list_values()
-		Y = self.allData[y].get_list_values()
+		self.x = projectes.get_Represent()[0]
+		self.y = projectes.get_Represent()[1]
+		self.X = projectes.get_Table()[self.x].get_list_values()
+		self.Y = projectes.get_Table()[self.y].get_list_values()
 
 		i = 1
-		intervalY = Y[i]-Y[i-1]
+		intervalY = self.Y[i]-self.Y[i-1]
 		while intervalY == 0:
 			i += 1
-			intervalY = Y[i]-Y[i-1]
+			intervalY = self.Y[i]-self.Y[i-1]
 		i = 1
-		intervalX = X[i]-X[i-1]
+		intervalX = self.X[i]-self.X[i-1]
 		while intervalX == 0:
 			i += 1
-			intervalX = X[i]-X[i-1]
+			intervalX = self.X[i]-self.X[i-1]
 
-		maxy = max(Y) + fabs(intervalY)*0.5 # Max value for y axis 
-		miny = min(Y) - fabs(intervalY)*0.5 # Min value for y axis
-		maxx = max(X) + fabs(intervalX)*0.5 # max value for x axis
-		minx = min(X) - fabs(intervalX)*0.5 # min value for x axis
+		self.maxy = max(self.Y) + fabs(intervalY)*0.5 # Max value for y axis 
+		self.miny = min(self.Y) - fabs(intervalY)*0.5 # Min value for y axis
+		self.maxx = max(self.X) + fabs(intervalX)*0.5 # max value for x axis
+		self.minx = min(self.X) - fabs(intervalX)*0.5 # min value for x axis
+
+		try:
+			if "Linear" in projectes.get_Function():
+				self.plotLinear()
+			elif "Logarithmic" in projectes.get_Function():
+				self.plotLog()
+			elif "Exponential" in projectes.get_Function():
+				self.plotExp()
+			else:
+				self.plotScratter()
+		except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
+			error = QMessageBox()
+			error.setText("Error 99")
+			error.setWindowTitle("Error 99")
+			window = error.exec_()
+
+	def plotScratter(self):
+		ax = self.figure.add_subplot(111)
+		ax.plot(self.X, self.Y, 'ro')
+		ax.set_xlim([self.minx, self.maxx])
+		ax.set_ylim([self.miny, self.maxy])
+		ax.set_xlabel("$n_1$")
+		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		self.draw()
+
+	def plotLinear(self):
+		n = len(self.X)
+		Mxx = []
+		for i in xrange(n):
+			Mxx.append(self.X[i]**2)
+
+		xless = [] # inicialize a list DV-Xmean
+		a = [] # inicialize a list 
+		xxi = [] # inicialize a list xless*xless
+		for i in xrange(n): # loop append a new element to lists 
+			xless.append(self.X[i] - medianX(projectes.get_Table()[self.x].get_list_values()))
+			a.append(xless[i] * self.Y[i])
+			xxi.append(xless[i]**2)
+		slope = sum(a) / sum(xxi) # return the slope
+
+		Mxy = [] # inicialize a list for DV*IV
+		for i in xrange(n): # loop that append an element 
+			Mxy.append(self.X[i]*self.Y[i]) # create the list DV * IV
+		intercept = (sum(self.Y)*sum(Mxx)-sum(self.X)*sum(Mxy)) / (n*sum(Mxx) - (sum(self.X))**2) # return intercept
+
+		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the straight graphic on X axis
+		yes = slope*xes + intercept # create a list to represent the straght graphic on Y axis
+		
 		#data = [random.random() for i in range(25)]
 		ax = self.figure.add_subplot(111)
-		ax.plot(X, Y, 'ro')
-		ax.set_xlim([minx, maxx])
-		ax.set_ylim([miny, maxy])
-		ax.set_xlabel(self.allData[x].get_name())
-		ax.set_ylabel(self.allData[y].get_name())
+		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
+		ax.set_xlim([self.minx, self.maxx])
+		ax.set_ylim([self.miny, self.maxy])
+		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
+		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		self.draw()
+
+	def plotLog(self):
+		sumX = sum(self.X) 
+		sumY= sum(self.Y)
+		sumLnX = 0
+		sumLn2X = 0 
+		sumLnXY = 0
+		sumY2 = 0
+		for i in xrange(len(self.X)):
+			sumLnX += log(self.X[i])
+			sumLn2X += log(self.X[i])*log(self.X[i])
+			sumLnXY += log(self.X[i])*self.Y[i]
+			sumY2 += self.Y[i]**2
+
+		slope = (sumLnXY- sumY*sumLnX/len(self.X))/(sumLn2X - sumLnX*sumLnX/len(self.X))
+		intercept = sumY/len(self.X) - slope*sumLnX/len(self.X)
+
+		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the curve graphic on X axis
+		yes = [] # inicialize a list to represent the curve graphic on Y axis
+		for x in xrange(xes.size):
+			yes.append(slope*log(xes[x])+intercept)
+
+		ax = self.figure.add_subplot(111)
+		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
+		ax.set_xlim([self.minx, self.maxx])
+		ax.set_ylim([self.miny, self.maxy])
+		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
+		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		self.draw()
+
+	def plotExp(self):
+		Mxx = []
+		sumy = 0
+		for i in xrange(len(self.X)):
+			Mxx.append(self.X[i]**2)
+			sumy += log(self.Y[i])
+		medy = sumy / len(self.Y)
+
+		sumXLn = 0
+		for i in xrange(len(self.Y)):
+			sumXLn += self.X[i] * log(self.Y[i])
+		slope = (sumXLn - (medy*sum(self.X))) / (sum(Mxx)-medianX(projectes.get_Table()[self.x].get_list_values())*sum(self.X))
+		intercept = exp(medy-slope*medianX(projectes.get_Table()[self.x].get_list_values()))
+
+		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100))# create an array to represent the curve graphic on X axis
+		yes = [] # inicialize a list to represent the curve graphic on Y axis
+		for x in xrange(xes.size):
+			yes.append(intercept*exp(slope*xes[x]))
+
+		ax = self.figure.add_subplot(111)
+		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
+		ax.set_xlim([self.minx, self.maxx])
+		ax.set_ylim([self.miny, self.maxy])
+		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
+		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
 		self.draw()
 
 	def savePlot(self):
 		try:
-			self.fig.savefig(info[1]+info[0])
+			self.fig.savefig(projectes.get_Path()+projectes.get_Title())
 		except IndexError:
-			GUI(self.allData).save()
+			GUI().save()
 
 class Inteface():
 
-	def __init__(self, allData):
-		self.allData = allData
-
 	def openingFile(self, text):
 		try:
-			self.allData = Open_file(text).get_all()
+			projectes.change_Table(Open_file(text).get_all())
 		except IOError:
 			print 'Sorry that directory does not exist or no able to treated as file' # if it is not, print an error message
-		return self.allData
 
 	def formulating(self, text):
-		new_object = Operations(text, self.allData).Returner()
+		new_object = Operations(text, projectes.get_Table()).Returner()
 
-		if new_object[2] >= len(self.allData):
-			self.allData.append(Variable(new_object[0], new_object[1]))
+		if new_object[2] >= projectes.get_Len_Table():
+			projectes.add_Column(Variable(new_object[0], new_object[1]))
 		else:
-			self.allData[new_object[2]] = Variable(new_object[0], new_object[1])
-		GUI(self.allData).refresh()
+			projectes.change_Column(new_object[2], Variable(new_object[0], new_object[1]))
 
 	def saving(self):
-		save(info[1], info[0], self.allData)
-		PlotCanvas().savePlot()
+		if projectes.get_Path() == None or projectes.get_Title() == None:
+			raise IndexError
+		else:
+			save(projectes.get_Path(), projectes.get_Title(), projectes.get_Table())
+			if not None in projectes.get_Represent():
+				PlotCanvas().savePlot()
 
-if __name__ == '__main__':
-	numtabses = 0
-	info = []
-	graph = [0,1]
-	name = 'Distancia/m'
-	values = [1,2,3,4,5,6,7,8,9,10]
-	name1 = 'Tiempo/s'
-	values1 = [1,2,3,4,5,6,7,8,9,10]
-	allData = [Variable(name,values), Variable(name1,values1)]
+class Projects():
+	""" """
 
-	app = QApplication(sys.argv)
-	ex = GUI(allData)
-	sys.exit(app.exec_())	
+	def __init__(self, Path, Title, Represent, Table, Function):
+		self.Path = Path
+		self.Title = Title
+		self.Represent = Represent
+		self.Table = Table
+		self.Function = Function
+
+	def get_Path(self):
+		return self.Path
+	def set_Path(self, path):
+		self.Path = path
+	def get_Title(self):
+		return self.Title
+	def set_Title(self, title):
+		self.Title = title
+	def get_Represent(self):
+		return self.Represent
+	def set_Represent(self, represent):
+		self.Represent = represent
+	def get_Table(self):
+		return self.Table
+	def get_Len_Table(self):
+		return len(self.Table)
+	def change_Table(self, Variables):
+		self.Table = Variables
+	def add_Column(self, Variable):
+		self.Table.append(Variable)
+	def change_Column(self, index, Variable):
+		self.Table[index] = Variable
+	def get_Function(self):
+		return self.Function
+	def add_Function(self, function):
+		self.Function.append(function)
+	def del_Function(self, function):
+		self.Function.remove(function)
+
+try:
+	if __name__ == '__main__':
+		numtabses = 0
+		projectes = Projects(None, None, [None, None], [], ["Nothing"])
+
+		app = QApplication(sys.argv)
+		ex = GUI()
+		sys.exit(app.exec_())	
+except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
+	error = QMessageBox()
+	error.setText("Error 99")
+	error.setWindowTitle("Error 99")
+	window = error.exec_()
