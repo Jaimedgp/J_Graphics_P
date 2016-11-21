@@ -34,8 +34,17 @@ class Variable:
 	def get_name(self): # method to return the name of the variable
 		return self.name
 
+	def set_name(self, newname):
+		self.name = newname
+
 	def get_list_values(self): # method to return the list
 		return self.values
+
+	def set_list_values(self, newvalues):
+		self.values = newvalues
+
+	def set_values(self, newelement, position):
+		self.values[position] = newelement
 
 	def get_values(self, position): # method to return a value of the list
 		return self.values[position]
@@ -306,33 +315,41 @@ class Operations():
 		k = 8.988 * (10**(9)) # set coulomb's constant
 		self.new_Data = []
 		self.formula = formula
+		self.allData = allData
 		self.action = self.translateAction()
 		try:
-			self.new_name = allData[int(self.i)].get_name()
+			self.new_name = self.allData[int(self.i)].get_name()
 		except IndexError:
 			self.new_name = str(int(self.i))
+		
 		try:
-			for i in range(len(allData[0].get_list_values())):
-				self.new_Data.append(eval(str(self.action)))
-		except (NameError, IndexError, ValueError, IOError):
-			error = QMessageBox()
-			error.setText('Not able that operation')
-			error.setWindowTitle('Not able that operation')
-			window = error.exec_()
+			if self.action.index("name(") >= 0:
+				numElement = self.action.index("name(")
+				self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
+				eval(self.action)
+		except ValueError:
+			try:
+				for i in range(len(self.allData[0].get_list_values())):
+					self.new_Data.append(eval(str(self.action)))
+			except (NameError, IndexError, ValueError, IOError):
+				error = QMessageBox()
+				error.setText('Not able that operation')
+				error.setWindowTitle('Not able that operation')
+				window = error.exec_()
 
 	def translateAction(self):
 		try: # excepcion
 			i = self.formula.index('C', 0, len(self.formula)) # indice donde acaba allData
 
-			self.i = self.formula[i+1:i+2]
+			self.i = int(self.formula[i+1:i+2])
 
 			booltwo = True # se inicializa el booleano para bucle while y la excepcion
 			index = 0 # se inicializa el indice a partir del cual se leera
 			self.action = self.formula.split('=')[1]
-			self.action = self.action.replace('C', 'allData[') # se sustituyen todas la C por allData[
+			self.action = self.action.replace('C', 'self.allData[') # se sustituyen todas la C por allData[
 			while booltwo:
 				try: # excepcion
-					index = self.action.index('allData[', index, len(self.action))+9 # indice donde acaba allData
+					index = self.action.index('self.allData[', index, len(self.action))+14 # indice donde acaba allData
 					self.action = self.action[:index] + '].get_values(i)' + self.action[index:]
 				except ValueError:
 					booltwo = False # se para el bucle
@@ -342,6 +359,10 @@ class Operations():
 			error.setText("Error 99")
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
+
+	def name(self, name):
+		self.new_name = name
+		self.new_Data = self.allData[self.i].get_list_values()
 
 	def Returner(self):
 		return self.new_name, self.new_Data, int(self.i)

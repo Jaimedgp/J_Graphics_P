@@ -11,6 +11,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import os # import os Miscellaneous operating system interfaces
 from JGP1 import *
+import Example
 
 class GUI(QMainWindow):
 
@@ -175,9 +176,17 @@ class GUI(QMainWindow):
 
 	def graph(self):
 		projectes.add_Function("graph")
+		projectes.add_Function("Scratter")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
 		self.refresh()
 
 	def logarithmic(self):
+		projectes.add_Function("graph")
 		projectes.add_Function("Logarithmic")
 		if "Linear" in projectes.get_Function():
 			projectes.del_Function("Linear")
@@ -186,6 +195,7 @@ class GUI(QMainWindow):
 		self.refresh()
 
 	def exponential(self):
+		projectes.add_Function("graph")		
 		projectes.add_Function("Exponential")
 		if "Linear" in projectes.get_Function():
 			projectes.del_Function("Linear")
@@ -194,6 +204,7 @@ class GUI(QMainWindow):
 		self.refresh()
 
 	def linearing(self):
+		projectes.add_Function("graph")
 		projectes.add_Function("Linear")
 		if "Exponential" in projectes.get_Function():
 			projectes.del_Function("Exponential")
@@ -234,7 +245,8 @@ class GUI(QMainWindow):
 
 	def openfile(self):
 		global numtabses
-		fname = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime')
+		fname = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime', 'Text File (*.csv *.txt)')
+
 
 		Inteface().openingFile(fname[0])
 
@@ -685,6 +697,8 @@ class PlotCanvas(FigureCanvas):
 				self.plotLog()
 			elif "Exponential" in projectes.get_Function():
 				self.plotExp()
+			elif "Scratter" in projectes.get_Function():
+				self.plotScratter()
 			else:
 				self.plotScratter()
 		except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
@@ -698,7 +712,7 @@ class PlotCanvas(FigureCanvas):
 		ax.plot(self.X, self.Y, 'ro')
 		ax.set_xlim([self.minx, self.maxx])
 		ax.set_ylim([self.miny, self.maxy])
-		ax.set_xlabel("$n_1$")
+		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
 		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
 		self.draw()
 
