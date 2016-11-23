@@ -1,3 +1,12 @@
+"""
+	JDG (Just a Graphics' Printer) 
+
+	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
+	order to facilitate operations in performing laboratory practice
+
+													Version: Noviembre 2016
+"""
+
 import sys
 from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog, QHBoxLayout, QFrame, QSplitter, QStyleFactory, 
 	QMainWindow, QTabWidget, QTextEdit, QAction, QApplication, QWidget, QFormLayout, QPushButton, QLineEdit, QTableWidget,
@@ -11,7 +20,6 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import os # import os Miscellaneous operating system interfaces
 from JGP1 import *
-import Example
 
 class GUI(QMainWindow):
 
@@ -57,7 +65,17 @@ class GUI(QMainWindow):
 		saveAction = QAction('Save', self)
 		saveAction.setShortcut('Ctrl+S')
 		saveAction.setStatusTip('Save table')
-		saveAction.triggered.connect(self.save)
+		saveAction.triggered.connect(self.saveCSV)
+
+		saveAs = QAction('Save as', self)
+		#saveAs.setShortcut('Ctrl+S')
+		saveAs.setStatusTip('Save table')
+		saveAs.triggered.connect(self.saveAs)
+
+		saveTex = QAction('Export to LaTex', self)
+		#newproject.setShortcut('Ctrl+P')
+		saveTex.setStatusTip('Export table to LaTex code')
+		saveTex.triggered.connect(self.saveTex)
 
 		exitAction = QAction('Quit', self)
 		exitAction.setShortcut('Ctrl+Q')
@@ -73,6 +91,7 @@ class GUI(QMainWindow):
 		fileMenu.addAction(openAction)
 		fileMenu.addAction(eraseProject)
 		fileMenu.addAction(saveAction)
+		fileMenu.addAction(saveAs)
 		fileMenu.addAction(exitAction)
 
 		addValue = QAction('Add Value', self)
@@ -115,6 +134,11 @@ class GUI(QMainWindow):
 		#Graph.setStatusTip('y = a*x + b')
 		Graph.triggered.connect(self.graph)
 
+		Scrat = QAction('Scratter', self)
+		#Scrat.setShortcut('Ctrl+G')
+		#Graph.setStatusTip('y = a*x + b')
+		Scrat.triggered.connect(self.graph)
+
 		linearGraph = QAction('Linear', self)
 		#newAction.setShortcut('Ctrl+N')
 		linearGraph.setStatusTip('y = a*x + b')
@@ -135,6 +159,7 @@ class GUI(QMainWindow):
 		menubar = self.menuBar()
 		fileMenu = menubar.addMenu('&Curve Fit')
 		fileMenu.addAction(Graph)
+		fileMenu.addAction(Scrat)
 		fileMenu.addAction(linearGraph)
 		fileMenu.addAction(logGraph)
 		fileMenu.addAction(expGraph)
@@ -212,11 +237,30 @@ class GUI(QMainWindow):
 			projectes.del_Function("Logarithmic")
 		self.refresh()
 
-	def save(self):
+	def saveAs(self):
+		fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Calc files (*.csv *.txt)"))
+		fname = fname.split(',')[0]
+		fname = fname.split('(u')
+		fname = fname[1].split("'")
+		projectes.set_Path(fname[1])
+		Inteface().savingCSV()
+
+	def saveCSV(self):
+		try:
+			Inteface().savingCSV()
+		except IndexError:
+			fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Calc files (*.csv *.txt)"))
+			fname = fname.split(',')[0]
+			fname = fname.split('(u')
+			fname = fname[1].split("'")
+			projectes.set_Path(fname[1])
+			Inteface().savingCSV()
+
+	def saveTex(self):
 		saving = True
 		while saving:
 			try:
-				Inteface().saving()
+				Inteface().savingTex()
 				saving = False
 			except IndexError:
 				fname = str(QFileDialog.getExistingDirectory(self, 'Open file'))
@@ -263,7 +307,7 @@ class GUI(QMainWindow):
 			saving = True
 			while saving:
 				try:
-					Inteface().saving()
+					Inteface().savingCSV()
 					saving = False
 				except IndexError:
 					fname = str(QFileDialog.getExistingDirectory(self, 'Open file'))
@@ -476,6 +520,7 @@ class MyWidgets(QWidget):
 			self.checkBottom()
 		if "graph" in projectes.get_Function():
 			self.comboBox()
+			#self.checkBox()
 		if "Formulation" in projectes.get_Function():
 			self.Formulation()
 		if "Calculator" in projectes.get_Function():
@@ -558,55 +603,52 @@ class MyWidgets(QWidget):
 		dt = float(self.textbox9.text())
 
 		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
-		projectes.change_Table(Open_file(hamilton).get_all())
+		projectes.change_Table(Open_file_CSV(hamilton).get_all())
 		projectes.del_Function("Hamilton")		
 
 	def Errores(self):
-		print "Guille feo"
+		self.lbl1 = QLabel("<i>Simbolos<\i>", self)
+		self.lbl1.move(0, 51)
+		self.textbox1 = QLineEdit(self)
+		self.textbox1.move(60, 50)
+		self.textbox1.resize(140,20)
 
-	def calendar(self):
-		cal = QCalendarWidget(self)
-		cal.setGridVisible(True)
-		cal.move(0, 0)
-		cal.clicked[QDate].connect(self.showDate)
+		self.lbl4 = QLabel("<i>Valores<\i>", self)
+		self.lbl4.move(0, 101)
+		self.textbox4 = QLineEdit(self)
+		self.textbox4.move(50, 100)
+		self.textbox4.resize(150,20)
 
-		self.lbl10 = QLabel(self)
-		date = cal.selectedDate()
-		self.lbl10.setText(date.toString())
-		self.lbl10.move(100, 160)
+		self.lbl7 = QLabel("<i>Errores<\i>", self)
+		self.lbl7.move(0, 151)
+		self.textbox7 = QLineEdit(self)
+		self.textbox7.move(50, 150)
+		self.textbox7.resize(150,20)
 
-	def showDate(self, date):
-		self.lbl10.setText(date.toString())
+		self.lbl8 = QLabel("<i>f = <\i>", self)
+		self.lbl8.move(0, 201)
+		self.textbox8 = QLineEdit(self)
+		self.textbox8.move(30, 200)
+		self.textbox8.resize(170,20)
 
-	def progressbar(self):
-		self.pbar = QProgressBar(self)
-		self.pbar.setGeometry(30, 40, 200, 25)
-		self.pbar.move(80, 260)
+		self.button4 = QPushButton('Calculate', self)
+		self.button4.move(220,210)
 
-		self.btn = QPushButton('Start', self)
-		self.btn.move(220, 300)
-		self.btn.clicked.connect(self.doAction)
+		# connect button to function on_click
+		self.button4.clicked.connect(self.CalculateErrors)
 
-		self.timer = QBasicTimer()
-		self.step = 0
-
-	def timerEvent(self, e):
-		if self.step >= 100:
-			self.timer.stop()
-			self.btn.setText('Finished')
-			return
-
-		self.step = self.step + 1
-		self.pbar.setValue(self.step)
-
-	def doAction(self):
-		if self.timer.isActive():
-			self.timer.stop()
-			self.btn.setText('Start')
-			GUI().newproject()
-		else:
-			self.timer.start(100, self)
-			self.btn.setText('Stop')
+	def CalculateErrors(self):
+		Simbolos = self.textbox1.text()
+		valores = eval(self.textbox4.text())
+		errores = eval(self.textbox7.text())
+		funcion = str(self.textbox8.text())
+		valorError = Errores(Simbolos, valores, errores, funcion).Errors()
+		projectes.del_Function("Calculator")
+		GUI().refresh()
+		error = QMessageBox()
+		error.setText(str(valorError))
+		error.setWindowTitle('Error Calculator')
+		window = error.exec_()
 
 	def comboBox(self):
 		self.lbl11 = QLabel("Graphics", self)
@@ -630,11 +672,28 @@ class MyWidgets(QWidget):
 			combo1.addItem(projectes.get_Table()[i].get_name())
 		combo1.activated[int].connect(self.onActivatedY)
 
+	"""def checkBox(self):
+		cb = QCheckBox('Add Axis', self)
+		cb.move(180, 500)
+		cb.stateChanged.connect(self.addAxis)
+
+	def addAxis(self, state):
+		if state == Qt.Checked:
+			combo2 = QComboBox(self)
+			combo2.move(200, 530)
+			for i in range(projectes.get_Len_Table()):
+				combo2.addItem(projectes.get_Table()[i].get_name())
+			combo2.activated[int].connect(self.onActivatedYPlus)
+			self.show()"""
+
 	def onActivatedX(self, text):
 		projectes.get_Represent()[0] = text
 
 	def onActivatedY(self, text):
-		projectes.get_Represent()[1] = text  
+		projectes.get_Represent()[1] = text
+
+	def onActivatedYPlus(self, text):
+		projectes.add_Represent(text)
 
 	def Formulation(self):
 		self.lbl14 = QLabel("Formula Entry", self)
@@ -669,26 +728,14 @@ class PlotCanvas(FigureCanvas):
 				QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)
 
-		self.x = projectes.get_Represent()[0]
-		self.y = projectes.get_Represent()[1]
-		self.X = projectes.get_Table()[self.x].get_list_values()
-		self.Y = projectes.get_Table()[self.y].get_list_values()
+		self.functionGraph = Graphics(projectes.get_Table(), projectes.get_Represent())
 
-		i = 1
-		intervalY = self.Y[i]-self.Y[i-1]
-		while intervalY == 0:
-			i += 1
-			intervalY = self.Y[i]-self.Y[i-1]
-		i = 1
-		intervalX = self.X[i]-self.X[i-1]
-		while intervalX == 0:
-			i += 1
-			intervalX = self.X[i]-self.X[i-1]
+		self.nameX = self.functionGraph.Names()[0]
+		self.nameY = self.functionGraph.Names()[1]
+		self.X = self.functionGraph.Values()[0]
+		self.Y = self.functionGraph.Values()[1]
 
-		self.maxy = max(self.Y) + fabs(intervalY)*0.5 # Max value for y axis 
-		self.miny = min(self.Y) - fabs(intervalY)*0.5 # Min value for y axis
-		self.maxx = max(self.X) + fabs(intervalX)*0.5 # max value for x axis
-		self.minx = min(self.X) - fabs(intervalX)*0.5 # min value for x axis
+		self.Interval = self.functionGraph.IntervalLimits()
 
 		try:
 			if "Linear" in projectes.get_Function():
@@ -709,99 +756,55 @@ class PlotCanvas(FigureCanvas):
 
 	def plotScratter(self):
 		ax = self.figure.add_subplot(111)
-		ax.plot(self.X, self.Y, 'ro')
-		ax.set_xlim([self.minx, self.maxx])
-		ax.set_ylim([self.miny, self.maxy])
-		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
-		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		if len(projectes.get_Represent()) == 2:
+			ax.plot(self.X, self.Y, 'ro')
+		elif len(projectes.get_Represent()) > 2:
+			YY = projectes.get_Table()[projectes.get_Represent()[2]]
+			ax.plot(self.X, self.Y, 'r', self.X, YY, 'bo')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotLinear(self):
-		n = len(self.X)
-		Mxx = []
-		for i in xrange(n):
-			Mxx.append(self.X[i]**2)
-
-		xless = [] # inicialize a list DV-Xmean
-		a = [] # inicialize a list 
-		xxi = [] # inicialize a list xless*xless
-		for i in xrange(n): # loop append a new element to lists 
-			xless.append(self.X[i] - medianX(projectes.get_Table()[self.x].get_list_values()))
-			a.append(xless[i] * self.Y[i])
-			xxi.append(xless[i]**2)
-		slope = sum(a) / sum(xxi) # return the slope
-
-		Mxy = [] # inicialize a list for DV*IV
-		for i in xrange(n): # loop that append an element 
-			Mxy.append(self.X[i]*self.Y[i]) # create the list DV * IV
-		intercept = (sum(self.Y)*sum(Mxx)-sum(self.X)*sum(Mxy)) / (n*sum(Mxx) - (sum(self.X))**2) # return intercept
-
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the straight graphic on X axis
-		yes = slope*xes + intercept # create a list to represent the straght graphic on Y axis
+		equation = self.functionGraph.Linget_Ecuation()
+		xes = equation[0]
+		yes = equation[1]
 		
 		#data = [random.random() for i in range(25)]
 		ax = self.figure.add_subplot(111)
-		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
-		ax.set_xlim([self.minx, self.maxx])
-		ax.set_ylim([self.miny, self.maxy])
-		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
-		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotLog(self):
-		sumX = sum(self.X) 
-		sumY= sum(self.Y)
-		sumLnX = 0
-		sumLn2X = 0 
-		sumLnXY = 0
-		sumY2 = 0
-		for i in xrange(len(self.X)):
-			sumLnX += log(self.X[i])
-			sumLn2X += log(self.X[i])*log(self.X[i])
-			sumLnXY += log(self.X[i])*self.Y[i]
-			sumY2 += self.Y[i]**2
-
-		slope = (sumLnXY- sumY*sumLnX/len(self.X))/(sumLn2X - sumLnX*sumLnX/len(self.X))
-		intercept = sumY/len(self.X) - slope*sumLnX/len(self.X)
-
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the curve graphic on X axis
-		yes = [] # inicialize a list to represent the curve graphic on Y axis
-		for x in xrange(xes.size):
-			yes.append(slope*log(xes[x])+intercept)
+		equation = self.functionGraph.Logget_Ecuation()
+		xes = equation[0]
+		yes = equation[1]
 
 		ax = self.figure.add_subplot(111)
-		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
-		ax.set_xlim([self.minx, self.maxx])
-		ax.set_ylim([self.miny, self.maxy])
-		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
-		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotExp(self):
-		Mxx = []
-		sumy = 0
-		for i in xrange(len(self.X)):
-			Mxx.append(self.X[i]**2)
-			sumy += log(self.Y[i])
-		medy = sumy / len(self.Y)
-
-		sumXLn = 0
-		for i in xrange(len(self.Y)):
-			sumXLn += self.X[i] * log(self.Y[i])
-		slope = (sumXLn - (medy*sum(self.X))) / (sum(Mxx)-medianX(projectes.get_Table()[self.x].get_list_values())*sum(self.X))
-		intercept = exp(medy-slope*medianX(projectes.get_Table()[self.x].get_list_values()))
-
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100))# create an array to represent the curve graphic on X axis
-		yes = [] # inicialize a list to represent the curve graphic on Y axis
-		for x in xrange(xes.size):
-			yes.append(intercept*exp(slope*xes[x]))
+		equation = self.functionGraph.Expget_Ecuation()
+		xes = equation[0]
+		yes = equation[1]
 
 		ax = self.figure.add_subplot(111)
-		ax.plot(self.X, self.Y, 'ro', xes, yes, 'r')
-		ax.set_xlim([self.minx, self.maxx])
-		ax.set_ylim([self.miny, self.maxy])
-		ax.set_xlabel(projectes.get_Table()[self.x].get_name())
-		ax.set_ylabel(projectes.get_Table()[self.y].get_name())
+		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def savePlot(self):
@@ -814,7 +817,15 @@ class Inteface():
 
 	def openingFile(self, text):
 		try:
-			projectes.change_Table(Open_file(text).get_all())
+			try:
+				if text.index(".csv") >= 0:
+					projectes.change_Table(Open_file_CSV(text).get_all())
+			except ValueError:
+				try:
+					if text.index(".txt") >= 0:
+						projectes.change_Table(Open_file_TXT(text).get_all())
+				except ValueError:
+					print 'Enable to open'
 		except IOError:
 			print 'Sorry that directory does not exist or no able to treated as file' # if it is not, print an error message
 
@@ -824,13 +835,33 @@ class Inteface():
 		if new_object[2] >= projectes.get_Len_Table():
 			projectes.add_Column(Variable(new_object[0], new_object[1]))
 		else:
-			projectes.change_Column(new_object[2], Variable(new_object[0], new_object[1]))
+			if "Delete Column" == new_object[1]:
+				projectes.delete_Column(new_object[2])
+			else:
+				projectes.change_Column(new_object[2], Variable(new_object[0], new_object[1]))
 
-	def saving(self):
-		if projectes.get_Path() == None or projectes.get_Title() == None:
+	def savingCSV(self):
+		if projectes.get_Path() == None:
 			raise IndexError
 		else:
-			save(projectes.get_Path(), projectes.get_Title(), projectes.get_Table())
+			try:
+				if projectes.get_Path().index(".csv") >= 0:
+					saveCSV(projectes.get_Path(), projectes.get_Table())
+			except ValueError:
+				try:
+					if projectes.get_Path().index(".txt") >= 0:
+						saveText(projectes.get_Path(), projectes.get_Table())
+				except ValueError:
+						print 'Enable to open'
+		if not None in projectes.get_Represent():
+				PlotCanvas().savePlot()
+
+	def savingTex(self):
+		if projectes.get_Path() == None:
+			raise IndexError
+		else:
+			path = projectes.get_Path().split('.')[0]
+			saveLaTex(path, projectes.get_Table())
 			if not None in projectes.get_Represent():
 				PlotCanvas().savePlot()
 
@@ -856,6 +887,8 @@ class Projects():
 		return self.Represent
 	def set_Represent(self, represent):
 		self.Represent = represent
+	def add_Represent(self, represent):
+		self.Represent.append(represent)
 	def get_Table(self):
 		return self.Table
 	def get_Len_Table(self):
@@ -866,6 +899,8 @@ class Projects():
 		self.Table.append(Variable)
 	def change_Column(self, index, Variable):
 		self.Table[index] = Variable
+	def delete_Column(self, index):
+		del self.Table[index]
 	def get_Function(self):
 		return self.Function
 	def add_Function(self, function):

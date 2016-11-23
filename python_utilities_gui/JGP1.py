@@ -4,7 +4,7 @@
 	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
 	order to facilitate operations in performing laboratory practice
 
-													Version: Julio 2016
+													Version: Noviembre 2016
 """
 
 #############################################################
@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import QMessageBox
 ###########               CLASSES               #############
 #############################################################
 
-class Variable:
+class Variable():
 	""" This class create the object Variable which contains """
 	""" the name of the variable and a list with all the     """
 	""" values that it takes.                                """ 
@@ -49,7 +49,7 @@ class Variable:
 	def get_values(self, position): # method to return a value of the list
 		return self.values[position]
 
-class Open_file:
+class Open_file_CSV():
 	""" This class store a certain number of objects Variable """
 	""" with their names and values from a file in a list.    """
 
@@ -72,231 +72,137 @@ class Open_file:
 	def get_all(self): # return a list with all the objetcs
 		return self.allData
 
-class Graphic():
-	""" 
-		This class represent and save a graph with all values 
-		of the two variables choosed                          
-	"""
+class Open_file_TXT():
+	""" This class store a certain number of objects Variable """
+	""" with their names and values from a file in a list.    """
 
-	def graph(self): # represent and save the graph
-		function = self.get_Ecuation()
-		Xes = function[0]
-		Yes = function[1]
+	def __init__(self, text):
+		self.allData = [] # inicialize the list of Variable's objects
+		self.fileName = str(text) # introduce directory name
+		fr = open(self.fileName,'r') # open file as read
 
-		i = 1
-		intervalY = self.Y[i]-self.Y[i-1]
-		while intervalY == 0:
-			i += 1
-			intervalY = self.Y[i]-self.Y[i-1]
-		i = 1
-		intervalX = self.X[i]-self.X[i-1]
-		while intervalX == 0:
-			i += 1
+		titles = fr.readline().split('\t') # list with all variables names
+		numVar = len(titles) # number of variables
+		Data = [[] for x in xrange(numVar)] # list with numVar lists
+		row = fr.readline().split('\t') # read first row
+		while row[0] != '': # loop to read all rows
+			for i in xrange(numVar): # loop to read each variable 
+				Data[i].append(float(row[i])) # append each element to the list
+			row = fr.readline().split('\t') # read another row
+		for x in xrange(numVar):
+			self.allData.append(Variable(titles[x].split()[0], Data[x])) # creat a Variable Object with each variable
 
-			intervalX = self.X[i]-self.X[i-1]
+	def get_all(self): # return a list with all the objetcs
+		return self.allData
 
-		maxy = max(self.Y) + fabs(intervalY)*0.5 # Max value for y axis 
-		miny = min(self.Y) - fabs(intervalY)*0.5 # Min value for y axis
-		maxx = max(self.X) + fabs(intervalX)*0.5 # max value for x axis
-		minx = min(self.X) - fabs(intervalX)*0.5 # min value for x axis
-
-		yerr = self.error() # error for IV
-
-		# Represent the graphic
-		fig = plt.figure(1)
-		plt.errorbar(self.X, self.Y, yerr=yerr, fmt='ro', ecolor='r') 
-		plt.plot(self.X, self.Y, 'ro', Xes, Yes, 'r')
-		plt.axis([minx, maxx, miny, maxy])
-		plt.title(Title)
-		plt.xlabel(self.Xname)
-		plt.ylabel(self.Yname)
-		plt.show()
-		f2 = plt.figure(figsize=(12.0, 20.0))
-		i = 2
-		Path2 = Path+Title+'.png'
-		while os.path.exists(Path2):
-			Path2 = Path+Title+'('+str(i)+')'+'.png'
-			i+=1
-		fig.savefig(Path2)
-
-	def error(self):
-		booltwo = True
-		while booltwo:
-			type_error = raw_input('Type: ')
-
-			if type_error == 'Colmn Error' or type_error == 'Colmn error' or type_error == 'colmn error':
-				num_column = int(raw_input('Column: '))
-				return allData[num_column].get_list_values()
-			elif type_error == 'Fixed Value' or type_error == 'Fixed value' or type_error == 'fixed value':
-				error_value = float(raw_input("The %s's error " %(self.Yname))) # error for IV
-				return error_value
-			elif type_error == 'Percentage' or type_error == 'percentage':
-				error_percent = float(raw_input('Percentage: '))
-				error = []
-				for i in range(len(self.Y)):
-					error.append(self.Y[i] * (error_percent/100))
-				return error
-			else:
-				print 'That is not an option'
-
-class Straigth(Graphic):
+class Straigth():
 	""" This class store a certain number of objects Variable """
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has a linear relation   """
 	"""                       y = mx + b                      """
 
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.X = allData[x].get_list_values()
-		self.Y = allData[y].get_list_values()
-		self.Xname = allData[x].get_name()
-		self.Yname = allData[y].get_name()
-
-		self.n = len(self.X)
+	def inice(self):
+		self.n = len(self.Dependent)
 		self.Mxx = []
 		for i in xrange(self.n):
-			self.Mxx.append(self.X[i]**2)
+			self.Mxx.append(self.Dependent[i]**2)
 
-	def slope(self):
+	def Linslope(self):
 		xless = [] # inicialize a list DV-Xmean
 		a = [] # inicialize a list 
 		xxi = [] # inicialize a list xless*xless
 		for i in xrange(self.n): # loop append a new element to lists 
-			xless.append(self.X[i] - medianX(self.x))
-			a.append(xless[i] * self.Y[i])
+			xless.append(self.Dependent[i] - medianX(self.Dependent))
+			a.append(xless[i] * self.Independent[i])
 			xxi.append(xless[i]**2)
 		return sum(a) / sum(xxi) # return the slope
 			
-	def intercept(self):
+	def Linintercept(self):
 		Mxy = [] # inicialize a list for DV*IV
 		for i in xrange(self.n): # loop that append an element 
-			Mxy.append(self.X[i]*self.Y[i]) # create the list DV * IV
-		return (sum(self.Y)*sum(self.Mxx)-sum(self.X)*sum(Mxy)) / (self.n*sum(self.Mxx) - (sum(self.X))**2) # return intercept
+			Mxy.append(self.Dependent[i]*self.Independent[i]) # create the list DV * IV
+		return (sum(self.Independent)*sum(self.Mxx)-sum(self.Dependent)*sum(Mxy)) / (self.n*sum(self.Mxx) - (sum(self.Dependent))**2) # return intercept
 
-	def errorslope(self):
+	def Linerrorslope(self):
 		recta = []
 		for i in xrange(self.n):
-			recta.append((self.Y[i]-self.slope()*self.X[i]-self.intercept())**2)
+			recta.append((self.Independent[i]-self.Linslope()*self.Dependent[i]-self.Linintercept())**2)
 		sigma = sqrt(sum(recta)/(self.n-2)) 
-		return (sqrt(self.n)*sigma/sqrt((self.n*sum(self.Mxx))-sum(self.X)**2))
+		return (sqrt(self.n)*sigma/sqrt((self.n*sum(self.Mxx))-sum(self.Dependent)**2))
 
-	def ertercept(self):
-		a = self.errorslope() * sqrt(sum(self.Mxx)/self.n)
+	def Linertercept(self):
+		a = self.Linerrorslope() * sqrt(sum(self.Mxx)/self.n)
 		return a
 
-	def printer(self): # Print means and the graph equation 
-		fl = open(Path+Title+'.txt','w')
-		for x in xrange(1):
-			fl.write('Los valores medios de X y de Y son:' + "\n")
-			fl.write('\t' + ' <x>= %gm y <y>= %gs' %(medianX(self.x), medianX(self.y)) +'\n')
-			fl.write('La ecuacion de la recta obtenida por el ajuste por minimos cuadrados es:' + '\n')
-			fl.write('\t' + 'y = %gx + %g' %(self.slope(), self.intercept())+ '\t' + '\t' + 'Error m = %g' %(self.errorslope()) + '\n')
-		fl.close()
-		print 'Los valores medios de X y de Y son:' + "\n" + "\t" + ' <x>= %gm y <y>= %gs' %(medianX(self.x), medianX(self.y))
-		print 'La ecuacion de la recta obtenida por el ajuste por minimos cuadrados es:' + '\n' + '\t' + 'y = %gx + %g' %(self.slope(), self.intercept())
-		print 'EM = %g and EI = %g' %(self.errorslope(), self.ertercept())
-
-	def get_Ecuation(self):
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the straight graphic on X axis
-		yes = self.slope()*xes + self.intercept() # create a list to represent the straght graphic on Y axis
+	def Linget_Ecuation(self):
+		self.inice()
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100)) # create an array to represent the straight graphic on X axis
+		yes = self.Linslope()*xes + self.Linintercept() # create a list to represent the straght graphic on Y axis
 		main = [xes, yes]
 		return main
 
-class Logarithmic(Graphic):
+class Logarithmic():
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has a logarithmic       """
 	""" relation:        y = m * ln(x) + b                    """
 
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.X = allData[x].get_list_values()
-		self.Y = allData[y].get_list_values()
-		self.Xname = allData[x].get_name()
-		self.Yname = allData[y].get_name()
-
-		self.sumX = sum(self.X) 
-		self.sumY= sum(self.Y)
+	def Loginice(self):
+		self.sumX = sum(self.Dependent) 
+		self.sumY= sum(self.Independent)
 		self.sumLnX = 0
 		self.sumLn2X = 0 
 		self.sumLnXY = 0
 		self.sumY2 = 0
-		for i in xrange(len(self.X)):
-			self.sumLnX += log(self.X[i])
-			self.sumLn2X += log(self.X[i])*log(self.X[i])
-			self.sumLnXY += log(self.X[i])*self.Y[i]
-			self.sumY2 += self.Y[i]**2
+		for i in xrange(len(self.Dependent)):
+			self.sumLnX += log(self.Dependent[i])
+			self.sumLn2X += log(self.Dependent[i])*log(self.Dependent[i])
+			self.sumLnXY += log(self.Dependent[i])*self.Independent[i]
+			self.sumY2 += self.Independent[i]**2
 
-	def slope(self):
-		return (self.sumLnXY- self.sumY*self.sumLnX/len(self.X))/(self.sumLn2X - self.sumLnX*self.sumLnX/len(self.X))
+	def Logslope(self):
+		return (self.sumLnXY- self.sumY*self.sumLnX/len(self.Dependent))/(self.sumLn2X - self.sumLnX*self.sumLnX/len(self.Dependent))
 
-	def intercept(self):
-		return self.sumY/len(self.X) - self.slope()*self.sumLnX/len(self.X)
-
-	def printer(self): # Print means and the graph equation 
-		fl = open(Path+Title+'.txt','w')
-		for x in xrange(1):
-			fl.write('Los valores medios de X y de Y son:' + "\n")
-			fl.write('\t' + ' <x>= %g m y <y>= %g s' %(medianX(self.x), medianX(self.y))+'\n')
-			fl.write('La ecuacion de la recta obtenida por el ajuste por minimos cuadrados es:' + '\n')
-			fl.write('\t' + 'y = %g* ln(x) + %g' %(self.slope(), self.intercept()) + '\n')
-		print 'Los valores medios de X y de Y son:' + "\n" + "\t" + ' <x>= %gm y <y>= %gs' %(medianX(self.x), medianX(self.y))
-		print 'La ecuacion de la curva es:' + '\n' + '\t' + 'y = %g*ln(x) + %g' %(self.slope(), self.intercept())
+	def Logintercept(self):
+		return self.sumY/len(self.Dependent) - self.Logslope()*self.sumLnX/len(self.Dependent)
 	
-	def get_Ecuation(self):
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100)) # create an array to represent the curve graphic on X axis
+	def Logget_Ecuation(self):
+		self.Loginice()
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100)) # create an array to represent the curve graphic on X axis
 		yes = [] # inicialize a list to represent the curve graphic on Y axis
 		for x in xrange(xes.size):
-			yes.append(self.slope()*log(xes[x])+self.intercept())
+			yes.append(self.Logslope()*log(xes[x])+self.Logintercept())
 
 		main = [xes, yes]
 		return main
 
-class Exponential(Graphic):
+class Exponential():
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has an exponential      """
 	""" relation:          y = b * e^(m*x)                    """
 
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-		self.X = allData[x].get_list_values()
-		self.Y = allData[y].get_list_values()
-		self.Xname = allData[x].get_name()
-		self.Yname = allData[y].get_name()
-
+	def Expinice(self):
 		self.Mxx = []
 		self.sumy = 0
-		for i in xrange(len(self.X)):
-			self.Mxx.append(self.X[i]**2)
-			self.sumy += log(self.Y[i])
-		self.medy = self.sumy / len(self.Y)
+		for i in xrange(len(self.Dependent)):
+			self.Mxx.append(self.Dependent[i]**2)
+			self.sumy += log(self.Independent[i])
+		self.medy = self.sumy / len(self.Independent)
 
-	def slope(self):
+	def Expslope(self):
 		sumXLn = 0
-		for i in xrange(len(self.Y)):
-			sumXLn += self.X[i] * log(self.Y[i])
-		return (sumXLn - (self.medy*sum(self.X))) / (sum(self.Mxx)-medianX(self.x)*sum(self.X))
+		for i in xrange(len(self.Independent)):
+			sumXLn += self.Dependent[i] * log(self.Independent[i])
+		return (sumXLn - (self.medy*sum(self.Dependent))) / (sum(self.Mxx)-medianX(self.Dependent)*sum(self.Dependent))
 
-	def intercept(self):
-		return exp(self.medy-self.slope()*medianX(self.x))
+	def Expintercept(self):
+		return exp(self.medy-self.Expslope()*medianX(self.Dependent))
 
-	def printer(self): # Print means and the graph equation 
-		fl = open(Path+Title+'.txt','w')
-		for x in xrange(1):
-			fl.write('Los valores medios de X y de Y son:' + "\n")
-			fl.write('\t' + ' <x>= %g m y <y>= %g s' %(medianX(self.x), medianX(self.y))+'\n')
-			fl.write('La ecuacion de la recta obtenida por el ajuste por minimos cuadrados es:' + '\n')
-			fl.write('\t' + 'y = %g*e^(%gx)' %(self.intercept(), self.slope()) + '\n')
-		print 'Los valores medios de X y de Y son:' + "\n" + "\t" + ' <x>= %gm y <y>= %gs' %(medianX(self.x), medianX(self.y))
-		print 'La ecuacion de la curva es:' + '\n' + '\t' + 'y = %g*e^(%gx)' %(self.intercept(), self.slope())
-
-	def get_Ecuation(self):
-		xes = np.arange(min(self.X),max(self.X), ((max(self.X)-min(self.X))/100))# create an array to represent the curve graphic on X axis
+	def Expget_Ecuation(self):
+		self.Expinice()
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
 		yes = [] # inicialize a list to represent the curve graphic on Y axis
 		for x in xrange(xes.size):
-			yes.append(self.intercept()*exp(self.slope()*xes[x]))
+			yes.append(self.Expintercept()*exp(self.Expslope()*xes[x]))
 
 		main = [xes , yes]
 		return main
@@ -329,13 +235,19 @@ class Operations():
 				eval(self.action)
 		except ValueError:
 			try:
-				for i in range(len(self.allData[0].get_list_values())):
-					self.new_Data.append(eval(str(self.action)))
-			except (NameError, IndexError, ValueError, IOError):
-				error = QMessageBox()
-				error.setText('Not able that operation')
-				error.setWindowTitle('Not able that operation')
-				window = error.exec_()
+				if self.action.index("delete(") >= 0:
+					numElement = self.action.index("delete(")
+					self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
+					eval(self.action)
+			except ValueError:	
+				try:
+					for i in range(len(self.allData[0].get_list_values())):
+						self.new_Data.append(eval(str(self.action)))
+				except (NameError, IndexError, ValueError, IOError):
+					error = QMessageBox()
+					error.setText('Not able that operation')
+					error.setWindowTitle('Not able that operation')
+					window = error.exec_()
 
 	def translateAction(self):
 		try: # excepcion
@@ -363,6 +275,9 @@ class Operations():
 	def name(self, name):
 		self.new_name = name
 		self.new_Data = self.allData[self.i].get_list_values()
+
+	def delete(self):
+		self.new_Data = "Delete Column"
 
 	def Returner(self):
 		return self.new_name, self.new_Data, int(self.i)
@@ -422,13 +337,13 @@ class Errores(object):
 	""" equation which depends on others magnitudes by its    """
 	""" partials											  """
 
-	def __init__(self):
-		self.variables = raw_input('Variables: ')
+	def __init__(self, simbolos, valores, errores, funcion):
+		self.variables = simbolos
 		self.variables = self.variables.split(' ')
 		S = symbols(self.variables)
-		self.values = eval(raw_input('Valores: '))
-		self.errors = eval(raw_input('Errores: '))
-		self.f = str(raw_input('funcion: '))
+		self.values = valores
+		self.errors = errores
+		self.f = funcion
 		for n in range(len(S)):
 			selement = 'S['+str(n)+']'
 			self.f = self.f.replace(self.variables[n], selement)
@@ -445,7 +360,7 @@ class Errores(object):
 		Error_re += '})'
 		Error_re = eval(Error_re)
 		Error = sqrt(Error_re)
-		print 'Error= '+ Error
+		return Error
 
 class Hamilton():
 
@@ -492,6 +407,41 @@ class Hamilton():
 		fw.close()
 		return path
 
+class Graphics(Straigth, Logarithmic, Exponential):
+
+	def __init__(self, Data, columns):
+		self.names = [Data[columns[0]].get_name(), Data[columns[1]].get_name()]
+		self.Dependent = Data[columns[0]].get_list_values()
+		self.Independent = Data[columns[1]].get_list_values()
+
+	def Names(self):
+		return self.names
+
+	def Values(self):
+		return self.Dependent, self.Independent
+
+	def IntervalLimits(self):
+		intervalY = fabs(self.Independent[1] - self.Independent[0])
+		for i in range(2,len(self.Dependent)):
+			if intervalY == 0:
+				intervalY = fabs(self.Independent[i] - self.Independent[i-1])
+		if intervalY == 0:
+			intervalY = fabs(self.Independent[0]/10)
+
+		intervalX = fabs(self.Dependent[1] - self.Dependent[0])
+		for i in range(2,len(self.Dependent)):
+			if intervalX == 0:
+				intervalX = fabs(self.Dependent[i] - self.Dependent[i-1])
+		if intervalX == 0:
+			intervalX = fabs(self.Dependent[0]/10)
+
+		maxy = max(self.Independent) + fabs(intervalY)*0.5 # Max value for y axis 
+		miny = min(self.Independent) - fabs(intervalY)*0.5 # Min value for y axis
+		maxx = max(self.Dependent) + fabs(intervalX)*0.5 # max value for x axis
+		minx = min(self.Dependent) - fabs(intervalX)*0.5 # min value for x axis
+
+		return [minx, maxx], [miny, maxy]
+
 #############################################################
 ###########              FUNCTIONS              #############
 #############################################################
@@ -502,13 +452,13 @@ def Convert_to_Column(text):
 	fw.write(text)
 	fw.close()
 
-	data = Open_file(path).get_all()
+	data = Open_file_CSV(path).get_all()
 	os.remove(path)
 	return data
 
-def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/Documentos/Data/ path
+def saveCSV(Path, allData): # save lists into a .csv archive in /home/jaime/Documentos/Data/ path
 
-	fl = open(Path+Title+'.csv', 'w') # open and create an .csv file
+	fl = open(Path, 'w') # open and create an .csv file
 
 	length = len(allData[0].get_list_values())
 
@@ -534,7 +484,42 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 		fl.write(line + '\n')
 	fl.close()
 
-	fl = open(Path+'LaTex.tex', 'w') # open and create an .ods file
+def saveText(Path, allData):
+	fl = open(Path, 'w') # open and create an .csv file
+
+	length = len(allData[0].get_list_values())
+
+	for i in range(len(allData)-1):
+		if len(allData[i].get_list_values()) < len(allData[i+1].get_list_values()):
+			length = len(allData[i+1].get_list_values())
+
+	line = '%s' %(allData[0].get_name())
+	for x in range(1, len(allData)):
+		line += '\t' + '%s' %(allData[x].get_name())
+	fl.write(line + '\n')
+			
+	for i in range(length):
+		try:
+			line = '%g' %(allData[0].get_values(i))
+		except IndexError:
+			line = ' '
+		for x in range(1, len(allData)):
+			try:
+				line += '\t' + '%g' %(allData[x].get_values(i))
+			except IndexError:
+				line += '\t' + ' '
+		fl.write(line + '\n')
+	fl.close()
+
+def saveLaTex(Path, allData):
+
+	length = len(allData[0].get_list_values())
+
+	for i in range(len(allData)-1):
+		if len(allData[i].get_list_values()) < len(allData[i+1].get_list_values()):
+			length = len(allData[i+1].get_list_values())
+
+	fl = open(Path+'.tex', 'w') # open and create an .ods file
 	for x in xrange(1): # loop to write the file
 		fl.write('\\begin{table}[H]'+'\n')
 		fl.write('\t'+'\\centering'+'\n')
@@ -546,8 +531,8 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 		fl.write('\t'+'\t'+'\\centering'+'\n')
 
 		line = '\t'+'\t'+'\t'+'%s' %(allData[0].get_name())
-		for x in range(len(allData)-1):
-			line += ' & ' + '%s' %(allData[x+1].get_name())
+		for x in range(1, len(allData)):
+			line += ' & ' + '%s' %(allData[x].get_name())
 		fl.write(line+' \\'+'\\\hline'+'\n')
 
 		for i in range(length-1):
@@ -556,21 +541,21 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 			except IndexError:
 				line = '\t'+'\t'+'\t'+' '
 
-			for x in range(len(allData)-1):
+			for x in range(1, len(allData)):
 				try:
-					line += ' & ' + '%g' %(allData[x+1].get_values(i))
+					line += ' & ' + '%g' %(allData[x].get_values(i))
 				except IndexError:
 					line += ' & '+' '					
 			fl.write(line+ ' \\'+'\\'+'\n')
 			
 		try:
-			line = '\t'+'\t'+'\t'+'%g' %(allData[0].get_values(i))
+			line = '\t'+'\t'+'\t'+'%g' %(allData[0].get_values(length-1))
 		except IndexError:
 			line = '\t'+'\t'+'\t'+' '
 
-		for x in range(len(allData)-1):
+		for x in range(1,len(allData)):
 			try:
-				line += ' & '+'%g' %(allData[x+1].get_values(length-1))
+				line += ' & '+'%g' %(allData[x].get_values(length-1))
 			except IndexError:
 				line += ' & '+' '
 		fl.write(line+' \\'+'\\\hline'+'\n')
@@ -580,40 +565,7 @@ def save(Path, Title, allData): # save lists into a .csv archive in /home/jaime/
 		fl.write('\\end{table}'+'\n')
 	fl.close() # close file
 
-def medianX(column): # return the mean of DV                   
+def medianX(column): # return the mean of DV
 	thisData = column
 	med = sum(thisData) / len(thisData) # return the DV mean
 	return med
-
-def graph(x, y, allData, info): # print the graph
-
-	X = allData[x].get_list_values()
-	Y = allData[y].get_list_values()
-
-	i = 1
-	intervalY = Y[i]-Y[i-1]
-	while intervalY == 0:
-		i += 1
-		intervalY = Y[i]-Y[i-1]
-	i = 1
-	intervalX = X[i]-X[i-1]
-	while intervalX == 0:
-		i += 1
-		intervalX = X[i]-X[i-1]
-
-	maxy = max(Y) + fabs(intervalY)*0.5 # Max value for y axis 
-	miny = min(Y) - fabs(intervalY)*0.5 # Min value for y axis
-	maxx = max(X) + fabs(intervalX)*0.5 # max value for x axis
-	minx = min(X) - fabs(intervalX)*0.5 # min value for x axis
-
-	# Represent the graphic
-	ax = plt.figure(111)
-	#fig = plt.figure(1)
-	plt.plot(X, Y, 'ro')
-	plt.axis([minx, maxx, miny, maxy])
-	plt.title(info[1])
-	plt.xlabel(allData[x].get_name())
-	plt.ylabel(allData[y].get_name())
-	#plt.show()
-	#f2 = plt.figure(figsize=(12.0, 20.0))
-	#fig.savefig(info[0]+info[1]+'.png')
