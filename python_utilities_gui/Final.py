@@ -4,22 +4,22 @@
 	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
 	order to facilitate operations in performing laboratory practice
 
-													Version: Noviembre 2016
+													Version: Diciembre 2016
 """
 
-import sys
 from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog, QHBoxLayout, QFrame, QSplitter, QStyleFactory, 
 	QMainWindow, QTabWidget, QTextEdit, QAction, QApplication, QWidget, QFormLayout, QPushButton, QLineEdit, QTableWidget,
 	QTableWidgetItem, QVBoxLayout, QFileDialog, QSizePolicy, QCalendarWidget, QLabel, QProgressBar, QCheckBox, QComboBox)
 from PyQt5.QtGui import QFont, QIcon 
 from PyQt5.QtCore import QCoreApplication, pyqtSlot, Qt, QDate, QBasicTimer
 from PyQt5 import QtCore
-import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from JGP1 import *
+import sys
+import numpy as np
 import matplotlib.pyplot as plt
 import os # import os Miscellaneous operating system interfaces
-from JGP1 import *
 
 class GUI(QMainWindow):
 
@@ -92,6 +92,7 @@ class GUI(QMainWindow):
 		fileMenu.addAction(eraseProject)
 		fileMenu.addAction(saveAction)
 		fileMenu.addAction(saveAs)
+		fileMenu.addAction(saveTex)
 		fileMenu.addAction(exitAction)
 
 		addValue = QAction('Add Value', self)
@@ -134,6 +135,11 @@ class GUI(QMainWindow):
 		#Graph.setStatusTip('y = a*x + b')
 		Graph.triggered.connect(self.graph)
 
+		details = QAction('Show Details', self)
+		#Graph.setShortcut('Ctrl+G')
+		#Graph.setStatusTip('y = a*x + b')
+		details.triggered.connect(self.detail)
+
 		Scrat = QAction('Scratter', self)
 		#Scrat.setShortcut('Ctrl+G')
 		#Graph.setStatusTip('y = a*x + b')
@@ -154,6 +160,21 @@ class GUI(QMainWindow):
 		expGraph.setStatusTip('b * e^(a*x)')
 		expGraph.triggered.connect(self.exponential)
 
+		polyGraph = QAction('Polynomial', self)
+		#polyGraph.setShortcut('Ctrl+S')
+		#polyGraph.setStatusTip('b * e^(a*x)')
+		polyGraph.triggered.connect(self.polynomial)
+
+		sinusoidalGraph = QAction('Sinusoidal', self)
+		#sinusoidalGraph.setShortcut('Ctrl+S')
+		#sinusoidalGraph.setStatusTip('b * e^(a*x)')
+		sinusoidalGraph.triggered.connect(self.sinusoidal)
+
+		generalGraph = QAction('fit 1', self)
+		#generalGraph.setShortcut('Ctrl+S')
+		#generalGraph.setStatusTip('b * e^(a*x)')
+		#generalGraph.triggered.connect(self.general)
+
 		self.statusBar()
 
 		menubar = self.menuBar()
@@ -163,6 +184,10 @@ class GUI(QMainWindow):
 		fileMenu.addAction(linearGraph)
 		fileMenu.addAction(logGraph)
 		fileMenu.addAction(expGraph)
+		fileMenu.addAction(polyGraph)
+		fileMenu.addAction(sinusoidalGraph)
+		fileMenu.addAction(generalGraph)
+		fileMenu.addAction(details)
 
 		formulaEntry = QAction('Formula Entry', self)
 		formulaEntry.setShortcut('Ctrl+F')
@@ -173,6 +198,11 @@ class GUI(QMainWindow):
 		errorsCalculator.setShortcut('Ctrl+E')
 		errorsCalculator.setStatusTip('Calculate the error from an equation')
 		errorsCalculator.triggered.connect(self.calculate)
+
+		diffCalculator = QAction('Derivative', self)
+		#diffCalculator.setShortcut('Ctrl+E')
+		diffCalculator.setStatusTip('Calculate the derivative between two columns')
+		diffCalculator.triggered.connect(self.differential)
 
 		refreshed = QAction('Refresh Window', self)
 		refreshed.setShortcut('Ctrl+R')
@@ -188,8 +218,44 @@ class GUI(QMainWindow):
 		fileMenu = menubar.addMenu('&Tools')
 		fileMenu.addAction(formulaEntry)
 		fileMenu.addAction(errorsCalculator)
-		fileMenu.addAction(refreshed)
 		fileMenu.addAction(hamiltonial)
+		fileMenu.addAction(diffCalculator)
+		fileMenu.addAction(refreshed)
+
+	def sinusoidal(self):
+		projectes.add_Function("graph")
+		projectes.add_Function("Sinusoidal")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
+		self.refresh()
+
+	def differential(self):
+		text, ok = QInputDialog.getText(self, 'Derivadas', '    Columns <h6>e.j."1,2" for columns C1 and C2<\h6>:')
+		if ok:
+			text = eval(text)
+			Inteface().differential(text)
+			
+	def polynomial(self):
+		projectes.add_Function("Polynomial")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
+
+		text, ok = QInputDialog.getText(self, 'Polynomial', 'Grade:')
+		if ok:
+			projectes.set_index(text)
+
+		self.refresh()
+
+	def detail(self):
+		Inteface().details()
 
 	def hamil(self):
 		projectes.add_Function("Hamilton")
@@ -257,15 +323,13 @@ class GUI(QMainWindow):
 			Inteface().savingCSV()
 
 	def saveTex(self):
-		saving = True
-		while saving:
-			try:
-				Inteface().savingTex()
-				saving = False
-			except IndexError:
-				fname = str(QFileDialog.getExistingDirectory(self, 'Open file'))
-				projectes.set_Title('Sin titulo')
-				projectes.set_Path(fname+'/')
+		text, ok = QInputDialog.getText(self, 'Export LaTex', '    Columns <h6>e.j."1,2" for columns C1 and C2<\h6> or "all" for all table:')
+		if ok:
+			fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "LaTex files (*.tex)"))
+			fname = fname.split(',')[0]
+			fname = fname.split('(u')
+			fname = fname[1].split("'")
+		Inteface().savingTex(fname[1], text)
 
 	def formulaOperator(self):
 
@@ -567,7 +631,7 @@ class MyWidgets(QWidget):
 		self.textbox6.move(230, 100)
 		self.textbox6.resize(50,20)
 
-		self.lbl7 = QLabel("<i>V<sub> u'\u03B8'<\sub><\i>", self)
+		self.lbl7 = QLabel("<i>V<sub>&theta;<\sub><\i>", self)
 		self.lbl7.move(0, 151)
 		self.textbox7 = QLineEdit(self)
 		self.textbox7.move(50, 150)
@@ -604,6 +668,7 @@ class MyWidgets(QWidget):
 
 		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
 		projectes.change_Table(Open_file_CSV(hamilton).get_all())
+		os.remove(hamilton)
 		projectes.del_Function("Hamilton")		
 
 	def Errores(self):
@@ -744,6 +809,10 @@ class PlotCanvas(FigureCanvas):
 				self.plotLog()
 			elif "Exponential" in projectes.get_Function():
 				self.plotExp()
+			elif "Sinusoidal" in projectes.get_Function():
+				self.plotSin()
+			elif "Polynomial" in projectes.get_Function():
+				self.plotPoly()
 			elif "Scratter" in projectes.get_Function():
 				self.plotScratter()
 			else:
@@ -753,6 +822,32 @@ class PlotCanvas(FigureCanvas):
 			error.setText("Error 99")
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
+
+	def plotSin(self):
+		equation = self.functionGraph.sin_get_Ecuation()
+
+		ax = self.figure.add_subplot(111)
+		ax.plot(equation, 'r')
+		ax.plot(self.X, self.Y, 'ro')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
+		self.draw()
+
+	def plotPoly(self):
+		equation = self.functionGraph.Polget_Ecuacion(projectes.get_index())
+		xes = equation[0]
+		yes = equation[1]
+		
+		#data = [random.random() for i in range(25)]
+		ax = self.figure.add_subplot(111)
+		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
+		ax.set_xlim(self.Interval[0])
+		ax.set_ylim(self.Interval[1])
+		ax.set_xlabel(self.nameX)
+		ax.set_ylabel(self.nameY)
+		self.draw()
 
 	def plotScratter(self):
 		ax = self.figure.add_subplot(111)
@@ -815,6 +910,20 @@ class PlotCanvas(FigureCanvas):
 
 class Inteface():
 
+	def differential(self, text):
+		projectes.add_Column(diff(projectes.get_Table()[text[0]], projectes.get_Table()[text[1]]))
+
+	def details(self):
+		functionGraph = Graphics(projectes.get_Table(), projectes.get_Represent())
+		if "Linear" in projectes.get_Function():
+			functionGraph.LinDetails()
+		elif "Logarithmic" in projectes.get_Function():
+			functionGraph.LogDetails()
+		elif "Exponential" in projectes.get_Function():
+			functionGraph.ExpDetails()
+		elif "Polynomial" in projectes.get_Function():
+			functionGraph.PolDetails(projectes.get_index())
+
 	def openingFile(self, text):
 		try:
 			try:
@@ -837,10 +946,12 @@ class Inteface():
 		else:
 			if "Delete Column" == new_object[1]:
 				projectes.delete_Column(new_object[2])
+				projectes.set_Represent([None, None])
+
 			else:
 				projectes.change_Column(new_object[2], Variable(new_object[0], new_object[1]))
 
-	def savingCSV(self):
+	def savingCSV(self, ):
 		if projectes.get_Path() == None:
 			raise IndexError
 		else:
@@ -856,14 +967,17 @@ class Inteface():
 		if not None in projectes.get_Represent():
 				PlotCanvas().savePlot()
 
-	def savingTex(self):
-		if projectes.get_Path() == None:
-			raise IndexError
+	def savingTex(self, path, text):
+		if 'all' in text:
+			allData = projectes.get_Table()
 		else:
-			path = projectes.get_Path().split('.')[0]
-			saveLaTex(path, projectes.get_Table())
-			if not None in projectes.get_Represent():
-				PlotCanvas().savePlot()
+			text = eval(text)
+			allData = [projectes.get_Table()[text[0]]]
+			for i in range(1,len(text)):
+				allData.append(projectes.get_Table()[text[i]])
+		saveLaTex(path, allData)
+		if not None in projectes.get_Represent():
+			PlotCanvas().savePlot()
 
 class Projects():
 	""" """
@@ -875,6 +989,11 @@ class Projects():
 		self.Table = Table
 		self.Function = Function
 
+
+	def set_index(self, index):
+		self.index = index
+	def get_index(self):
+		return self.index
 	def get_Path(self):
 		return self.Path
 	def set_Path(self, path):

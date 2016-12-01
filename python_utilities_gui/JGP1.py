@@ -4,18 +4,19 @@
 	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
 	order to facilitate operations in performing laboratory practice
 
-													Version: Noviembre 2016
+													Version: Diciembre 2016
 """
 
 #############################################################
 #############         PACKAGE'S IMPORT         ##############
 #############################################################
 
-from math import fabs, sqrt, log, exp, sin, cos # import absolute and square root function from math library
 import os # import os Miscellaneous operating system interfaces
 import numpy as np # import numpy libraries
 import matplotlib.pyplot as plt # import matplotlib.pyplot libraries
+from math import fabs, sqrt, log, exp, sin, cos, tan, acos, asin, atan # import absolute and square root function from math library
 from sympy import * #import sympy library to resolve equations 
+from scipy.optimize import leastsq
 from PyQt5.QtWidgets import QMessageBox
 
 #############################################################
@@ -141,6 +142,14 @@ class Straigth():
 		main = [xes, yes]
 		return main
 
+	def LinDetails(self):
+		self.inice()
+		text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(self.Linslope()) + "\n" + "b : " + "\t" + "%g" %(self.Linintercept())
+		graph = QMessageBox()
+		graph.setText(text)
+		graph.setWindowTitle('Curve Fit')
+		window = graph.exec_()
+
 class Logarithmic():
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has a logarithmic       """
@@ -175,6 +184,14 @@ class Logarithmic():
 		main = [xes, yes]
 		return main
 
+	def LogDetails(self):
+		self.Loginice()
+		text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(self.Logslope()) + "\n" + "b : " + "\t" + "%g" %(self.Logintercept())
+		graph = QMessageBox()
+		graph.setText(text)
+		graph.setWindowTitle('Curve Fit')
+		window = graph.exec_()
+
 class Exponential():
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has an exponential      """
@@ -206,6 +223,90 @@ class Exponential():
 
 		main = [xes , yes]
 		return main
+
+	def ExpDetails(self):
+		self.Expinice()
+		text = "    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" + "%g" %(self.Expslope()) + "\n" + "b : " + "\t" + "%g" %(self.Expintercept())
+		graph = QMessageBox()
+		graph.setText(text)
+		graph.setWindowTitle('Curve Fit')
+		window = graph.exec_()
+
+class Polynomial():
+
+	def Polget_Ecuacion(self, grade):
+		self.parameters = np.polyfit(self.Dependent, self.Independent, grade)
+		polynom = np.poly1d(self.parameters)
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
+		yes = []
+		for i in range(xes.size):
+			yes.append(polynom(xes[i]))
+		return xes,yes
+
+	def PolDetails(self, grade):
+		self.Polget_Ecuacion(grade)
+		z = map(chr, range(97, 123))
+		eqtion = 'y = ' + z[0] + '*x^' + str(len(self.parameters)-1)
+		for i in range(1, len(self.parameters)):
+			eqtion += ' + ' + z[i] + '*x^' + str(len(self.parameters)-(i+1))
+		solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(self.parameters[0])
+		for i in range(1, len(self.parameters)):
+			solution += "\n" + z[i] + ": " + "\t" + "%g" %(self.parameters[i])
+		text = "    " + eqtion + solution
+		graph = QMessageBox()
+		graph.setText(text)
+		graph.setWindowTitle('Curve Fit')
+		window = graph.exec_()
+
+class Fit1():
+	def sin_get_Ecuation(self):
+		guess_mean = -2#np.mean(self.Independent)
+		guess_std = 2#3*np.std(self.Independent)/(2**0.5)
+		guess_phase = np.pi /2
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
+
+
+		optimize_func = lambda x: x[0]*np.sin(self.Dependent+x[1]) + x[2] - self.Independent
+		est_std, est_phase, est_mean = leastsq(optimize_func, [guess_std, guess_phase, guess_mean])[0]
+		data_fit = []
+		for i in range(xes.size):
+			data_fit.append(est_std*np.sin(xes[i]*est_phase) + est_mean)
+		return data_fit
+
+class Graphics(Straigth, Logarithmic, Exponential, Polynomial, Fit1):
+
+	def __init__(self, Data, columns):
+		self.names = [Data[columns[0]].get_name(), Data[columns[1]].get_name()]
+		self.Dependent = Data[columns[0]].get_list_values()
+		self.Independent = Data[columns[1]].get_list_values()
+
+	def Names(self):
+		return self.names
+
+	def Values(self):
+		return self.Dependent, self.Independent
+
+	def IntervalLimits(self):
+		intervalY = fabs(self.Independent[1] - self.Independent[0])
+		for i in range(2,len(self.Dependent)):
+			if intervalY == 0:
+				intervalY = fabs(self.Independent[i] - self.Independent[i-1])
+		if intervalY == 0:
+			intervalY = fabs(self.Independent[0]/10)
+
+		intervalX = fabs(self.Dependent[1] - self.Dependent[0])
+		for i in range(2,len(self.Dependent)):
+			if intervalX == 0:
+				intervalX = fabs(self.Dependent[i] - self.Dependent[i-1])
+		if intervalX == 0:
+			intervalX = fabs(self.Dependent[0]/10)
+
+		maxy = max(self.Independent) + fabs(intervalY)*0.5 # Max value for y axis 
+		miny = min(self.Independent) - fabs(intervalY)*0.5 # Min value for y axis
+		maxx = max(self.Dependent) + fabs(intervalX)*0.5 # max value for x axis
+		minx = min(self.Dependent) - fabs(intervalX)*0.5 # min value for x axis
+
+		return [minx, maxx], [miny, maxy]
 
 class Operations():
 	""" This class allows to make all the mathematicals       """
@@ -407,44 +508,16 @@ class Hamilton():
 		fw.close()
 		return path
 
-class Graphics(Straigth, Logarithmic, Exponential):
-
-	def __init__(self, Data, columns):
-		self.names = [Data[columns[0]].get_name(), Data[columns[1]].get_name()]
-		self.Dependent = Data[columns[0]].get_list_values()
-		self.Independent = Data[columns[1]].get_list_values()
-
-	def Names(self):
-		return self.names
-
-	def Values(self):
-		return self.Dependent, self.Independent
-
-	def IntervalLimits(self):
-		intervalY = fabs(self.Independent[1] - self.Independent[0])
-		for i in range(2,len(self.Dependent)):
-			if intervalY == 0:
-				intervalY = fabs(self.Independent[i] - self.Independent[i-1])
-		if intervalY == 0:
-			intervalY = fabs(self.Independent[0]/10)
-
-		intervalX = fabs(self.Dependent[1] - self.Dependent[0])
-		for i in range(2,len(self.Dependent)):
-			if intervalX == 0:
-				intervalX = fabs(self.Dependent[i] - self.Dependent[i-1])
-		if intervalX == 0:
-			intervalX = fabs(self.Dependent[0]/10)
-
-		maxy = max(self.Independent) + fabs(intervalY)*0.5 # Max value for y axis 
-		miny = min(self.Independent) - fabs(intervalY)*0.5 # Min value for y axis
-		maxx = max(self.Dependent) + fabs(intervalX)*0.5 # max value for x axis
-		minx = min(self.Dependent) - fabs(intervalX)*0.5 # min value for x axis
-
-		return [minx, maxx], [miny, maxy]
-
 #############################################################
 ###########              FUNCTIONS              #############
 #############################################################
+
+def diff(columnX, columnY):
+	new_Data = []
+	for i in range(1,len(columnX.get_list_values())):
+		new_Data.append((columnX.get_list_values()[i]-columnX.get_list_values()[i-1])/(columnY.get_list_values()[i]-columnY.get_list_values()[i-1]))
+	new_name = 'Derivative'
+	return Variable(new_name, new_Data)
 
 def Convert_to_Column(text):
 	path = "./File.csv"
@@ -519,7 +592,7 @@ def saveLaTex(Path, allData):
 		if len(allData[i].get_list_values()) < len(allData[i+1].get_list_values()):
 			length = len(allData[i+1].get_list_values())
 
-	fl = open(Path+'.tex', 'w') # open and create an .ods file
+	fl = open(Path, 'w') # open and create an .ods file
 	for x in xrange(1): # loop to write the file
 		fl.write('\\begin{table}[H]'+'\n')
 		fl.write('\t'+'\\centering'+'\n')
@@ -568,4 +641,4 @@ def saveLaTex(Path, allData):
 def medianX(column): # return the mean of DV
 	thisData = column
 	med = sum(thisData) / len(thisData) # return the DV mean
-	return med
+	return me
