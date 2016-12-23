@@ -87,7 +87,7 @@ def save():
 		if len(allData[i].get_list_values()) < len(allData[i+1].get_list_values()):
 			length = len(allData[i+1].get_list_values())
 
-	fl = open(Path+'LaTex.tex', 'w') # open and create an .ods file
+	fl = open(Path+'LaTex.txt', 'w') # open and create an .ods file
 	for x in xrange(1): # loop to write the file
 		fl.write('\\begin{table}[H]'+'\n')
 		fl.write('\t'+'\\centering'+'\n')
@@ -99,8 +99,8 @@ def save():
 		fl.write('\t'+'\t'+'\\centering'+'\n')
 
 		line = '\t'+'\t'+'\t'+'%s' %(allData[0].get_name())
-		for x in range(1, len(allData)):
-			line += ' & ' + '%s' %(allData[x].get_name())
+		for x in range(len(allData)-1):
+			line += ' & ' + '%s' %(allData[x+1].get_name())
 		fl.write(line+' \\'+'\\\hline'+'\n')
 
 		for i in range(length-1):
@@ -109,21 +109,21 @@ def save():
 			except IndexError:
 				line = '\t'+'\t'+'\t'+' '
 
-			for x in range(1, len(allData)):
+			for x in range(len(allData)-1):
 				try:
-					line += ' & ' + '%g' %(allData[x].get_values(i))
+					line += ' & ' + '%g' %(allData[x+1].get_values(i))
 				except IndexError:
 					line += ' & '+' '					
 			fl.write(line+ ' \\'+'\\'+'\n')
-			
+		
 		try:
-			line = '\t'+'\t'+'\t'+'%g' %(allData[0].get_values(length-1))
+			line = '\t'+'\t'+'\t'+'%g' %(allData[0].get_values(i))
 		except IndexError:
 			line = '\t'+'\t'+'\t'+' '
 
-		for x in range(1,len(allData)):
+		for x in range(len(allData)-1):
 			try:
-				line += ' & '+'%g' %(allData[x].get_values(length-1))
+				line += ' & '+'%g' %(allData[x+1].get_values(length-1))
 			except IndexError:
 				line += ' & '+' '
 		fl.write(line+' \\'+'\\\hline'+'\n')
