@@ -86,3 +86,49 @@ for i in xrange(len(Data)/2):
 	Mx.append(float(Data[i*2]))
 	My.append(float(Data[2*(i+1) - 1]))
 fl.close()
+
+#########################################################
+#######       		MY FIRST SCRIPT		       ##########
+#########################################################
+
+nombre = raw_input("¿Cual es tu nombre?")
+mision = raw_input("¿cual es tu mision en la vida?")
+Color = raw_input("¿Cual es tu color favorito?")
+
+print "Entonces tu nombre es %s, tu mision en la vida es %s y tu color favorito es %s." % (nombre, mision,Color)
+
+fl = open('prueba.ods','w')
+for i in range(1000):
+    fl.write(nombre+"\t"+mision+"\t"+Color+"\n")
+fl.close()
+
+#########################################################
+#######       		SOME NOTES   		       ##########
+#########################################################
+
+def costo_del_vuelo(ciudad):
+
+    """ DICCIONARIO"""
+
+    cities = {
+        "Córdoba": 821,
+        "Iguazú": 941,
+        "Ushuaia": 1280,
+        "Bariloche": 1848,
+    }
+    return cities[Cordoba]
+
+def Ordenar_listas(lista):
+
+    lista.sort() #ordena la lista en orden alfabetico si es una lista de Strings
+    lista.sort() # ordena la lista de menor a mayor si es una lista de numeros
+
+def Deferenciabilidad():
+    from sympy import *
+    import numpy as np
+    x = Symbol('x')
+    y = 2*log(3*x)
+    while 1 == 1:
+        y = y.diff(x)
+        print y
+        raw_input('')
