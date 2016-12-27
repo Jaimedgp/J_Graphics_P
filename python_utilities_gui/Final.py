@@ -165,15 +165,13 @@ class GUI(QMainWindow):
 		#polyGraph.setStatusTip('b * e^(a*x)')
 		polyGraph.triggered.connect(self.polynomial)
 
+		generalGraph = QAction('fit 1', self)
+		generalGraph.triggered.connect(self.general)
+
 		sinusoidalGraph = QAction('Sinusoidal', self)
 		#sinusoidalGraph.setShortcut('Ctrl+S')
 		#sinusoidalGraph.setStatusTip('b * e^(a*x)')
 		sinusoidalGraph.triggered.connect(self.sinusoidal)
-
-		generalGraph = QAction('fit 1', self)
-		#generalGraph.setShortcut('Ctrl+S')
-		#generalGraph.setStatusTip('b * e^(a*x)')
-		#generalGraph.triggered.connect(self.general)
 
 		self.statusBar()
 
@@ -256,6 +254,17 @@ class GUI(QMainWindow):
 
 	def detail(self):
 		Inteface().details()
+
+	def general(self):
+		projectes.add_Function("graph")
+		projectes.add_Function("general")
+		if "Linear" in projectes.get_Function():
+			projectes.del_Function("Linear")
+		if "Exponential" in projectes.get_Function():
+			projectes.del_Function("Exponential")
+		if "Logarithmic" in projectes.get_Function():
+			projectes.del_Function("Logarithmic")
+		self.refresh()
 
 	def hamil(self):
 		projectes.add_Function("Hamilton")
@@ -795,14 +804,13 @@ class PlotCanvas(FigureCanvas):
 
 		self.functionGraph = Graphics(projectes.get_Table(), projectes.get_Represent())
 
-		self.nameX = self.functionGraph.Names()[0]
-		self.nameY = self.functionGraph.Names()[1]
-		self.X = self.functionGraph.Values()[0]
-		self.Y = self.functionGraph.Values()[1]
-
-		self.Interval = self.functionGraph.IntervalLimits()
+		self.nameX, self.nameY = self.functionGraph.Names()
+		self.X,	self.Y = self.functionGraph.Values()
+		self.IntervalX, self.IntervalY = self.functionGraph.IntervalLimits()
 
 		try:
+			if "general" in projectes.get_Function():
+				self.fit1() 
 			if "Linear" in projectes.get_Function():
 				self.plotLinear()
 			elif "Logarithmic" in projectes.get_Function():
@@ -823,6 +831,22 @@ class PlotCanvas(FigureCanvas):
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
 
+	def fit1(self):
+		text, ok = QInputDialog.getText(self, 'Export LaTex', '')
+		if ok:
+			text = str(text)
+			print text
+			equation = self.functionGraph.sin_get_Ecuation(text)
+
+			ax = self.figure.add_subplot(111)
+			ax.plot(equation, 'r')
+			ax.plot(self.X, self.Y, 'ro')
+			ax.set_xlim(self.Interval[0])
+			ax.set_ylim(self.Interval[1])
+			ax.set_xlabel(self.nameX)
+			ax.set_ylabel(self.nameY)
+			self.draw()	
+
 	def plotSin(self):
 		equation = self.functionGraph.sin_get_Ecuation()
 
@@ -836,15 +860,13 @@ class PlotCanvas(FigureCanvas):
 		self.draw()
 
 	def plotPoly(self):
-		equation = self.functionGraph.Polget_Ecuacion(projectes.get_index())
-		xes = equation[0]
-		yes = equation[1]
+		xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
 		
 		#data = [random.random() for i in range(25)]
 		ax = self.figure.add_subplot(111)
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.Interval[0])
-		ax.set_ylim(self.Interval[1])
+		ax.set_xlim(self.IntervalX)
+		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
@@ -856,55 +878,51 @@ class PlotCanvas(FigureCanvas):
 		elif len(projectes.get_Represent()) > 2:
 			YY = projectes.get_Table()[projectes.get_Represent()[2]]
 			ax.plot(self.X, self.Y, 'r', self.X, YY, 'bo')
-		ax.set_xlim(self.Interval[0])
-		ax.set_ylim(self.Interval[1])
+		ax.set_xlim(self.IntervalX)
+		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotLinear(self):
-		equation = self.functionGraph.Linget_Ecuation()
-		xes = equation[0]
-		yes = equation[1]
+		xes, yes = self.functionGraph.Linget_Ecuation()
 		
 		#data = [random.random() for i in range(25)]
 		ax = self.figure.add_subplot(111)
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.Interval[0])
-		ax.set_ylim(self.Interval[1])
+		ax.set_xlim(self.IntervalX)
+		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotLog(self):
-		equation = self.functionGraph.Logget_Ecuation()
-		xes = equation[0]
-		yes = equation[1]
+		xes, yes = self.functionGraph.Logget_Ecuation()
 
 		ax = self.figure.add_subplot(111)
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.Interval[0])
-		ax.set_ylim(self.Interval[1])
+		ax.set_xlim(self.IntervalX)
+		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def plotExp(self):
-		equation = self.functionGraph.Expget_Ecuation()
-		xes = equation[0]
-		yes = equation[1]
+		xes, yes = self.functionGraph.Expget_Ecuation()
 
 		ax = self.figure.add_subplot(111)
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.Interval[0])
-		ax.set_ylim(self.Interval[1])
+		ax.set_xlim(self.IntervalX)
+		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
 
 	def savePlot(self):
 		try:
-			self.fig.savefig(projectes.get_Path()+projectes.get_Title())
+			archive = projectes.get_Path().replace(".csv", ".png")
+			dpi = 172
+			self.fig.savefig(archive, bbox_inches='tight')
 		except IndexError:
 			GUI().save()
 
@@ -951,7 +969,7 @@ class Inteface():
 			else:
 				projectes.change_Column(new_object[2], Variable(new_object[0], new_object[1]))
 
-	def savingCSV(self, ):
+	def savingCSV(self):
 		if projectes.get_Path() == None:
 			raise IndexError
 		else:

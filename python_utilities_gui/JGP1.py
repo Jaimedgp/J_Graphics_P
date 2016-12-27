@@ -14,8 +14,10 @@
 import os # import os Miscellaneous operating system interfaces
 import numpy as np # import numpy libraries
 import matplotlib.pyplot as plt # import matplotlib.pyplot libraries
-from math import fabs, sqrt, log, exp, sin, cos, tan, acos, asin, atan # import absolute and square root function from math library
-from sympy import * #import sympy library to resolve equations 
+from scipy import stats
+from scipy.optimize import leastsq
+from math import fabs, sqrt, log, exp, sin, pi, cos, tan, acos, asin, atan # import absolute and square root function from math library
+from sympy import * #import sympy  library to resolve equations 
 from scipy.optimize import leastsq
 from PyQt5.QtWidgets import QMessageBox
 
@@ -64,8 +66,11 @@ class Open_file_CSV():
 		Data = [[] for x in xrange(numVar)] # list with numVar lists
 		row = fr.readline().split(',') # read first row
 		while row[0] != '': # loop to read all rows
-			for i in xrange(numVar): # loop to read each variable 
-				Data[i].append(float(row[i])) # append each element to the list
+			for i in xrange(numVar): # loop to read each variable
+				try: 
+					Data[i].append(float(row[i])) # append each element to the list
+				except (NameError, IndexError, ValueError, IOError, SyntaxError):
+					error = 2
 			row = fr.readline().split(',') # read another row
 		for x in xrange(numVar):
 			self.allData.append(Variable(titles[x].split()[0], Data[x])) # creat a Variable Object with each variable
@@ -88,7 +93,10 @@ class Open_file_TXT():
 		row = fr.readline().split('\t') # read first row
 		while row[0] != '': # loop to read all rows
 			for i in xrange(numVar): # loop to read each variable 
-				Data[i].append(float(row[i])) # append each element to the list
+				try:
+					Data[i].append(float(row[i])) # append each element to the list
+				except (NameError, IndexError, ValueError, IOError, SyntaxError):
+					print hola
 			row = fr.readline().split('\t') # read another row
 		for x in xrange(numVar):
 			self.allData.append(Variable(titles[x].split()[0], Data[x])) # creat a Variable Object with each variable
@@ -101,29 +109,7 @@ class Straigth():
 	""" This class calculate the regression of the graphic    """
 	""" supposing that both variables has a linear relation   """
 	"""                       y = mx + b                      """
-
-	def inice(self):
-		self.n = len(self.Dependent)
-		self.Mxx = []
-		for i in xrange(self.n):
-			self.Mxx.append(self.Dependent[i]**2)
-
-	def Linslope(self):
-		xless = [] # inicialize a list DV-Xmean
-		a = [] # inicialize a list 
-		xxi = [] # inicialize a list xless*xless
-		for i in xrange(self.n): # loop append a new element to lists 
-			xless.append(self.Dependent[i] - medianX(self.Dependent))
-			a.append(xless[i] * self.Independent[i])
-			xxi.append(xless[i]**2)
-		return sum(a) / sum(xxi) # return the slope
-			
-	def Linintercept(self):
-		Mxy = [] # inicialize a list for DV*IV
-		for i in xrange(self.n): # loop that append an element 
-			Mxy.append(self.Dependent[i]*self.Independent[i]) # create the list DV * IV
-		return (sum(self.Independent)*sum(self.Mxx)-sum(self.Dependent)*sum(Mxy)) / (self.n*sum(self.Mxx) - (sum(self.Dependent))**2) # return intercept
-
+	"""
 	def Linerrorslope(self):
 		recta = []
 		for i in xrange(self.n):
@@ -134,17 +120,18 @@ class Straigth():
 	def Linertercept(self):
 		a = self.Linerrorslope() * sqrt(sum(self.Mxx)/self.n)
 		return a
-
+	"""
 	def Linget_Ecuation(self):
-		self.inice()
+		self.slope, self.intercept, self.r_value, self.p_value, self.std_err = stats.linregress(self.Dependent,self.Independent)
+
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100)) # create an array to represent the straight graphic on X axis
-		yes = self.Linslope()*xes + self.Linintercept() # create a list to represent the straght graphic on Y axis
+		yes = self.slope*xes + self.intercept # create a list to represent the straght graphic on Y axis
 		main = [xes, yes]
 		return main
 
 	def LinDetails(self):
 		self.inice()
-		text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(self.Linslope()) + "\n" + "b : " + "\t" + "%g" %(self.Linintercept())
+		text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(self.slope) + "\n" + "b : " + "\t" + "%g" %(self.intercept)
 		graph = QMessageBox()
 		graph.setText(text)
 		graph.setWindowTitle('Curve Fit')
@@ -177,10 +164,7 @@ class Logarithmic():
 	def Logget_Ecuation(self):
 		self.Loginice()
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100)) # create an array to represent the curve graphic on X axis
-		yes = [] # inicialize a list to represent the curve graphic on Y axis
-		for x in xrange(xes.size):
-			yes.append(self.Logslope()*log(xes[x])+self.Logintercept())
-
+		yes = [self.Logslope()*log(xes[i])+self.Logintercept() for i in range(xes.size)] # inicialize a list to represent the curve graphic on Y axis
 		main = [xes, yes]
 		return main
 
@@ -217,10 +201,7 @@ class Exponential():
 	def Expget_Ecuation(self):
 		self.Expinice()
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
-		yes = [] # inicialize a list to represent the curve graphic on Y axis
-		for x in xrange(xes.size):
-			yes.append(self.Expintercept()*exp(self.Expslope()*xes[x]))
-
+		yes = [self.Expintercept()*exp(self.Expslope()*xes[i]) for i in range(xes.size)] # inicialize a list to represent the curve graphic on Y axis
 		main = [xes , yes]
 		return main
 
@@ -238,9 +219,7 @@ class Polynomial():
 		self.parameters = np.polyfit(self.Dependent, self.Independent, grade)
 		polynom = np.poly1d(self.parameters)
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
-		yes = []
-		for i in range(xes.size):
-			yes.append(polynom(xes[i]))
+		yes = [polynom(xes[i]) for i in range(xes.size)]
 		return xes,yes
 
 	def PolDetails(self, grade):
@@ -259,19 +238,28 @@ class Polynomial():
 		window = graph.exec_()
 
 class Fit1():
-	def sin_get_Ecuation(self):
-		guess_mean = -2#np.mean(self.Independent)
-		guess_std = 2#3*np.std(self.Independent)/(2**0.5)
-		guess_phase = np.pi /2
+	def sin_get_Ecuation(self, function):
+		equation, values = function.split(';')
+		values = values.split(',')
+		values = [eval(values[i].split('=')[1]) for i in range(len(values))]
+		equation = 'lambda x : ' + equation + ' - self.Independent'
+		equation = eval(equation.replace('X', 'self.Dependent'))
+		est_std, est_phase, est_mean = leastsq(equation, values)[0]
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
+		yes = [est_std*np.sin(xes[i]+est_phase) + est_mean for i in range(xes.size)]
+		return xes,yes
 
 
-		optimize_func = lambda x: x[0]*np.sin(self.Dependent+x[1]) + x[2] - self.Independent
-		est_std, est_phase, est_mean = leastsq(optimize_func, [guess_std, guess_phase, guess_mean])[0]
-		data_fit = []
-		for i in range(xes.size):
-			data_fit.append(est_std*np.sin(xes[i]*est_phase) + est_mean)
-		return data_fit
+	def general(self, function):
+		equation, values = function.split(';')
+		values = values.split(',')
+		values = [eval(values[i].split('=')[1]) for i in range(len(values))]
+		equation = 'lambda x : ' + equation + ' - self.Independent'
+		equation = eval(equation.replace('X', 'self.Dependent'))
+		est_std, est_phase, est_mean = leastsq(equation, values)[0]
+		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100))# create an array to represent the curve graphic on X axis
+		#yes = [ for i in range(xes.size)]
+		return xes,yes
 
 class Graphics(Straigth, Logarithmic, Exponential, Polynomial, Fit1):
 
@@ -320,7 +308,7 @@ class Operations():
 		h = 6.626 * (10**(-34)) # set Planck constant
 		q = 1.6 * (10**(-19)) # set elementary charge
 		k = 8.988 * (10**(9)) # set coulomb's constant
-		self.new_Data = []
+		
 		self.formula = formula
 		self.allData = allData
 		self.action = self.translateAction()
@@ -342,8 +330,7 @@ class Operations():
 					eval(self.action)
 			except ValueError:	
 				try:
-					for i in range(len(self.allData[0].get_list_values())):
-						self.new_Data.append(eval(str(self.action)))
+					self.new_Data = [eval(str(self.action)) for i in range(len(self.allData[0].get_list_values()))]
 				except (NameError, IndexError, ValueError, IOError):
 					error = QMessageBox()
 					error.setText('Not able that operation')
@@ -354,7 +341,7 @@ class Operations():
 		try: # excepcion
 			i = self.formula.index('C', 0, len(self.formula)) # indice donde acaba allData
 
-			self.i = int(self.formula[i+1:i+2])
+			self.i = int(self.formula[i+1:i+3])
 
 			booltwo = True # se inicializa el booleano para bucle while y la excepcion
 			index = 0 # se inicializa el indice a partir del cual se leera
@@ -513,9 +500,7 @@ class Hamilton():
 #############################################################
 
 def diff(columnX, columnY):
-	new_Data = []
-	for i in range(1,len(columnX.get_list_values())):
-		new_Data.append((columnX.get_list_values()[i]-columnX.get_list_values()[i-1])/(columnY.get_list_values()[i]-columnY.get_list_values()[i-1]))
+	new_Data = [(columnX.get_list_values()[i]-columnX.get_list_values()[i-1])/(columnY.get_list_values()[i]-columnY.get_list_values()[i-1]) for i in range(1,len(columnX.get_list_values()))]
 	new_name = 'Derivative'
 	return Variable(new_name, new_Data)
 
@@ -641,4 +626,4 @@ def saveLaTex(Path, allData):
 def medianX(column): # return the mean of DV
 	thisData = column
 	med = sum(thisData) / len(thisData) # return the DV mean
-	return me
+	return med
