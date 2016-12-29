@@ -30,7 +30,7 @@ class GUI(QMainWindow):
 
 		self.setGeometry(0, 0, 1950, 1056)
 		self.setWindowTitle('Just a Graphics Printer')
-		self.setWindowIcon(QIcon('./Desktop/JGP(GUI)/JGP(icon).png'))
+		self.setWindowIcon(QIcon('./python_utilities/python_utilities_gui/JGP(icon).png'))
 
 		self.splitters1_widget = MySplitterWidget1(self)
 		self.setCentralWidget(self.splitters1_widget)
@@ -41,11 +41,6 @@ class GUI(QMainWindow):
 		self.show()
 
 	def menuBarsus(self):
-		
-		newproject = QAction('New Project', self)
-		newproject.setShortcut('Ctrl+P')
-		newproject.setStatusTip('Create a new project')
-		newproject.triggered.connect(self.newproject)
 
 		newAction = QAction('New file', self)
 		newAction.setShortcut('Ctrl+N')
@@ -56,11 +51,6 @@ class GUI(QMainWindow):
 		openAction.setShortcut('Ctrl+O')
 		openAction.setStatusTip('Open a table from a file')
 		openAction.triggered.connect(self.openfile)
-
-		eraseProject = QAction('Erase Project', self)
-		eraseProject.setShortcut('Ctrl+W')
-		eraseProject.setStatusTip('Erase this project')
-		eraseProject.triggered.connect(self.eraseProj)
 
 		saveAction = QAction('Save', self)
 		saveAction.setShortcut('Ctrl+S')
@@ -86,10 +76,8 @@ class GUI(QMainWindow):
 
 		menubar = self.menuBar()
 		fileMenu = menubar.addMenu('&File')
-		fileMenu.addAction(newproject)
 		fileMenu.addAction(newAction)
 		fileMenu.addAction(openAction)
-		fileMenu.addAction(eraseProject)
 		fileMenu.addAction(saveAction)
 		fileMenu.addAction(saveAs)
 		fileMenu.addAction(saveTex)
@@ -345,29 +333,17 @@ class GUI(QMainWindow):
 		projectes.add_Function("Formulation")
 		self.refresh()
 
-	def newproject(self):
-		global numtabses
-		numtabses +=1
-		self.refresh()
-
-	def eraseProj(self):
-		global numtabses
-		numtabses -=1
-		self.refresh()
-
 	def newfile(self):
 		self.refresh()
 
 		self.show()
 
 	def openfile(self):
-		global numtabses
 		fname = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime', 'Text File (*.csv *.txt)')
 
 
 		Inteface().openingFile(fname[0])
 
-		numtabses +=1
 		self.refresh()
 
 		self.show()
@@ -399,10 +375,9 @@ class GUI(QMainWindow):
 class MySplitterWidget1(QWidget):
 
 	def __init__(self, parent):
-		global numtabses
 		super(QWidget, self).__init__()
 
-		self.table_widget = MyTableWidget(self, numtabses)
+		self.table_widget = MySplitterWidget(self)
 		self.widgets = OtherSplitterWidget()
 		self.table_widget.setGeometry(0,0,1300, 1000)
 
@@ -415,10 +390,6 @@ class MySplitterWidget1(QWidget):
 
 		hbox.addWidget(splitter1)
 		self.setLayout(hbox)
-
-	#def onChanged(self, text):
-	#	self.lbl.setText(text)
-	#	self.lbl.adjustSize() 
 
 class MySplitterWidget(QWidget):
 
@@ -439,7 +410,8 @@ class MySplitterWidget(QWidget):
 		splitter1 = QSplitter(Qt.Vertical)
 		splitter1.setGeometry(0, 0, 1500, 900)
 		splitter1.addWidget(self.tableWidget)
-		splitter1.addWidget(self.plot)
+		if "graph" in projectes.get_Function() and not None in projectes.get_Represent():
+			splitter1.addWidget(self.plot)
 		#splitter1.setGeometry(0, 0, 1500, 1500)
 
 		hbox.addWidget(splitter1)
@@ -552,58 +524,10 @@ class OtherSplitterWidget(QWidget):
 			projectes.change_Table(Data)
 		GUI().refresh()
 
-class MyTableWidget(QWidget):
-
-	def __init__(self, parent, numtabses):
-		super(QWidget, self).__init__(parent)
-		self.layout = QVBoxLayout(self)
-		self.splitters_widget = MySplitterWidget(self)
-
-		self.tabs = QTabWidget()
-		for i in range (1,numtabses+1):
-			self.tabses(i)	
-
-		self.layout.addWidget(self.tabs)
-		self.setLayout(self.layout)
-
-	def tabses(self, numtabses):
-
-		self.splitters_widget1 = MySplitterWidget(self)
-		self.tab = self.splitters_widget1
-		self.tabs.addTab(self.tab, "Tabla "+str(numtabses))
-
-	@pyqtSlot()
-	def on_click(self):
-		print("\n")
-		for currentQTableWidgetItem in self.tableWidget.selectedItems():
-			print (currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
-
-class MyWidgets(QWidget):
+class Hamilton(QWidget):
 
 	def __init__(self):
-		super(MyWidgets, self).__init__()
-
-		if "Hamilton" in projectes.get_Function():
-			self.Hamil()
-		if "calendar" in projectes.get_Function():
-			self.calendar()
-		if "progressbar" in projectes.get_Function():
-			self.progressbar()
-		if "checkBottom" in projectes.get_Function():
-			self.checkBottom()
-		if "graph" in projectes.get_Function():
-			self.comboBox()
-			#self.checkBox()
-		if "Formulation" in projectes.get_Function():
-			self.Formulation()
-		if "Calculator" in projectes.get_Function():
-			self.Errores()
-		if "Nothing" in projectes.get_Function():
-			None
-		
-		self.show()
-
-	def Hamil(self):
+		super(QWidget, self).__init__()
 		self.lbl1 = QLabel("<i>r<sub>0<\sub><\i>", self)
 		self.lbl1.move(0, 51)
 		self.textbox1 = QLineEdit(self)
@@ -678,9 +602,17 @@ class MyWidgets(QWidget):
 		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
 		projectes.change_Table(Open_file_CSV(hamilton).get_all())
 		os.remove(hamilton)
-		projectes.del_Function("Hamilton")		
+		projectes.del_Function("Hamilton")
 
-	def Errores(self):
+	@pyqtSlot()
+	def on_click(self):
+		print("\n")
+		for currentQTableWidgetItem in self.tableWidget.selectedItems():
+			print (currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())	
+
+class ErrorCalc(QWidget):
+	def __init__(self):
+		super(QWidget, self).__init__()
 		self.lbl1 = QLabel("<i>Simbolos<\i>", self)
 		self.lbl1.move(0, 51)
 		self.textbox1 = QLineEdit(self)
@@ -724,6 +656,45 @@ class MyWidgets(QWidget):
 		error.setWindowTitle('Error Calculator')
 		window = error.exec_()
 
+class MyWidgets(QWidget):
+	"""
+	def __init__(self):
+		super(MyWidgets, self).__init__()
+
+		if "Hamilton" in projectes.get_Function():
+			self.Hamil()
+	"""
+
+	def __init__(self):
+		super(MyWidgets, self).__init__()
+		self.layout = QVBoxLayout(self)
+		self.tabs = QTabWidget()
+		self.HAmilton = Hamilton()
+		self.Err = ErrorCalc()
+		self.tabs.addTab(self.HAmilton, "Hamiltonian")
+		self.tabs.addTab(self.Err, "Errors")
+
+		self.layout.addWidget(self.tabs)
+		self.setLayout(self.layout)
+
+		if "calendar" in projectes.get_Function():
+			self.calendar()
+		if "progressbar" in projectes.get_Function():
+			self.progressbar()
+		if "checkBottom" in projectes.get_Function():
+			self.checkBottom()
+		if "graph" in projectes.get_Function():
+			self.comboBox()
+			#self.checkBox()
+		if "Formulation" in projectes.get_Function():
+			self.Formulation()
+		if "Calculator" in projectes.get_Function():
+			self.Errores()
+		if "Nothing" in projectes.get_Function():
+			None
+		
+		self.show()
+
 	def comboBox(self):
 		self.lbl11 = QLabel("Graphics", self)
 		self.lbl11.move(0, 480)
@@ -745,20 +716,6 @@ class MyWidgets(QWidget):
 		for i in range(projectes.get_Len_Table()):
 			combo1.addItem(projectes.get_Table()[i].get_name())
 		combo1.activated[int].connect(self.onActivatedY)
-
-	"""def checkBox(self):
-		cb = QCheckBox('Add Axis', self)
-		cb.move(180, 500)
-		cb.stateChanged.connect(self.addAxis)
-
-	def addAxis(self, state):
-		if state == Qt.Checked:
-			combo2 = QComboBox(self)
-			combo2.move(200, 530)
-			for i in range(projectes.get_Len_Table()):
-				combo2.addItem(projectes.get_Table()[i].get_name())
-			combo2.activated[int].connect(self.onActivatedYPlus)
-			self.show()"""
 
 	def onActivatedX(self, text):
 		projectes.get_Represent()[0] = text
@@ -1047,7 +1004,6 @@ class Projects():
 
 try:
 	if __name__ == '__main__':
-		numtabses = 0
 		projectes = Projects(None, None, [None, None], [], ["Nothing"])
 
 		app = QApplication(sys.argv)
