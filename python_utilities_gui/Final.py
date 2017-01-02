@@ -4,7 +4,7 @@
 	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
 	order to facilitate operations in performing laboratory practice
 
-													Version: Diciembre 2016
+													Version: Enero 2017
 """
 
 from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog, QHBoxLayout, QFrame, QSplitter, QStyleFactory, 
