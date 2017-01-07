@@ -304,6 +304,7 @@ class Operations():
 
 	def __init__(self, formula, allData):
 		c = 2.998*(10**8) # set speed of ligth
+		g = 9.81 #set universal gravitational constant
 		G = 6.67408 * (10**(-11)) # set gravitational constant
 		h = 6.626 * (10**(-34)) # set Planck constant
 		q = 1.6 * (10**(-19)) # set elementary charge
@@ -311,41 +312,46 @@ class Operations():
 		
 		self.formula = formula
 		self.allData = allData
-		self.action = self.translateAction()
+		self.get_index()
+		self.new_Data = []
 		try:
 			self.new_name = self.allData[int(self.i)].get_name()
 		except IndexError:
 			self.new_name = str(int(self.i))
 		
 		try:
-			if self.action.index("name(") >= 0:
-				numElement = self.action.index("name(")
-				self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
-				eval(self.action)
+			numElement = self.action.index("name(")
+			self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
+			eval(self.action)
 		except ValueError:
 			try:
-				if self.action.index("delete(") >= 0:
-					numElement = self.action.index("delete(")
+				numElement = self.action.index("delete(")
+				self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
+				eval(self.action)
+			except ValueError:
+				try:
+					numElement = self.action.index("Error(")
 					self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
 					eval(self.action)
-			except ValueError:	
-				try:
-					self.new_Data = [eval(str(self.action)) for i in range(len(self.allData[0].get_list_values()))]
-				except (NameError, IndexError, ValueError, IOError):
-					error = QMessageBox()
-					error.setText('Not able that operation')
-					error.setWindowTitle('Not able that operation')
-					window = error.exec_()
+				except ValueError:
+					try:
+						self.action = self.translateAction()
+						self.new_Data = [eval(str(self.action)) for i in range(len(self.allData[0].get_list_values()))]
+					except (NameError, IndexError, ValueError, IOError):
+						error = QMessageBox()
+						error.setText('Not able that operation')
+						error.setWindowTitle('Not able that operation')
+						window = error.exec_()
+
+	def get_index(self):
+		i = self.formula.index('C', 0, len(self.formula)) # indice donde acaba allData
+		self.i = int(self.formula[i+1:i+3])
+		self.action = self.formula.split('=')[1]
 
 	def translateAction(self):
 		try: # excepcion
-			i = self.formula.index('C', 0, len(self.formula)) # indice donde acaba allData
-
-			self.i = int(self.formula[i+1:i+3])
-
 			booltwo = True # se inicializa el booleano para bucle while y la excepcion
 			index = 0 # se inicializa el indice a partir del cual se leera
-			self.action = self.formula.split('=')[1]
 			self.action = self.action.replace('C', 'self.allData[') # se sustituyen todas la C por allData[
 			while booltwo:
 				try: # excepcion
@@ -359,6 +365,18 @@ class Operations():
 			error.setText("Error 99")
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
+	
+	def Error(self, simbolos, valores, errores, funcion):
+		self.newData = []
+		valueses = [eval(valores[i].replace('C', 'self.allData[') + '].get_list_values()') for i in range(len(valores))] 
+		errorses = [eval(errores[i].replace('C', 'self.allData[') + '].get_list_values()') for i in range(len(errores))]
+		for i in range(len(valueses[0])):
+			values = [valueses[n][i] for n in range(len(valueses))]
+			errors = [errorses[n][i] for n in range(len(errorses))]
+			err = Errores(simbolos, values, errors, funcion).Errors()
+			print err
+			self.new_Data.append(err)
+		self.new_name = 'Error'
 
 	def name(self, name):
 		self.new_name = name
@@ -626,4 +644,4 @@ def saveLaTex(Path, allData):
 def medianX(column): # return the mean of DV
 	thisData = column
 	med = sum(thisData) / len(thisData) # return the DV mean
-	return med
+	return me
