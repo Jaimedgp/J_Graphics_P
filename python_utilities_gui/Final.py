@@ -217,6 +217,11 @@ class GUI(QMainWindow):
 				fname = fname[1].split("'")
 				projectes.set_Path(fname[1])
 				Interface().savingCSV()
+			event.accept()
+		elif reply == QMessageBox.Discard:
+			event.accept()
+		else:
+			event.ignore()
 
 	def refresh(self):
 		self.Widget = Widgets()
@@ -297,7 +302,6 @@ class Hamiltonian(QWidget):
 		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
 		projectes.change_Table(Open_file_CSV(hamilton).get_all())
 		os.remove(hamilton)
-		projectes.del_Function("Hamilton")
 
 	@pyqtSlot()
 	def on_click(self):
@@ -347,8 +351,7 @@ class ErrorCalc(QWidget):
 		errores = eval(self.textbox7.text())
 		funcion = str(self.textbox8.text())
 		valorError = Errores(Simbolos, valores, errores, funcion).Errors()
-		projectes.del_Function("Calculator")
-		GUI().refresh()
+		ex.refresh()
 		error = QMessageBox()
 		error.setText(str(valorError))
 		error.setWindowTitle('Error Calculator')
@@ -544,7 +547,7 @@ class Widgets(QWidget):
 		elif len(Data) > 1:
 			for i in range(len(Data)):
 				projectes.add_Column(Data[i])
-		GUI().refresh()
+		ex.refresh()
 
 	def doChangeColumns(self):
 		textbox = self.edit.toPlainText()
@@ -553,13 +556,13 @@ class Widgets(QWidget):
 			print 'error'
 		elif len(Data) > 1:
 			projectes.change_Table(Data)
-		GUI().refresh()
+		ex.refresh()
 
 	@pyqtSlot()
 	def on_click(self):
 		textboxValue = self.textbox13.text()
 		Interface().formulating(textboxValue)
-		GUI().refresh()
+		ex.refresh()
 
 class PlotCanvas(FigureCanvas):
 
@@ -738,9 +741,8 @@ class Interface():
 class Projects():
 	""" """
 
-	def __init__(self, Path, Title, Represent, Table):
+	def __init__(self, Path, Represent, Table):
 		self.Path = Path
-		self.Title = Title
 		self.Represent = Represent
 		self.Table = Table
 
@@ -752,10 +754,6 @@ class Projects():
 		return self.Path
 	def set_Path(self, path):
 		self.Path = path
-	def get_Title(self):
-		return self.Title
-	def set_Title(self, title):
-		self.Title = title
 	def get_Represent(self):
 		return self.Represent
 	def set_Represent(self, represent):
@@ -776,7 +774,7 @@ class Projects():
 		del self.Table[index]
 
 if __name__ == '__main__':
-	projectes = Projects(None, None, [None, None], [])
+	projectes = Projects(None, [None, None], [])
 	Function = {"graph" : False,
 				type: None}
 	app = QApplication(sys.argv)
