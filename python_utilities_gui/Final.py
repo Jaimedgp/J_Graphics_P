@@ -153,22 +153,22 @@ class GUI(QMainWindow):
 
 	def linearing(self):
 		Function["graph"] = True
-		Function[type] = "Linear"
+		Function['type'] = "Linear"
 		self.refresh()
 
 	def exponential(self):
 		Function["graph"] = True
-		Function[type] = "Exponential"
+		Function['type'] = "Exponential"
 		self.refresh()
 
 	def logarithmic(self):
 		Function["graph"] = True
-		Function[type] = "Logarithmic"
+		Function['type'] = "Logarithmic"
 		self.refresh()
 
 	def polynomial(self):
 		Function["graph"] = True
-		Function[type] = "Polynomial"
+		Function['type'] = "Polynomial"
 		self.refresh()
 
 	def openfile(self):
@@ -443,7 +443,6 @@ class Widgets(QWidget):
 		self.Graphics = QGroupBox()
 		self.Graphics.setTitle("Graphics")
 
-
 		self.Formulation = QGroupBox()
 		self.Formulation.setTitle("Formula Entry")
 
@@ -534,9 +533,11 @@ class Widgets(QWidget):
 	def tabses(self):
 		Hamiltonial = Hamiltonian()
 		Errors = ErrorCalc()
+		Barrs = ErrorBars()
 		self.tabs =QTabWidget()
 		self.tabs.addTab(Hamiltonial, "Hamiltonian")
 		self.tabs.addTab(Errors, "Errors")
+		self.tabs.addTab(Barrs, "Bars error")
 		self.tools.addWidget(self.tabs)
 
 	def doAddColumns(self):
@@ -564,6 +565,30 @@ class Widgets(QWidget):
 		Interface().formulating(textboxValue)
 		ex.refresh()
 
+class ErrorBars(QWidget):
+
+	def __init__(self):
+		super(QWidget, self).__init__()
+
+		self.fbox = QHBoxLayout()
+		
+		self.Column()
+
+		self.setLayout(self.fbox)
+
+	def Column(self):
+		combo1 = QComboBox(self)
+		for i in range(projectes.get_Len_Table()):
+			combo1.addItem(projectes.get_Table()[i].get_name())
+		combo1.activated[int].connect(self.columnerror)
+
+		self.fbox.addWidget(combo1)
+
+	def columnerror(self, text):
+		GraphError['values'] = projectes.get_Table()[text].get_list_values()
+		GraphError['Error'] = True
+		ex.refresh()
+
 class PlotCanvas(FigureCanvas):
 
 	def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -585,73 +610,39 @@ class PlotCanvas(FigureCanvas):
 		self.IntervalX, self.IntervalY = self.functionGraph.IntervalLimits()
 
 		try:
-			if Function[type] == "Linear":
-				self.plotLinear()
-			elif Function[type] == "Logarithmic":
-				self.plotLog()
-			elif Function[type] == "Exponential":
-				self.plotExp()
-			elif Function[type] == "Polynomial":
-				self.plotPoly()
-			else:
+			if Function['type'] == None:
 				self.plotScratter()
+			else:
+				self.plotFunction()
 		except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
 			error = QMessageBox()
 			error.setText("Error 99")
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
 
-	def plotLinear(self):
-		xes, yes = self.functionGraph.Linget_Ecuation()
-		
-		#data = [random.random() for i in range(25)]
-		ax = self.figure.add_subplot(111)
-		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.IntervalX)
-		ax.set_ylim(self.IntervalY)
-		ax.set_xlabel(self.nameX)
-		ax.set_ylabel(self.nameY)
-		self.draw()
-
 	def plotScratter(self):
 		ax = self.figure.add_subplot(111)
-		if len(projectes.get_Represent()) == 2:
-			ax.plot(self.X, self.Y, 'ro')
-		elif len(projectes.get_Represent()) > 2:
-			YY = projectes.get_Table()[projectes.get_Represent()[2]]
-			ax.plot(self.X, self.Y, 'r', self.X, YY, 'bo')
+		ax.plot(self.X, self.Y, 'ro')
 		ax.set_xlim(self.IntervalX)
 		ax.set_ylim(self.IntervalY)
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
 		self.draw()
 
-	def plotExp(self):
-		xes, yes = self.functionGraph.Expget_Ecuation()
-
-		ax = self.figure.add_subplot(111)
-		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.IntervalX)
-		ax.set_ylim(self.IntervalY)
-		ax.set_xlabel(self.nameX)
-		ax.set_ylabel(self.nameY)
-
-	def plotLog(self):
-		xes, yes = self.functionGraph.Logget_Ecuation()
-
-		ax = self.figure.add_subplot(111)
-		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
-		ax.set_xlim(self.IntervalX)
-		ax.set_ylim(self.IntervalY)
-		ax.set_xlabel(self.nameX)
-		ax.set_ylabel(self.nameY)
-		self.draw()
-
-	def plotPoly(self):
-		xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
+	def plotFunction(self):
 		
-		#data = [random.random() for i in range(25)]
+		if Function['type'] == "Linear":
+			xes, yes = self.functionGraph.Linget_Ecuation()
+		elif Function['type'] == "Logarithmic":
+			xes, yes = self.functionGraph.Logget_Ecuation()
+		elif Function['type'] == "Exponential":
+			xes, yes = self.functionGraph.Expget_Ecuation()
+		elif Function['type'] == "Polynomial":
+			xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
+
 		ax = self.figure.add_subplot(111)
+		if GraphError['Error']:
+			ax.errorbar(self.X, self.Y, yerr=GraphError['values'], fmt='ro', ecolor='r')
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
 		ax.set_xlim(self.IntervalX)
 		ax.set_ylim(self.IntervalY)
@@ -776,7 +767,8 @@ class Projects():
 if __name__ == '__main__':
 	projectes = Projects(None, [None, None], [])
 	Function = {"graph" : False,
-				type: None}
+				'type' : None}
+	GraphError = {'Error': False, 'values' : None}
 	app = QApplication(sys.argv)
 	ex = GUI()
 	sys.exit(app.exec_())	
