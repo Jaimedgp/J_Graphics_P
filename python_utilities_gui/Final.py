@@ -730,7 +730,7 @@ class Interface():
 			PlotCanvas().savePlot()
 
 class Projects():
-	""" """
+	""" Comment"""
 
 	def __init__(self, Path, Represent, Table):
 		self.Path = Path
