@@ -537,7 +537,7 @@ class Widgets(QWidget):
 		self.tabs =QTabWidget()
 		self.tabs.addTab(Hamiltonial, "Hamiltonian")
 		self.tabs.addTab(Errors, "Errors")
-		self.tabs.addTab(Barrs, "Bars error")
+		self.tabs.addTab(Barrs, "Error Bar Settings")
 		self.tools.addWidget(self.tabs)
 
 	def doAddColumns(self):
@@ -570,24 +570,103 @@ class ErrorBars(QWidget):
 	def __init__(self):
 		super(QWidget, self).__init__()
 
-		self.fbox = QHBoxLayout()
-		
-		self.Column()
+		self.Error = {"Data column" : 0, "% of value": 0, "Fixed value": 0}
 
-		self.setLayout(self.fbox)
+		self.VMainBox = QVBoxLayout()
+		self.HMainBox = QHBoxLayout()
+		self.VBox = QVBoxLayout()
 
-	def Column(self):
-		combo1 = QComboBox(self)
+		self.setErrorColumn()
+		self.setErrorFixed()
+		self.setErrorPercent()
+
+		self.setComboBox()
+		self.HMainBox.addLayout(self.VBox)
+
+		self.VMainBox.addLayout(self.HMainBox)
+		self.setButton()
+
+		self.setLayout(self.VMainBox)
+
+	def setErrorColumn(self):
+		Column = QGroupBox()
+		Column.setTitle('Data Column')
+
+		combo = QComboBox(self)
 		for i in range(projectes.get_Len_Table()):
-			combo1.addItem(projectes.get_Table()[i].get_name())
-		combo1.activated[int].connect(self.columnerror)
+			combo.addItem(projectes.get_Table()[i].get_name())
+		combo.activated[int].connect(self.columnerror)
 
-		self.fbox.addWidget(combo1)
+		vbox = QVBoxLayout()
+		vbox.addWidget(combo)
+		Column.setLayout(vbox)
+		self.VBox.addWidget(Column)
 
-	def columnerror(self, text):
-		GraphError['values'] = projectes.get_Table()[text].get_list_values()
-		GraphError['Error'] = True
+	def setErrorFixed(self):
+		Fixed = QGroupBox()
+		Fixed.setTitle('Fixed value')
+
+		vbox = QVBoxLayout()
+		self.value = QLineEdit()
+		vbox.addWidget(self.value)
+		Fixed.setLayout(vbox)
+
+		self.VBox.addWidget(Fixed)
+
+	def setErrorPercent(self):
+		Percent = QGroupBox()
+		Percent.setTitle('% of value')
+
+		vbox = QVBoxLayout()
+		self.percenteg = QLineEdit()
+		vbox.addWidget(self.percenteg)
+		Percent.setLayout(vbox)
+
+		self.VBox.addWidget(Percent)
+
+	def setComboBox(self):
+		combo = QComboBox(self)
+		combo.addItem("None")
+		combo.addItem("% of value")
+		combo.addItem("Fixed value")
+		combo.addItem("Data column")
+		combo.activated[str].connect(self.mainFunction)
+
+		self.HMainBox.addWidget(combo)
+
+	def setButton(self):
+		button = QPushButton('Plot', self)
+		button.clicked.connect(self.PlotError)
+
+		self.VMainBox.addWidget(button)
+
+	def mainFunction(self, text):
+		try:
+			self.Error["Fixed value"] = float(self.value.text())
+		except ValueError:
+			self.Error["Fixed value"] = 0
+		try:
+			per = float(self.percenteg.text()) / 100
+			val = projectes.get_Table()[projectes.get_Represent()[1]]
+			self.Error["% of value"] = [per*val.get_values(i) for i in range(len(val.get_list_values()))]
+		except ValueError:
+			self.Error["% of value"] = 0
+
+		try:	
+			GraphError['values'] = self.Error[text] 
+		except KeyError:
+			GraphError['values'] = None
+
+	def PlotError(self):
+		if GraphError['values'] != None:
+			GraphError['Error'] = True
+		else:
+			GraphError['Error'] = False
+
 		ex.refresh()
+
+	def columnerror(self, index):
+		self.Error["Data column"] = projectes.get_Table()[index].get_list_values()
 
 class PlotCanvas(FigureCanvas):
 
@@ -641,8 +720,27 @@ class PlotCanvas(FigureCanvas):
 			xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
 
 		ax = self.figure.add_subplot(111)
+		
 		if GraphError['Error']:
+		
+			try:
+
+				if self.IntervalY[1] < max(self.Y) + max(GraphError['values']):
+					self.IntervalY[1] = max(self.Y) + max(GraphError['values'])*1.5
+
+				if self.IntervalY[0] > min(self.Y) - min(GraphError['values']):
+					self.IntervalY[0] = min(self.Y) - min(GraphError['values'])*1.5
+			
+			except TypeError:
+
+				if self.IntervalY[1] < max(self.Y) + GraphError['values']:
+					self.IntervalY[1] = max(self.Y) + GraphError['values']*1.5
+
+				if self.IntervalY[0] > min(self.Y) - GraphError['values']:
+					self.IntervalY[0] = min(self.Y) - GraphError['values']*1.5
+		
 			ax.errorbar(self.X, self.Y, yerr=GraphError['values'], fmt='ro', ecolor='r')
+		
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
 		ax.set_xlim(self.IntervalX)
 		ax.set_ylim(self.IntervalY)
