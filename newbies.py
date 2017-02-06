@@ -126,6 +126,7 @@ def Ordenar_listas(lista):
 def Deferenciabilidad():
     from sympy import *
     import numpy as np
+    
     x = Symbol('x')
     y = 2*log(3*x)
     while 1 == 1:
