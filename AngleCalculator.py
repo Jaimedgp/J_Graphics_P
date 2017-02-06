@@ -10,7 +10,7 @@ for i in range(len(h)):
 	alpha.append(asin(hA[i]/100.2))
 	alphag.append(alpha[i]*180/(pi))
 
-fl = open('C:\Users\jaime\Desktop\Inercia\sabla.csv', 'w') # open and create an .ods file
+fl = open('C:\Users\jaime\Desktop\Inercia\\tabla.csv', 'w') # open and create an .ods file
 for x in xrange(1): # loop to write the file
 	fl.write('Altura/cm' + '\t' + 'cateto/cm' + '\t' + 'alpha/rad'+ '\t' + 'alpha/' + "\n") # write a header
 	for i in range(len(h)): # loop to write element by element to the file
