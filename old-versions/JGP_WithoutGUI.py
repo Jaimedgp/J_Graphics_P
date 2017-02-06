@@ -11,10 +11,11 @@
 #############         PACKAGE'S IMPORT         ##############
 #############################################################
 
-from math import fabs, sqrt, log, exp, sin, cos # import absolute and square root function from math package
+from math import fabs, sqrt, log, exp, sin, cos # import absolute and square root function from math library
 import os # import os Miscellaneous operating system interfaces
-import numpy as np # import numpy package
-import matplotlib.pyplot as plt # import matplotlib.pyplot package
+import numpy as np # import numpy libraries
+import matplotlib.pyplot as plt # import matplotlib.pyplot libraries
+from sympy import * #import sympy library to resolve equations 
 
 os.system('cls' if os.name == 'nt' else 'clear') # clear the terminal window
 
@@ -410,11 +411,42 @@ class Modify_Table():
 	def delete_column(self, list_values):
 		del allData[list_values]
 
+class Errores(object):
+	""" This class allows to make all the mathematicals       """
+	""" This class calculate the error of a magnitud from an  """
+	""" equation which depends on others magnitudes by its    """
+	""" partials											  """
+
+	def __init__(self):
+		self.variables = raw_input('Variables: ')
+		self.variables = self.variables.split(' ')
+		S = symbols(self.variables)
+		self.values = eval(raw_input('Valores: '))
+		self.errors = eval(raw_input('Errores: '))
+		self.f = str(raw_input('funcion: '))
+		for n in range(len(S)):
+			selement = 'S['+str(n)+']'
+			self.f = self.f.replace(self.variables[n], selement)
+		self.f = eval(self.f)
+
+	def Errors(self):
+
+		Error_sq = 0
+		for i in range(len(self.variables)):
+			Error_sq += ((self.f.diff(self.variables[i])*self.errors[i])**2)
+		Error_re = 'Error_sq.evalf(subs={self.variables[0]:self.values[0]'
+		for x in range(1,len(self.variables)):
+			Error_re += ', self.variables['+ str(x) + ']:self.values[' + str(x) + ']'
+		Error_re += '})'
+		Error_re = eval(Error_re)
+		Error = sqrt(Error_re)
+		print 'Error= '+ Error
+
 #############################################################
 ###########              FUNCTIONS              #############
 #############################################################
 
-def new_proyect(): # Create a new proyect
+def new_project(): # Create a new proyect
 	Title = str(raw_input('Title: ')) # Introduce the title of the practice
 	Path = './Desktop/Python/'+Title+'/' # Directory wherever all document will be saved
 		# if the directory does not exist, it will create it 
@@ -442,7 +474,7 @@ def print_screen(): # clear and print the data on screen
 	except NameError, e:
 		Title = 'Untitled' # if there is not, set Untitled has title
 
-	print ' | '+'New Proyect'+' | '+'New Table'+' | '+'Open file'+' | '+'Graph'+' | '+'Curve Fit'+' | '+'Formula Entry'+' | '+'Modify Table'+' | '+'Save'+' | '+'\n' # print functions available
+	print ' | '+'New Proyect'+' | '+'New Table'+' | '+'Open file'+' | '+'Graph'+' | '+'Curve Fit'+' | '+'Formula Entry'+' | '+'Modify Table'+' | '+'Save'+' | '+'Errors Calculator'+' | '+'\n' # print functions available
 
 	try: # handling exception
 		line = '' # inicialize the line
@@ -578,16 +610,16 @@ def graph(x, y): # print the graph
 ###########              INTERFACE              #############
 #############################################################
 
-print '| New Proyect | New Table | Open file | Graph | Curve Fit | Formula Entry | Modify Table | Save |'+'\n' # print functions available
+print ' | '+'New Proyect'+' | '+'New Table'+' | '+'Open file'+' | '+'Graph'+' | '+'Curve Fit'+' | '+'Formula Entry'+' | '+'Modify Table'+' | '+'Save'+' | '+'Errors Calculator'+' | '+'\n' # print functions available
 
 function = str(raw_input('Choose function: ')) # select one function
 
 while function != 'close': # loop to select function. if the close, stop the program
 
 	try:
-		if function == 'New Proyect' or function == 'new proyect' or function == 'New proyect': # start a new proyect
-			Proyect = new_proyect() # new proyect
-			Title = Proyect[1] # proyect name
+		if function == 'New Proyect' or function == 'new project' or function == 'New proyect': # start a new proyect
+			Proyect = new_project() # new proyect
+			Title = Proyect[1] # project name
 			Path = Proyect[0] # directory Path
 			allData = [] # inicialize the Data list
 			print_screen()
@@ -607,7 +639,7 @@ while function != 'close': # loop to select function. if the close, stop the pro
 					addcol = str(raw_input('add a Column '))
 				print_screen()
 			except NameError:
-				print 'First create a new proyect'
+				print 'First create a new project'
 
 		elif function == 'Graph' or function == 'graph': # print the graph
 			x = int(raw_input('Dependent variable column: '))
@@ -663,6 +695,9 @@ while function != 'close': # loop to select function. if the close, stop the pro
 		elif function == 'Modify Table' or function == 'Modify table' or function == 'modify table':
 			Modify_Table()
 			print_screen()
+
+		elif function == 'Errors Calculator' or function == 'Errors calculator' or function == 'errors Calculator' or function == 'errors calculator':
+			Errores().Errors()
 		
 		else:
 			print 'Sorry I do not understand'
