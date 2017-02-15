@@ -32,8 +32,6 @@ git clone https://github.com/Jaimedgp/python_utilities/python_utilities/2LaTex.p
   
   and write a Path of destinity to the tex code of the table. It would be save at that directory as LaTex.tex file.
 
-hola que tal
-
 ## User's guide for 2LaTex
 
 This is README.md from TESTS branch and this is another different test
