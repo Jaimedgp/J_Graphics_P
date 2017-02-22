@@ -1,7 +1,7 @@
 """
-	JDG (Just a Graphics' Printer) 
+	JDG (Just a Graphics' Printer)
 
-	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
+	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in
 	order to facilitate operations in performing laboratory practice
 
 													Version: Diciembre 2016
@@ -28,8 +28,8 @@ from PyQt5.QtWidgets import QMessageBox
 class Variable():
 	""" This class create the object Variable which contains """
 	""" the name of the variable and a list with all the     """
-	""" values that it takes.                                """ 
-	
+	""" values that it takes.                                """
+
 	def __init__(self, name, values):
 		self.name = name # String with the name of the variable
 		self.values = values # 1ist with all the values of the variable
@@ -67,7 +67,7 @@ class Open_file_CSV():
 		row = fr.readline().split(',') # read first row
 		while row[0] != '': # loop to read all rows
 			for i in xrange(numVar): # loop to read each variable
-				try: 
+				try:
 					Data[i].append(float(row[i])) # append each element to the list
 				except (NameError, IndexError, ValueError, IOError, SyntaxError):
 					error = 2
@@ -132,10 +132,10 @@ class Logarithmic():
 	""" relation:        y = m * ln(x) + b                    """
 
 	def Loginice(self):
-		self.sumX = sum(self.Dependent) 
+		self.sumX = sum(self.Dependent)
 		self.sumY= sum(self.Independent)
 		self.sumLnX = 0
-		self.sumLn2X = 0 
+		self.sumLn2X = 0
 		self.sumLnXY = 0
 		self.sumY2 = 0
 		for i in xrange(len(self.Dependent)):
@@ -149,7 +149,7 @@ class Logarithmic():
 
 	def Logintercept(self):
 		return self.sumY/len(self.Dependent) - self.Logslope()*self.sumLnX/len(self.Dependent)
-	
+
 	def Logget_Ecuation(self):
 		xes = np.arange(min(self.Dependent),max(self.Dependent), ((max(self.Dependent)-min(self.Dependent))/100)) # create an array to represent the curve graphic on X axis
 		yes = [self.Logslope()*log(xes[i])+self.Logintercept() for i in range(xes.size)] # inicialize a list to represent the curve graphic on Y axis
@@ -296,7 +296,7 @@ class Operations():
 		h = 6.626 * (10**(-34)) # set Planck constant
 		q = 1.6 * (10**(-19)) # set elementary charge
 		k = 8.988 * (10**(9)) # set coulomb's constant
-		
+
 		self.formula = formula
 		self.allData = allData
 		self.get_index()
@@ -305,7 +305,7 @@ class Operations():
 			self.new_name = self.allData[int(self.i)].get_name()
 		except IndexError:
 			self.new_name = str(int(self.i))
-		
+
 		try:
 			numElement = self.action.index("name(")
 			self.action = self.action[:numElement-1] + 'self.' + self.action[numElement-1:]
@@ -352,10 +352,10 @@ class Operations():
 			error.setText("Error 99")
 			error.setWindowTitle("Error 99")
 			window = error.exec_()
-	
+
 	def Error(self, simbolos, valores, errores, funcion):
 		self.newData = []
-		valueses = [eval(valores[i].replace('C', 'self.allData[') + '].get_list_values()') for i in range(len(valores))] 
+		valueses = [eval(valores[i].replace('C', 'self.allData[') + '].get_list_values()') for i in range(len(valores))]
 		errorses = [eval(errores[i].replace('C', 'self.allData[') + '].get_list_values()') for i in range(len(errores))]
 		for i in range(len(valueses[0])):
 			values = [valueses[n][i] for n in range(len(valueses))]
@@ -407,7 +407,7 @@ class Modify_Table():
 		element = int(raw_input('In which element??')) # select in which element add the new number
 		x = (raw_input('x = ')) # new element
 		allData[list_values].get_list_values().insert(element, float(x)) # append the new element
-	
+
 	def delete_value(self, list_values):
 		element = int(raw_input('which element do U want to delete ?? ')) # element to delete started from 1 instead 0
 		del allData[list_values].get_list_values()[element] # delete the element 
@@ -428,7 +428,7 @@ class Errores(object):
 	""" This class allows to make all the mathematicals       """
 	""" This class calculate the error of a magnitud from an  """
 	""" equation which depends on others magnitudes by its    """
-	""" partials											  """
+	""" partials                                              """
 
 	def __init__(self, simbolos, valores, errores, funcion):
 		self.variables = simbolos
@@ -465,7 +465,7 @@ class Hamilton():
 		self.r0 = r0
 		self.theta0 = theta0
 		self.vr = vr
-		self.vtheta = vtheta 
+		self.vtheta = vtheta
 		self.n = n
 		self.dt = dt
 
@@ -473,7 +473,7 @@ class Hamilton():
 
 		path = "./File.csv"
 		fw = open(path, 'w')
- 
+
 		t = 0.0
 		pr0 = self.m*self.vr
 		ptheta0 = self.m*self.r0*self.r0*self.vtheta
@@ -533,7 +533,7 @@ def saveCSV(Path, allData): # save lists into a .csv archive in /home/jaime/Docu
 	for x in range(1, len(allData)):
 		line += ',' + '%s' %(allData[x].get_name())
 	fl.write(line + '\n')
-			
+
 	for i in range(length):
 		try:
 			line = '%g' %(allData[0].get_values(i))
@@ -560,7 +560,7 @@ def saveText(Path, allData):
 	for x in range(1, len(allData)):
 		line += '\t' + '%s' %(allData[x].get_name())
 	fl.write(line + '\n')
-			
+
 	for i in range(length):
 		try:
 			line = '%g' %(allData[0].get_values(i))
@@ -608,9 +608,9 @@ def saveLaTex(Path, allData):
 				try:
 					line += ' & ' + '%g' %(allData[x].get_values(i))
 				except IndexError:
-					line += ' & '+' '					
+					line += ' & '+' '
 			fl.write(line+ ' \\'+'\\'+'\n')
-			
+
 		try:
 			line = '\t'+'\t'+'\t'+'%g' %(allData[0].get_values(length-1))
 		except IndexError:

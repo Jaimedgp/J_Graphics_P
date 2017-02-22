@@ -1,16 +1,16 @@
 """
-	JDG (Just a Graphics' Printer) 
+	JDG (Just a Graphics' Printer)
 
-	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in 
+	This program has been develop by Jaime Diez Gonzalez-Pardo in Python in
 	order to facilitate operations in performing laboratory practice
 
 													Version: Enero 2017
 """
 
-from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog, QHBoxLayout, QFrame, QSplitter, QStyleFactory, 
+from PyQt5.QtWidgets import (QToolTip, QMessageBox, QDesktopWidget, QInputDialog, QHBoxLayout, QFrame, QSplitter, QStyleFactory,
 	QMainWindow, QTabWidget, QTextEdit, QAction, QApplication, QWidget, QFormLayout, QPushButton, QLineEdit, QTableWidget,
 	QTableWidgetItem, QVBoxLayout, QFileDialog, QSizePolicy, QCalendarWidget, QLabel, QProgressBar, QCheckBox, QComboBox, QDoubleSpinBox, QGroupBox, QSpinBox)
-from PyQt5.QtGui import QFont, QIcon 
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QCoreApplication, pyqtSlot, Qt, QDate, QBasicTimer
 from PyQt5 import QtCore
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -255,7 +255,7 @@ class GUI(QMainWindow):
 
 	def refresh(self):
 		self.Widget = Widgets()
-		self.setCentralWidget(self.Widget)	
+		self.setCentralWidget(self.Widget)
 
 class Hamiltonian(QWidget):
 
@@ -319,7 +319,7 @@ class Hamiltonian(QWidget):
 		self.button4.clicked.connect(self.Rosberg)
 
 	def Rosberg(self):
-		m = float(self.textbox4.text())  
+		m = float(self.textbox4.text())
 		k = float(self.textbox2.text())
 		l0 = float(self.textbox3.text())
 		r0 = float(self.textbox1.text())
@@ -332,13 +332,13 @@ class Hamiltonian(QWidget):
 		hamilton = Hamilton(m, k, l0, r0, theta0, vr, vtheta, n, dt).get_file()
 		projectes.change_Table(Open_file_CSV(hamilton).get_all())
 		os.remove(hamilton)
-		ex.refresh(	)	
+		ex.refresh(	)
 
 	@pyqtSlot()
 	def on_click(self):
 		print("\n")
 		for currentQTableWidgetItem in self.tableWidget.selectedItems():
-			print (currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())	
+			print (currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
 
 class ErrorCalc(QWidget):
 	def __init__(self):
@@ -392,26 +392,26 @@ class Table(QWidget):
 
 	def __init__(self, parent):
 		super(QWidget, self).__init__(parent)
-			
+
 		self.makingtable()
 
 		self.tableWidget.move(0,0)
 
 		# table selection change
 		self.tableWidget.doubleClicked.connect(self.on_click)
-		
+
 		if Function["graph"] and not None in projectes.get_Represent():
 			self.plot = PlotCanvas(self, width=5, height=4)
 
 		hbox = QHBoxLayout(self)
-	
+
 		splitter1 = QSplitter(Qt.Vertical)
 		splitter1.setGeometry(0, 0, 1500, 900)
 		splitter1.addWidget(self.tableWidget)
-			
+
 		if Function["graph"] and not None in projectes.get_Represent():
 			splitter1.addWidget(self.plot)
-		
+
 		hbox.addWidget(splitter1)
 		self.setLayout(hbox)
 
@@ -464,7 +464,7 @@ class Table(QWidget):
 		self.lbl.adjustSize()
 
 class Widgets(QWidget):
-	
+
 	def __init__(self):
 		super(QWidget,self).__init__()
 
@@ -477,7 +477,7 @@ class Widgets(QWidget):
 		self.Formulation.setTitle("Formula Entry")
 
 		self.Datos = Table(self)
-		
+
 		self.tools = QVBoxLayout()
 
 		self.Graph()
@@ -490,8 +490,8 @@ class Widgets(QWidget):
 		self.Table.addLayout(self.tools, 7)
 		self.Table.addStretch(1)
 
-		self.setLayout(self.Table)		
-		
+		self.setLayout(self.Table)
+
 	def Terminal(self):
 		vbox = QVBoxLayout()
 		hbox = QHBoxLayout()
@@ -511,7 +511,7 @@ class Widgets(QWidget):
 		self.tools.addLayout(vbox, 1)
 
 	def Graph(self):
-	
+
 		self.comboBox()
 		fbox = QFormLayout()
 		fbox.addRow(self.lbl12, self.combo)
@@ -682,8 +682,8 @@ class ErrorBars(QWidget):
 		except ValueError:
 			self.Error["% of value"] = 0
 
-		try:	
-			GraphError['values'] = self.Error[text] 
+		try:
+			GraphError['values'] = self.Error[text]
 		except KeyError:
 			GraphError['values'] = None
 
@@ -711,7 +711,7 @@ class PlotCanvas(FigureCanvas):
 				QSizePolicy.Expanding,
 				QSizePolicy.Expanding)
 		FigureCanvas.updateGeometry(self)
-		
+
 		self.functionGraph = Graphics(projectes.get_Table(), projectes.get_Represent())
 
 		self.nameX, self.nameY = self.functionGraph.Names()
@@ -739,7 +739,7 @@ class PlotCanvas(FigureCanvas):
 		self.draw()
 
 	def plotFunction(self):
-		
+
 		if Function['type'] == "Linear":
 			xes, yes = self.functionGraph.Linget_Ecuation()
 		elif Function['type'] == "Logarithmic":
@@ -750,9 +750,9 @@ class PlotCanvas(FigureCanvas):
 			xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
 
 		ax = self.figure.add_subplot(111)
-		
+
 		if GraphError['Error']:
-		
+
 			try:
 
 				if self.IntervalY[1] < max(self.Y) + max(GraphError['values']):
@@ -760,7 +760,7 @@ class PlotCanvas(FigureCanvas):
 
 				if self.IntervalY[0] > min(self.Y) - min(GraphError['values']):
 					self.IntervalY[0] = min(self.Y) - min(GraphError['values'])*1.5
-			
+
 			except TypeError:
 
 				if self.IntervalY[1] < max(self.Y) + GraphError['values']:
@@ -768,9 +768,9 @@ class PlotCanvas(FigureCanvas):
 
 				if self.IntervalY[0] > min(self.Y) - GraphError['values']:
 					self.IntervalY[0] = min(self.Y) - GraphError['values']*1.5
-		
+
 			ax.errorbar(self.X, self.Y, yerr=GraphError['values'], fmt='ro', ecolor='r')
-		
+
 		ax.plot(xes, yes, 'r', self.X, self.Y, 'ro')
 		ax.set_xlabel(self.nameX)
 		ax.set_ylabel(self.nameY)
@@ -886,4 +886,4 @@ if __name__ == '__main__':
 	GraphError = {'Error': False, 'values' : None}
 	app = QApplication(sys.argv)
 	ex = GUI()
-	sys.exit(app.exec_())	
+	sys.exit(app.exec_())
