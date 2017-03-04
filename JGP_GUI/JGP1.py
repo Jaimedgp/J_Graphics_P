@@ -224,6 +224,51 @@ class Polynomial():
 		graph.setWindowTitle('Curve Fit')
 		window = graph.exec_()
 
+class Pepepe():
+
+	def __init__(self, Data, columns, error, m, path):
+		self.names = [Data[columns[0]].get_name(), Data[columns[1]].get_name()]
+		self.x = Data[columns[0]].get_list_values()
+		self.y = Data[columns[1]].get_list_values()
+		allData = [Data[columns[0]], Data[columns[1]]]
+		self.Dy = error
+		if type(self.Dy) == 'list':
+			allData.append(Variable("$\Delta y$", self.Dy))
+		self.m = float(m)
+
+		self.xm = [self.x[i]**self.m for i in range(len(self.x))]
+		allData.append(Variable("$x^m$", self.xm))
+		self.absxm = [abs(self.xm[i]) for i in range(len(self.xm))]
+		allData.append(Variable("$|x^m|$", self.absxm))
+		self.x2m = [self.x[i]**(2*self.m) for i in range(len(self.x))]
+		allData.append(Variable("$x^{2m}$", self.x2m))
+		self.yxm = [self.y[i]*self.xm[i] for i in range(len(self.x))]
+		allData.append(Variable("$yx^m$", self.yxm))
+		try:
+			self.absxmDy = [self.absxm[i]*self.Dy[i] for i in range(len(self.absxm))]
+		except TypeError:	
+			self.absxmDy = [self.absxm[i]*self.Dy for i in range(len(self.absxm))]
+		allData.append(Variable("$|x^m|\Delta y$", self.absxmDy))
+
+		saveLaTex(path, allData)
+
+	def Pepepeget_Ecuacion(self):
+		self.a = sum(self.yxm)/sum(self.x2m)
+
+		xes = np.arange(min(self.x),max(self.x), ((max(self.x)-min(self.x))/100))# create an array to represent the curve graphic on X axis
+		yes = [self.a*(xes[i]**self.m) for i in range(xes.size)]
+		return xes, yes
+
+	def PepepeDetails(self):
+		Da = sum(absxmDy)/sum(x2m)
+
+		text = 'y = %s * x ^ %s' %(self.a, self.m) + '\n' + 'Error de a = %s' %(Da)
+		graph = QMessageBox()
+		graph.setText(text)
+		graph.setWindowTitle('Curve Fit')
+		window = graph.exec_()
+
+
 class Fit1():
 	def sin_get_Ecuation(self, function):
 		equation, values = function.split(';')

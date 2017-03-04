@@ -108,6 +108,9 @@ class GUI(QMainWindow):
 		#polyGraph.setStatusTip('b * e^(a*x)')
 		polyGraph.triggered.connect(self.polynomial)
 
+		PepepeGraph = QAction('Pepe', self)
+		PepepeGraph.triggered.connect(self.pepepe)
+
 		generalGraph = QAction('fit 1', self)
 		##generalGraph.triggered.connect(self.general)
 
@@ -125,6 +128,7 @@ class GUI(QMainWindow):
 		fileMenu.addAction(logGraph)
 		fileMenu.addAction(expGraph)
 		fileMenu.addAction(polyGraph)
+		fileMenu.addAction(PepepeGraph)
 		fileMenu.addAction(sinusoidalGraph)
 		fileMenu.addAction(generalGraph)
 		fileMenu.addAction(details)
@@ -182,6 +186,24 @@ class GUI(QMainWindow):
 		text, ok = QInputDialog.getText(self, 'Polynomial', 'Grade:')
 		if ok:
 			projectes.set_index(text)
+
+		self.refresh()
+
+	def pepepe(self):
+		Function["graph"] = True
+		Function['type'] = "Pepepe"
+		if GraphError['Error']:
+
+			text, ok = QInputDialog.getText(self, 'Pepe adjust', 'Grade:')
+			if ok:
+				projectes.set_index(text)
+
+		else:
+
+			error = QMessageBox()
+			error.setText('Come on... set an error, please')
+			error.setWindowTitle('Curve Fit')
+			window = graph.exec_()
 
 		self.refresh()
 
@@ -718,16 +740,16 @@ class PlotCanvas(FigureCanvas):
 		self.X,	self.Y = self.functionGraph.Values()
 		self.IntervalX, self.IntervalY = self.functionGraph.IntervalLimits()
 
-		try:
-			if Function['type'] == None:
-				self.plotScratter()
-			else:
-				self.plotFunction()
-		except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
+		#try:
+		if Function['type'] == None:
+			self.plotScratter()
+		else:
+			self.plotFunction()
+		"""except (NameError, IndexError, ValueError, IOError, SyntaxError, TypeError):
 			error = QMessageBox()
-			error.setText("Error 99")
+			error.setText("Error 89")
 			error.setWindowTitle("Error 99")
-			window = error.exec_()
+			window = error.exec_()"""
 
 	def plotScratter(self):
 		ax = self.figure.add_subplot(111)
@@ -748,6 +770,11 @@ class PlotCanvas(FigureCanvas):
 			xes, yes = self.functionGraph.Expget_Ecuation()
 		elif Function['type'] == "Polynomial":
 			xes, yes = self.functionGraph.Polget_Ecuacion(projectes.get_index())
+		elif Function['type'] == 'Pepepe':
+			path = projectes.get_Path()
+			path = path.replace(".csv", ".tex")
+			pepepe = Pepepe(projectes.get_Table(), projectes.get_Represent(), GraphError['values'], projectes.get_index(), path)
+			xes, yes = pepepe.Pepepeget_Ecuacion()
 
 		ax = self.figure.add_subplot(111)
 
