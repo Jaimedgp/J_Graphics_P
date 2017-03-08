@@ -20,7 +20,7 @@ Once you have installed all the software listed under "Requisites" you can now b
 
 1. get the source
 
-```
+``` shell
 git clone https://github.com/Jaimedgp/python_utilities/python_utilities/JGP.py
 ```
   
