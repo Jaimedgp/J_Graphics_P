@@ -42,8 +42,6 @@ class Operations():
 		newIndex, self.action = equation.split("=")
 		self.newIndex = int(newIndex[1:])
 
-		self.main()
-
 	def main(self):
 
 		try:
@@ -62,10 +60,10 @@ class Operations():
 					eval(self.action)
 					return self.table, self.index
 				except ValueError:
-					return 0
-
+					error = 'Continue' 
+					
 		except KeyError:
-			self.index[newIndex] = str(newIndex)
+			self.index[self.newIndex] = str(self.newIndex)
 
 		try:
 			indexFunction = self.action.index("Errors(")
@@ -75,21 +73,21 @@ class Operations():
 		except ValueError:
 
 			try:
-				boolean = True
-				element = 0
-				self.action = self.action.replace('C', 'self.table[self.index[')
-				initialI = self.action.index('self.table[self.index[') + 22
-				finalI = self.action.index(']')
-				involvedColumn = self.action[initialI:finalI]
-				while boolean:
-					try:
-						element =self.action.index('self.table[self.index[', element, len(self.action)+23)
-						self.action = self.action[:element] + ']][i]' + self.action[element:]
-					except ValueError:
-						boolean = False
-				values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
-				self.table[str(newIndex)] = values
-				return self.table, self.index
+                boolean = True
+                element = 0
+                self.action = self.action.replace('C', 'self.table[self.index[')
+                initialI = self.action.index('self.table[self.index[') + 22
+                finalI = initialI+1
+                involvedColumn = int(self.action[initialI:finalI])
+                while boolean:
+                    try:
+                        element = self.action.index('self.table[self.index[', element, len(self.action))+23
+                        self.action = self.action[:element] + ']][i]' + self.action[element:]
+                    except ValueError:
+                        boolean = False
+                values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
+                self.table[str(self.newIndex)] = values
+                return self.table, self.index
 			except (NameError, IndexError, ValueError, IOError):
 				return 0
 

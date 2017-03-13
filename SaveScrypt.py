@@ -4,13 +4,14 @@
 #	write the data given in a CSV file
 #
 #		Required: - Data with name and values \ Dictionary(Table)
+#                 - Dictionary(table)'s indexes \ Dictionary(index)
 #				  - Directory and name of the file \ str(path)
 #
 #		Return: - Create the CSV file
 #
 ####################################################################
 
-def saveCSV(path, table):
+def saveCSV(table, index, path):
 
 	fw = open(path, 'w')
 
@@ -20,19 +21,17 @@ def saveCSV(path, table):
 		# length of the largest column
 	for name, values in table.iteritems():
 
-		title.append(name)
-
 		if length < len(values):
 			length = len(values)
+	
+	fw.write(' , '.join([index[i] for i in index]) + '\n')
 
-	title = ' , '.join(title)
-	title = title + '\n'
-
-	for name, values in table.iteritems():
-		row = [] # initialize the row
-		for i in range(len(values)):
+	# Columns' rows
+	for i in range(length):
+		row = []
+		for col in index:
 			try:
-				row.append(values[i])
+				row.append(str(table[index[col]][i]))
 			except IndexError:
 				row.append(' ')
 		row = ' , '.join(row)
@@ -46,13 +45,14 @@ def saveCSV(path, table):
 #	write the data given in a TXT file
 #
 #		Required: - Data with name and values \ Dictionary(Table)
+#                 - Dictionary(table)'s indexes \ Dictionary(index)
 #				  - Directory and name of the file \ str(path)
 #
 #		Return: - Create the TXT file
 #
 ####################################################################
 
-def saveTXT(path, table):
+def saveTXT(table, index, path):
 
 	fw = open(path, 'w')
 
@@ -62,19 +62,17 @@ def saveTXT(path, table):
 		# length of the largest column
 	for name, values in table.iteritems():
 
-		title.append(name)
-
 		if length < len(values):
 			length = len(values)
 
-	title = ' \t '.join(title)
-	title = title + '\n'
+	fw.write(' \t '.join([index[i] for i in index]) + '\n')
 
-	for name, values in table.iteritems():
-		row = [] # initialize the row
-		for i in range(len(values)):
+	# Columns' rows
+	for i in range(length):
+		row = []
+		for col in index:
 			try:
-				row.append(values[i])
+				row.append(str(table[index[col]][i]))
 			except IndexError:
 				row.append(' ')
 		row = ' \t '.join(row)
@@ -110,7 +108,7 @@ def saveLaTex(table, index, columns, path):
 	fw.write('\\begin{table}[H]'+'\n')
 	fw.write('\t'+'\\centering'+'\n')
 	fw.write('\t'+'\\begin{tabular}{ '+ ' '.join([ 'c ' for name in table ]) + '}'+'\n')
-	fw.write('\t'+'\t'+ ' \\'+ '\\\hline'+'\n')
+	fw.write('\t'+'\t'+ '\\'+ '\\\hline'+'\n')
 	fw.write('\t'+'\t'+'\\centering'+'\n')
 
 	title = [index[col] for col in columns]
@@ -122,16 +120,16 @@ def saveLaTex(table, index, columns, path):
 		row = []
 		for col in columns:
 			try:
-				row.append(table[index[col]][i])
+				row.append(str(table[index[col]][i]))
 			except IndexError:
 				row.append(' ')
-		fw.write('\t'+'\t'+'\t'+ ' & '.join(row) +' \\'+'\n')
+		fw.write('\t'+'\t'+'\t'+ ' & '.join(row) +' \\'+'\\'+'\n')
 
 	# last columns' row
 	row = []
 	for col in columns:
 		try:
-			row.append(table[index[col]][length])
+			row.append(str(table[index[col]][length-1]))
 		except IndexError:
 			row.append(' ')
 	fw.write('\t'+'\t'+'\t'+ ' & '.join(row) +' \\'+'\\\hline'+'\n')

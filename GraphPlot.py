@@ -36,9 +36,10 @@
 
 class GraphPlot():
 
-	def __init__(self, table, index, columns):
+	def __init__(self, table, index, columns, Error=0):
 		from math import fabs
 
+		self.error = Error
 		self.xAxis = table[index[columns[0]]]
 		self.yAxis = table[index[columns[1]]]
 
@@ -51,8 +52,11 @@ class GraphPlot():
 		ydiff = [fabs(self.yAxis[i+1] - self.yAxis[i]) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
 		ydiff = max(ydiff)
 
-		self.xInterval = [min(self.xInterval) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
-		self.yInterval = [min(self.yInterval) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
+		self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
+		self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
+
+	def setError(self, Error):
+		self.error = Error
 
 	def linearRegression(self):
 		from scipy import stats
