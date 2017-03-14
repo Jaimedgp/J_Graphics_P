@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QFileDialog, QInputDialog
 from PyQt5.QtGui import QIcon
 import sys
 
@@ -20,7 +20,7 @@ from MainLayout import MainLayout
 from MainTabses import TabMain
 
 from OpenScrypt import Open_file_CSV
-from SaveScrypt import saveCSV
+from SaveScrypt import saveCSV, saveLaTex
 
 class Main_Window_GUI(QMainWindow):
 
@@ -42,7 +42,7 @@ class Main_Window_GUI(QMainWindow):
 		openProject.setShortcut('Ctrl+T')
 		openProject.triggered.connect(self.openAProject)
 
-		deleteProject = QAction('Open Project', self)
+		deleteProject = QAction('Delete Project', self)
 		deleteProject.setShortcut('Ctrl+W')
 		deleteProject.triggered.connect(self.deleteAProject)
 
@@ -64,6 +64,7 @@ class Main_Window_GUI(QMainWindow):
 
 		saveTex = QAction('Export to LaTeX', self)
 		saveTex.setStatusTip('Export table to LaTex code')
+		saveTex.triggered.connect(self.saveIntoTex)
 
 		exitAction = QAction('Quit', self)
 		exitAction.setShortcut('Ctrl+Q')
@@ -90,6 +91,7 @@ class Main_Window_GUI(QMainWindow):
 
 		linearGraph = QAction('Linear', self)
 		linearGraph.setStatusTip('y = a*x + b')
+		linearGraph.triggered.connect(self.linearGraph)
 
 		logGraph = QAction('Logarithmic', self)
 		logGraph.setStatusTip('a*log(x) + b')
@@ -163,13 +165,48 @@ class Main_Window_GUI(QMainWindow):
 
 		saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
 
+	def saveIntoTex(self):
+
+		text, ok = QInputDialog.getText(self, 'Export LaTex', '    Columns <h6>e.j."1,2" for columns C1 and C2<\h6> or "all" for all table:')
+		if ok:
+			fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "LaTex files (*.tex)"))
+			fname = fname.split(',')[0]
+			fname = fname.split('(u')
+			fname = fname[1].split("'")
+
+		if text == 'all':
+			saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, TAB[tabLayout.currentIndex()].dataTable.index.keys(), fname[1])
+		else:
+			 
+			saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, eval(text), fname[1])
+
 	def graph(self):
 
 		TAB[tabLayout.currentIndex()].plotGraph()
 
+	def linearGraph(self):
+
+		TAB[tabLayout.currentIndex()].plotLinearGraph()	
+
 	def addLayout(self, layout):
 
 		self.setCentralWidget(layout)
+
+
+
+#########################################
+#		       Main Window	            #
+#########################################
+#
+#	FALTA EL COMANDO SELF.SHOW()
+#
+#	This class allows to make all the mathematical operations
+#
+#	Required: 
+#
+#	Return: 
+#
+##############################################################################
 
 if __name__ == '__main__':
 

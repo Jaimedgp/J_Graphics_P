@@ -34,6 +34,8 @@
 #
 #######################################################################################################
 
+import numpy as np
+
 class GraphPlot():
 
 	def __init__(self, table, index, columns, Error=0):
@@ -54,6 +56,8 @@ class GraphPlot():
 
 		self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
 		self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
+
+		self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
 
 	def setError(self, Error):
 		self.error = Error

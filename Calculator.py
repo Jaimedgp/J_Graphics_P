@@ -29,13 +29,6 @@ class Operations():
 
 	def __init__(self, equation, table, index):
 
-		c = 2.998*(10**8) # set speed of ligth
-		g = 9.81 #set universal gravitational constant
-		G = 6.67408 * (10**(-11)) # set gravitational constant
-		h = 6.626 * (10**(-34)) # set Planck constant
-		q = 1.6 * (10**(-19)) # set elementary charge
-		k = 8.988 * (10**(9)) # set coulomb's constant on the vacuum
-
 		self.table = table
 		self.index = index
 
@@ -43,6 +36,13 @@ class Operations():
 		self.newIndex = int(newIndex[1:])
 
 	def main(self):
+
+		c = 2.998*(10**8) # set speed of ligth
+		g = 9.81 #set universal gravitational constant
+		G = 6.67408 * (10**(-11)) # set gravitational constant
+		h = 6.626 * (10**(-34)) # set Planck constant
+		q = 1.6 * (10**(-19)) # set elementary charge
+		k = 8.988 * (10**(9)) # set coulomb's constant on the vacuum
 
 		try:
 			self.index[self.newIndex]
@@ -73,21 +73,21 @@ class Operations():
 		except ValueError:
 
 			try:
-                boolean = True
-                element = 0
-                self.action = self.action.replace('C', 'self.table[self.index[')
-                initialI = self.action.index('self.table[self.index[') + 22
-                finalI = initialI+1
-                involvedColumn = int(self.action[initialI:finalI])
-                while boolean:
-                    try:
-                        element = self.action.index('self.table[self.index[', element, len(self.action))+23
-                        self.action = self.action[:element] + ']][i]' + self.action[element:]
-                    except ValueError:
-                        boolean = False
-                values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
-                self.table[str(self.newIndex)] = values
-                return self.table, self.index
+				boolean = True
+				element = 0
+				self.action = self.action.replace('C', 'self.table[self.index[')
+				initialI = self.action.index('self.table[self.index[') + 22
+				finalI = initialI+1
+				involvedColumn = int(self.action[initialI:finalI])
+				while boolean:
+					try:
+						element = self.action.index('self.table[self.index[', element, len(self.action))+23
+						self.action = self.action[:element] + ']][i]' + self.action[element:]
+					except ValueError:
+						boolean = False
+				values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
+				self.table[str(self.newIndex)] = values
+				return self.table, self.index
 			except (NameError, IndexError, ValueError, IOError):
 				return 0
 

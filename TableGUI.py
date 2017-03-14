@@ -22,11 +22,11 @@ class TableData(QWidget):
 		
 		super(QWidget, self).__init__()
 
+		self.table = {'10': [], '1': [], '0': [], '3': [], '2': [], '5': [], '4': [], '7': [], '6': [], '9': [], '8': []}
+		self.index = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10'}
 		self.makingtable()
 
 		self.tableWidget.move(0,0)
-		self.table = {'0':[], '1':[]}
-		self.index = {0:'0', 1:'1'} 
 
 		# table selection change
 		self.tableWidget.itemChanged.connect(self.on_click)
@@ -36,7 +36,8 @@ class TableData(QWidget):
 		# Create table
 		self.tableWidget = QTableWidget()
 		self.tableWidget.setRowCount(20)
-		self.tableWidget.setColumnCount(10)
+		self.tableWidget.setColumnCount(11)
+		self.tableWidget.setHorizontalHeaderLabels(self.index.values())
 		for n in range(0,10):
 			for i in range(0,20):
 				self.tableWidget.setItem(i,n, QTableWidgetItem())
@@ -47,21 +48,34 @@ class TableData(QWidget):
 			boolean = True
 			while boolean:
 				try:
-					self.table[self.index[item.column()]][item.row()] = float(item.text())
-					boolean = False
+					if item.text() == '':
+						del self.table[self.index[item.column()]][item.row()]
+						boolean = False
+					else:
+						self.table[self.index[item.column()]][item.row()] = float(item.text())
+						boolean = False
 				except IndexError:
+					#print item.text()
 					self.table[self.index[item.column()]].append(float(item.text()))
 					boolean = False
 				except KeyError:
-					self.index[2] = '2'
-					self.table['2'] = []
-				except ValueError:
-					error = 1
+					self.table[str(len(self.index))] = []
+					self.index[len(self.index)] = str(len(self.index))
+
 
 	def reDoTable(self):
-		for n in range(len(self.index)):
-			for i in range(len(self.table[self.index[0]])):
-				self.tableWidget.setItem(i,n, QTableWidgetItem(str(self.table[self.index[n]][i])))
 
-	def get_DATA(self):
-		return self.table, self.index
+		self.tableWidget.setHorizontalHeaderLabels(self.index.values())
+
+		length = 0
+		# Largest column's length
+		for values in self.table.values():
+			if length < len(values):
+				length = len(values)
+
+		for n in range(len(self.index)):
+			for i in range(length):
+				try:
+					self.tableWidget.setItem(i,n, QTableWidgetItem(str(self.table[self.index[n]][i])))
+				except IndexError:
+					error = 1
