@@ -22,8 +22,8 @@ class TableData(QWidget):
 		
 		super(QWidget, self).__init__()
 
-		self.table = {'10': [], '1': [], '0': [], '3': [], '2': [], '5': [], '4': [], '7': [], '6': [], '9': [], '8': []}
-		self.index = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10'}
+		self.table = {} #{'10': [], '1': [], '0': [], '3': [], '2': [], '5': [], '4': [], '7': [], '6': [], '9': [], '8': []}
+		self.index = {} #{0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10'}
 		self.makingtable()
 
 		self.tableWidget.move(0,0)
@@ -49,18 +49,20 @@ class TableData(QWidget):
 			while boolean:
 				try:
 					if item.text() == '':
-						del self.table[self.index[item.column()]][item.row()]
+						if item.row() >= len(self.table[self.index[item.column()]]):
+							self.table[self.index[item.column()]]							
+						else:
+							del self.table[self.index[item.column()]][item.row()]
 						boolean = False
 					else:
 						self.table[self.index[item.column()]][item.row()] = float(item.text())
 						boolean = False
 				except IndexError:
-					#print item.text()
 					self.table[self.index[item.column()]].append(float(item.text()))
 					boolean = False
 				except KeyError:
-					self.table[str(len(self.index))] = []
-					self.index[len(self.index)] = str(len(self.index))
+					self.table[str(item.column())] = []
+					self.index[item.column()] = str(item.column())
 
 
 	def reDoTable(self):

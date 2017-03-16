@@ -19,8 +19,8 @@ import sys
 from MainLayout import MainLayout
 from MainTabses import TabMain
 
-from OpenScrypt import Open_file_CSV
-from SaveScrypt import saveCSV, saveLaTex
+from OpenScript import Open_file_CSV
+from SaveScript import saveCSV, saveLaTex
 
 class Main_Window_GUI(QMainWindow):
 
@@ -60,7 +60,8 @@ class Main_Window_GUI(QMainWindow):
 		saveAs.setStatusTip('Save table')
 
 		savepng = QAction('Save Figure', self)
-		saveAs.setStatusTip('Save Figure')
+		savepng.setStatusTip('Save Figure')
+		savepng.triggered.connect(self.saveFigure)
 
 		saveTex = QAction('Export to LaTeX', self)
 		saveTex.setStatusTip('Export table to LaTex code')
@@ -103,6 +104,7 @@ class Main_Window_GUI(QMainWindow):
 
 		pepepeGraph = QAction('Pepe', self)
 		pepepeGraph.setStatusTip('a*x^m')
+		pepepeGraph.triggered.connect(self.pepepeGraph)
 
 		details = QAction('Show Details', self)
 
@@ -180,6 +182,10 @@ class Main_Window_GUI(QMainWindow):
 			 
 			saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, eval(text), fname[1])
 
+	def saveFigure(self):
+
+		TAB[tabLayout.currentIndex()].saveGraph()		
+
 	def graph(self):
 
 		TAB[tabLayout.currentIndex()].plotGraph()
@@ -188,10 +194,13 @@ class Main_Window_GUI(QMainWindow):
 
 		TAB[tabLayout.currentIndex()].plotLinearGraph()	
 
+	def pepepeGraph(self):
+
+		TAB[tabLayout.currentIndex()].plotPepeGraph()
+
 	def addLayout(self, layout):
 
 		self.setCentralWidget(layout)
-
 
 
 #########################################

@@ -60,11 +60,15 @@ class Operations():
 					eval(self.action)
 					return self.table, self.index
 				except ValueError:
-					error = 'Continue' 
+					self.calculator()
+					return self.table, self.index
 					
 		except KeyError:
 			self.index[self.newIndex] = str(self.newIndex)
+			self.calculator()
+			return self.table, self.index
 
+	def calculator(self):
 		try:
 			indexFunction = self.action.index("Errors(")
 			self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
@@ -87,7 +91,7 @@ class Operations():
 						boolean = False
 				values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
 				self.table[str(self.newIndex)] = values
-				return self.table, self.index
+				self.table, self.index
 			except (NameError, IndexError, ValueError, IOError):
 				return 0
 

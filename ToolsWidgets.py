@@ -1,19 +1,23 @@
-
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLineEdit, QLabel, QFormLayout, QGroupBox, QComboBox, QTextEdit
+from PyQt5.QtCore import Qt
+
 
 #########################################
-#		       Main Window	            #
+#		  Calculate the Error	        #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#	This class create the object with the interface
+#		required to request the values to calculate the Error 
+#		with the function ErrorsCalculator from WidgetsScript
 #
-#	This class allows to make all the mathematical operations
+#	Required: - symbols \ Line Edit \ "Symbol Symbol"
+#			  - variables' values \ Line Edit \ "float, float"
+#			  - variables' error's values \ Line Edit \  "float, float"
+#			  - function \ Line Edit \ str(function)
 #
-#	Required: 
+#	On_click: CalculateErrors set a label with the result
 #
-#	Return: 
-#
-##############################################################################
+#########################################################################
 
 class CalculateError(QWidget):
 
@@ -21,72 +25,77 @@ class CalculateError(QWidget):
 	
 		super(QWidget, self).__init__()
 	
-		lbl1 = QLabel("<i>Simbolos<\i>", self)
-		self.textbox1 = QLineEdit(self)
+		symbLabl = QLabel("<i>Variables<\i>", self)
+		self.symbInput = QLineEdit(self)
 
-		lbl4 = QLabel("<i>Valores<\i>", self)
-		self.textbox4 = QLineEdit(self)
+		valsLabl = QLabel("<i>Values<\i>", self)
+		self.valsInput = QLineEdit(self)
 
-		lbl7 = QLabel("<i>Errores<\i>", self)
-		self.textbox7 = QLineEdit(self)
+		errLabl = QLabel("<i>Errors<\i>", self)
+		self.errInput = QLineEdit(self)
 
-		lbl8 = QLabel("<i>f = <\i>", self)
-		self.textbox8 = QLineEdit(self)
+		funcLabl = QLabel("<i>f = <\i>", self)
+		self.funcInput = QLineEdit(self)
+
+		calcButton = QPushButton('Calculate', self)
+		calcButton.clicked.connect(self.CalculateErrors)
 
 		hbox = QHBoxLayout()
-
-		button4 = QPushButton('Calculate', self)
-		# connect button to function on_click
-		button4.clicked.connect(self.CalculateErrors)
-
-		hbox.addWidget(button4)
+		hbox.addWidget(calcButton)
 		hbox.addStretch(1)
+
 		vbox = QVBoxLayout()
-		vbox.addWidget(self.textbox8)
+		vbox.addWidget(self.funcInput)
 		vbox.addLayout(hbox)
 
 		fbox = QFormLayout()
-		fbox.addRow(lbl1, self.textbox1)
-		fbox.addRow(lbl4, self.textbox4)
-		fbox.addRow(lbl7, self.textbox7)
-		fbox.addRow(lbl8, vbox)
+		fbox.addRow(symbLabl, self.symbInput)
+		fbox.addRow(valsLabl, self.valsInput)
+		fbox.addRow(errLabl, self.errInput)
+		fbox.addRow(funcLabl, vbox)
 
-		self.setLayout(fbox)
+		labelbox = QHBoxLayout()
+		self.result = QLabel('', self)
+		labelbox.addWidget(self.result)
+
+		VMainBox = QVBoxLayout()
+		VMainBox.addLayout(fbox)
+		VMainBox.addLayout(labelbox)
+
+		self.setLayout(VMainBox)
 
 
 	def CalculateErrors(self):
 
-		from WidgetsScrypt import ErrorsCalculator
+		from WidgetsScript import ErrorsCalculator
 
-		symbol = self.textbox1.text()
-		values = eval(self.textbox4.text())
-		errors = eval(self.textbox7.text())
-		function = str(self.textbox8.text())
+		symbol = self.symbInput.text()
+		values = eval(self.valsInput.text())
+		errors = eval(self.errInput.text())
+		function = str(self.funcInput.text())
 		
-		valorError = ErrorsCalculator(symbol, values, errors, function)
+		valuError = ErrorsCalculator(symbol, values, errors, function)
+
+		self.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.result.setText(str(valuError))
 
 
 #########################################
-#		       Main Window	            #
+#		       Error Bars	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#	This class create the object with the interface
+#		required to request the value/s of the graph's y-Axis 
+#	This object allows to set the error by a column's values, 
+#		percentage or a fixed value.
 #
-#	This class allows to make all the mathematical operations
-#
-#	Required: 
-#
-#	Return: 
-#
-##############################################################################
+################################################################
 
 class ErrorBars(QWidget):
 
-	def __init__(self, index):
+	def __init__(self):
 
 		super(QWidget, self).__init__()
-
-		self.index = index
 
 		self.VBox = QVBoxLayout()
 		self.set_Error_By_Column()
@@ -95,6 +104,7 @@ class ErrorBars(QWidget):
 
 		hBox = QHBoxLayout()
 
+		# Combo box to choose the error's type
 		self.MainCombo = QComboBox(self)
 		self.MainCombo.addItem("None")
 		self.MainCombo.addItem("% of value")
@@ -109,6 +119,8 @@ class ErrorBars(QWidget):
 		self.button = QPushButton('Plot', self)
 		VMainBox.addWidget(self.button)
 
+		self.Error = {"% of value":self.percenValue, "Fixed value":self.value, "Data column":self.errColumn}
+
 		self.setLayout(VMainBox)
 
 	def set_Error_By_Column(self):
@@ -118,13 +130,17 @@ class ErrorBars(QWidget):
 
 		vbox = QVBoxLayout()
 
-		self.combo = QComboBox(self)
-		for name in self.index.values():
-			self.combo.addItem(name)
+		self.errColumn = QComboBox(self)
 
-		vbox.addWidget(self.combo)
+		vbox.addWidget(self.errColumn)
 		column.setLayout(vbox)
 		self.VBox.addWidget(column)
+
+	def set_new_Columns_names(self, index):
+
+		self.errColumn.clear()
+		for name in index.values():
+			self.errColumn.addItem(name)
 
 	def set_Error_By_Fixed(self):
 		Fixed = QGroupBox()
@@ -138,12 +154,13 @@ class ErrorBars(QWidget):
 		self.VBox.addWidget(Fixed)
 
 	def set_Error_By_Percent(self):
+
 		Percent = QGroupBox()
 		Percent.setTitle('% of value')
 
 		vbox = QVBoxLayout()
-		self.percenteg = QLineEdit()
-		vbox.addWidget(self.percenteg)
+		self.percenValue = QLineEdit()
+		vbox.addWidget(self.percenValue)
 		Percent.setLayout(vbox)
 
 		self.VBox.addWidget(Percent)
@@ -153,9 +170,9 @@ class ErrorBars(QWidget):
 #		       Main Window	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
-#
-#	This class allows to make all the mathematical operations
+#	This class create the object with the interface
+#		required to request the values to calculate the hamiltonian
+#		with the function Hamiltonian from WidgetsScript
 #
 #	Required: 
 #
@@ -169,90 +186,85 @@ class Hamiltonian(QWidget):
 
 		super(QWidget, self).__init__()
 
-		lbl1 = QLabel("<i>r<sub>0<\sub><\i>", self)
-		self.textbox1 = QLineEdit(self)
+		r0Labl = QLabel("<i>r<sub>0<\sub><\i>", self)
+		self.r0Input = QLineEdit(self)
 
-		lbl2 = QLabel("<i>k<\i>", self)
-		self.textbox2 = QLineEdit(self)
+		kLabl = QLabel("<i>k<\i>", self)
+		self.kInput = QLineEdit(self)
 
-		lbl3 = QLabel("<i>l<sub>0<\sub><\i>", self)
-		self.textbox3 = QLineEdit(self)
+		l0labl = QLabel("<i>l<sub>0<\sub><\i>", self)
+		self.l0Input = QLineEdit(self)
 
-		lbl4 = QLabel("Masa/g", self)
-		self.textbox4 = QLineEdit(self)
+		mLabl = QLabel("Masa/g", self)
+		self.mInput = QLineEdit(self)
 
-		lbl5 = QLabel(u'\u03B8', self)
-		self.textbox5 = QLineEdit(self)
+		thetaLabl = QLabel(u'\u03B8', self)
+		self.thetaInput = QLineEdit(self)
 
-		lbl6 = QLabel("<i>V<sub>r<\sub><\i>", self)
-		self.textbox6 = QLineEdit(self)
+		vrLabl = QLabel("<i>V<sub>r<\sub><\i>", self)
+		self.vrInput = QLineEdit(self)
 
-		lbl7 = QLabel("<i>V<sub>&theta;<\sub><\i>", self)
-		self.textbox7 = QLineEdit(self)
+		vthetLabl = QLabel("<i>V<sub>&theta;<\sub><\i>", self)
+		self.vthetInput = QLineEdit(self)
 
-		lbl8 = QLabel("<i>n<\i>", self)
-		self.textbox8 = QLineEdit(self)
+		nLabl = QLabel("<i>n<\i>", self)
+		self.nInput = QLineEdit(self)
 
-		lbl9 = QLabel("<i>dt<\i>", self)
-		self.textbox9 = QLineEdit(self)
+		dtLabl = QLabel("<i>dt<\i>", self)
+		self.dtInput = QLineEdit(self)
 
-		self.button4 = QPushButton('Calculate', self)
+		self.calcButton = QPushButton('Calculate', self)
 
 		vbox = QVBoxLayout()
-		vbox.addWidget(self.textbox9)
-		vbox.addWidget(self.button4)
+		vbox.addWidget(self.dtInput)
+		vbox.addWidget(self.calcButton)
 
 		fbox1 = QFormLayout()
-		fbox1.addRow(lbl1, self.textbox1)
-		fbox1.addRow(lbl4, self.textbox4)
-		fbox1.addRow(lbl7, self.textbox7)
+		fbox1.addRow(r0Labl, self.r0Input)
+		fbox1.addRow(mLabl, self.mInput)
+		fbox1.addRow(vthetLabl, self.vthetInput)
 
 		fbox2 = QFormLayout()
-		fbox2.addRow(lbl2, self.textbox2)
-		fbox2.addRow(lbl5, self.textbox5)
-		fbox2.addRow(lbl8, self.textbox8)
+		fbox2.addRow(kLabl, self.kInput)
+		fbox2.addRow(thetaLabl, self.thetaInput)
+		fbox2.addRow(nLabl, self.nInput)
 
 		fbox3 = QFormLayout()
-		fbox3.addRow(lbl3, self.textbox3)
-		fbox3.addRow(lbl6, self.textbox6)
-		fbox3.addRow(lbl9, vbox)
+		fbox3.addRow(l0labl, self.l0Input)
+		fbox3.addRow(vrLabl, self.vrInput)
+		fbox3.addRow(dtLabl, vbox)
 
 		hbox = QHBoxLayout()
 		hbox.addLayout(fbox1)
 		hbox.addLayout(fbox2)
 		hbox.addLayout(fbox3)
 
-		self.button4.clicked.connect(self.calculate)
+		self.calcButton.clicked.connect(self.calculate)
 
 		self.setLayout(hbox)
 
 	def calculate(self):
 
-		m = float(self.textbox4.text())
-		k = float(self.textbox2.text())
-		l0 = float(self.textbox3.text())
-		r0 = float(self.textbox1.text())
-		theta0 = float(self.textbox5.text())
-		vr = float(self.textbox6.text())
-		vtheta = float(self.textbox7.text())
-		n = int(self.textbox8.text())
-		dt = float(self.textbox9.text())
+		m = float(self.mInput.text())
+		k = float(self.kInput.text())
+		l0 = float(self.l0Input.text())
+		r0 = float(self.r0Input.text())
+		theta0 = float(self.thetaInput.text())
+		vr = float(self.vrInput.text())
+		vtheta = float(self.vthetInput.text())
+		n = int(self.nInput.text())
+		dt = float(self.dtInput.text())
 
 		self.Path = Hamiltonian(m, k, l0, r0, theta0, vr, vtheta, n, dt)
-
 
 
 #########################################
 #		       Main Window	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
-#
-#	This class allows to make all the mathematical operations
-#
-#	Required: 
-#
-#	Return: 
+#	This class create the object with the interface
+#		required to make a new table or insert a nex column 
+#		as a CSV file.
 #
 ##############################################################################
 
@@ -266,15 +278,108 @@ class Terminal_for_table(QWidget):
 		hbox = QHBoxLayout()
 
 		self.edit = QTextEdit()
-		self.button1 = QPushButton('Add Columns', self)
-		#self.button1.clicked.connect(self.doAddColumns)
-		self.button2 = QPushButton('New Table', self)
-		#self.button2.clicked.connect(self.doChangeColumns)
+		self.pColButton = QPushButton('Add Columns', self)
+		#self.pColButton.clicked.connect(self.doAddColumns)
+		self.nwTblButton = QPushButton('New Table', self)
+		#self.nwTblButton.clicked.connect(self.doChangeColumns)
 
-		hbox.addWidget(self.button1)
-		hbox.addWidget(self.button2)
+		hbox.addWidget(self.pColButton)
+		hbox.addWidget(self.nwTblButton)
 
 		vbox.addWidget(self.edit)
 		vbox.addLayout(hbox)
 
 		self.setLayout(vbox)
+
+
+#########################################
+#		     Formula Entry	            #
+#########################################
+#
+#	This class create the object with the interface
+#		required to request the equation necessary to use the
+#		Operation class from Calculator
+#
+##################################################################
+
+class FormulaEntry(QWidget):
+
+	def __init__(self):
+
+		super(QWidget, self).__init__()
+
+		Formula = QGroupBox()
+		Formula.setTitle("Formula Entry")
+
+		hbox = QHBoxLayout()
+		vbox = QVBoxLayout()
+
+		self.lineEdit = QLineEdit(self)
+		self.runButton = QPushButton("Run", self)
+		####runButton.clicked.connect(self.formula_click)
+
+		vbox.addWidget(self.lineEdit)
+		hbox.addWidget(self.runButton)
+		hbox.addStretch(1)
+		vbox.addLayout(hbox)
+		Formula.setLayout(vbox)
+
+		Main = QHBoxLayout()
+		Main.addWidget(Formula)
+
+		self.setLayout(Main)
+
+
+#########################################
+#		       Graph Axes	            #
+#########################################
+#
+#	This class create the object with the interface
+#		required to request which columns want to represent
+#
+##################################################################
+
+class GraphAxes(QWidget):
+
+	def __init__(self):
+
+		super(QWidget, self).__init__()
+
+		graphics = QGroupBox()
+		graphics.setTitle("Graphics")
+
+		axesXLabl = QLabel("<h1>X</h1>", self)
+
+		axesYLabl = QLabel("<h1>Y</h1>", self)
+
+		self.axesXCombo = QComboBox(self)
+		self.axesYCombo = QComboBox(self)
+
+		fbox = QFormLayout()
+		fbox.addRow(axesXLabl, self.axesXCombo)
+		fbox.addRow(axesYLabl, self.axesYCombo)
+		
+		hbox = QHBoxLayout()
+		self.result = QLabel('', self)
+		hbox.addWidget(self.result)
+
+		VMainBox = QVBoxLayout()
+		VMainBox.addLayout(fbox)
+		VMainBox.addLayout(hbox)
+
+		graphics.setLayout(VMainBox)
+
+		Main = QHBoxLayout()
+		Main.addWidget(graphics)
+
+		self.setLayout(Main)
+
+	def setNames(self, index):
+
+		self.axesXLabl.clear()
+		for name in index.values():
+			self.axesXCombo.addItem(name)
+
+		self.axesYLabl.clear()
+		for name in index.values():
+			self.axesXCombo.addItem(name)

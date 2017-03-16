@@ -67,6 +67,8 @@ class GraphPlot():
 
 		slope, intercept, r_value, p_value, std_err = stats.linregress(self.xAxis, self.yAxis)
 
+		self.text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+
 		return slope, intercept
 
 	def logarithmicRegression(self):
@@ -87,6 +89,8 @@ class GraphPlot():
 		slope = (sumLnXY- sumY*sumLnX/len(self.xAxis))/(sumLn2X - sumLnX*sumLnX/len(self.xAxis))
 		intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.Dependent)
 
+		self.text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+
 		return slope, intercept
 
 	def exponentialRegression(self):
@@ -103,6 +107,8 @@ class GraphPlot():
 
 		intercept = exp(medy-slope*xMedian)
 
+		self.text = "    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+
 		return slope, intercept
 
 	def polynomialRegression(self, grade):
@@ -110,15 +116,28 @@ class GraphPlot():
 
 		parameters = np.polyfit(self.xAxis, self.yAxis, grade)
 
+		eqtion = 'y = ' + z[0] + '*x^' + str(len(parameters)-1)
+
+		for i in range(1, len(parameters)):
+			eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
+		
+		solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(parameters[0])
+		
+		for i in range(1, len(parameters)):
+			solution += "\n" + z[i] + ": " + "\t" + "%g" %(parameters[i])
+		
+		self.text = "    " + eqtion + solution
+
 		return parameters
 
-	def pepepe(self, error, m, path):
+	def pepepe(self, m, path):
 		from SaveScrypt import saveLaTex
 
-		Dy = error
+		if type(self.error) == float or type(self.error) == int:
+			self.error = [self.error for i in xrange(len(self.yAxis))]
 
-		table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta y$": Dy}
-		index = {0 : self.xTitle, 1 : yTitle, 2 : "$\Delta y$"}
+		table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta y$": self.error}
+		index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta y$"}
 		m = float(m)
 
 		xm = [ x**m for x in self.xAxis ]
@@ -137,13 +156,16 @@ class GraphPlot():
 		table["$yx^m$"] = yxm
 		index[6] = "$yx^m$"
 
-		try:
-			absxmDy = [absxm[i]*Dy[i] for i in range(len(absxm))]
-		except TypeError:
-			absxmDy = [absxmElement*Dy for absxmElement in absxm]
+		absxmDy = [absxm[i]*self.error[i] for i in range(len(absxm))]
 		table["$|x^m|\Delta y$"] = absxmDy
 		index[7] = "$|x^m|\Delta y$"
 
+
 		saveLaTex(table, index, [0,1,2,3,4,5,6,7], path)
 
-		return sum(self.yxm)/sum(self.x2m) , sum(absxmDy)/sum(x2m)
+		a = sum(yxm)/sum(x2m)
+		Da = sum(absxmDy)/sum(x2m)
+
+		self.text = 'y = %s * x ^ %s' %(a, m) + '\n' + 'Error de a = %s' %(Da)
+
+		return a , Da
