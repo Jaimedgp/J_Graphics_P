@@ -20,6 +20,7 @@ class MainLayout(QWidget):
 		self.widgetsLyout = QVBoxLayout()
 		
 		self.dataTable = TableData()
+		self.dataTable.tableWidget.itemChanged.connect(self.changeData)
 
 		self.ErrBar = ErrorBars()
 		self.Hamiltonian = Hamiltonian()
@@ -150,6 +151,39 @@ class MainLayout(QWidget):
 		self.result.setText(graph.text)
 
 		self.splitLyout.addWidget(self.Graph)
+
+	@pyqtSlot()
+	def changeData(self):
+
+		for item in self.dataTable.tableWidget.selectedItems():
+			boolean = True
+			while boolean:
+				try:
+					if item.text() == '':
+						if item.row() >= len(self.dataTable.table[self.dataTable.index[item.column()]]):
+							self.dataTable.table[self.dataTable.index[item.column()]]							
+						else:
+							del self.dataTable.table[self.dataTable.index[item.column()]][item.row()]
+						boolean = False
+					else:
+						self.dataTable.table[self.dataTable.index[item.column()]][item.row()] = float(item.text())
+						boolean = False
+				except IndexError:
+					self.dataTable.table[self.dataTable.index[item.column()]].append(float(item.text()))
+					boolean = False
+				except KeyError:
+					self.dataTable.table[str(item.column())] = []
+					self.dataTable.index[item.column()] = str(item.column())
+					self.ErrBar.set_new_Columns_names(self.dataTable.index)
+					self.GrphAxes.setNames(self.dataTable.index)
+
+
+
+
+
+
+
+
 
 	@pyqtSlot()
 	def formula_click(self):

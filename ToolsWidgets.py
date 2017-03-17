@@ -116,9 +116,6 @@ class ErrorBars(QWidget):
 		hBox.addLayout(self.VBox)
 		VMainBox.addLayout(hBox)
 
-		self.button = QPushButton('Plot', self)
-		VMainBox.addWidget(self.button)
-
 		self.Error = {"% of value":self.percenValue, "Fixed value":self.value, "Data column":self.errColumn}
 
 		self.setLayout(VMainBox)
@@ -376,10 +373,10 @@ class GraphAxes(QWidget):
 
 	def setNames(self, index):
 
-		self.axesXLabl.clear()
+		self.axesXCombo.clear()
 		for name in index.values():
 			self.axesXCombo.addItem(name)
 
-		self.axesYLabl.clear()
+		self.axesYCombo.clear()
 		for name in index.values():
-			self.axesXCombo.addItem(name)
+			self.axesYCombo.addItem(name)
