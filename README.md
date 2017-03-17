@@ -44,6 +44,8 @@ echo "alias JGP='python ./J_Graphics_P/MainWindow.py'" >> ~/.bashrc
 if it is not, you should download the zip with all the repository and unzip it:
 
 ``` shell
+cd
+
 unzip J_Graphics_P-Development.zip
 ```
 
