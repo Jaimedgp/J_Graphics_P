@@ -28,7 +28,7 @@
 
 Once you have installed all the software listed under "Requisites" you can now begin the installation process:
 
-####1. get the source
+#### 1. get the source
 
 if you had installed git you could run this command on your shell terminal
 
