@@ -47,6 +47,8 @@ class MainLayout(QWidget):
 		self.MainLyout.addLayout(dataLyout, 25)
 		self.MainLyout.addLayout(self.widgetsLyout, 7)
 
+		self.dataSaved = True
+
 		self.setLayout(self.MainLyout)
 
 	def plotLinearGraph(self):
@@ -155,6 +157,8 @@ class MainLayout(QWidget):
 	@pyqtSlot()
 	def changeData(self):
 
+		self.dataSaved = False
+
 		for item in self.dataTable.tableWidget.selectedItems():
 			boolean = True
 			while boolean:
@@ -176,14 +180,6 @@ class MainLayout(QWidget):
 					self.dataTable.index[item.column()] = str(item.column())
 					self.ErrBar.set_new_Columns_names(self.dataTable.index)
 					self.GrphAxes.setNames(self.dataTable.index)
-
-
-
-
-
-
-
-
 
 	@pyqtSlot()
 	def formula_click(self):

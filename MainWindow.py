@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QFileDialog, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QFileDialog, QInputDialog, QMessageBox
 from PyQt5.QtGui import QIcon
 import sys
 
@@ -44,7 +44,7 @@ class Main_Window_GUI(QMainWindow):
 
 		deleteProject = QAction('Delete Project', self)
 		deleteProject.setShortcut('Ctrl+W')
-		deleteProject.triggered.connect(self.deleteAProject)
+		deleteProject.triggered.connect(self.closeEvent)
 
 		openAction = QAction('Open file', self)
 		openAction.setShortcut('Ctrl+O')
@@ -141,10 +141,29 @@ class Main_Window_GUI(QMainWindow):
 		TAB.append(mainLayout2)
 
 		tabLayout.addTabs(mainLayout2)
+	
+	def closeProject(self):
 
-	def deleteAProject(self):
-		del TAB[tabLayout.currentIndex()]
-		tabLayout.deleteTabs(tabLayout.currentIndex())
+		if not TAB[tabLayout.currentIndex()].dataSaved:
+
+			reply = QMessageBox.information(self, ' ', "Save changes before closing?", QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Save)
+
+			if reply == QMessageBox.Save:
+
+				self.save()
+
+			
+			elif reply == QMessageBox.Discard:
+				
+				del TAB[tabLayout.currentIndex()]
+				
+				tabLayout.deleteTabs(tabLayout.currentIndex())
+
+		else:
+
+			del TAB[tabLayout.currentIndex()]
+				
+			tabLayout.deleteTabs(tabLayout.currentIndex())
 
 	def openFile(self):
 		fileName = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime', 'Text File (*.csv *.txt)')
@@ -166,6 +185,8 @@ class Main_Window_GUI(QMainWindow):
 		fname = fname[1].split("'")
 
 		saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
+
+		TAB[tabLayout.currentIndex()].dataSaved = True
 
 	def saveIntoTex(self):
 
@@ -197,6 +218,43 @@ class Main_Window_GUI(QMainWindow):
 	def pepepeGraph(self):
 
 		TAB[tabLayout.currentIndex()].plotPepeGraph()
+
+	def closeEvent(self, event):
+
+		boolean = True
+
+		for tab in TAB:
+			if not tab.dataSaved:
+				boolean = False
+
+		if boolean:
+		
+			event.accept()
+
+		else:
+
+			reply = QMessageBox.information(self, ' ', "Save changes before closing?", QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Save)
+
+			if reply == QMessageBox.Save:
+
+				for tab in TAB:
+					if not tab.dataSaved:
+
+						fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Calc files (*.csv *.txt)"))
+						fname = fname.split(',')[0]
+						fname = fname.split('(u')
+						fname = fname[1].split("'")
+
+						saveCSV(tab.dataTable.table, tab.dataTable.index, fname[1])
+
+				event.accept()
+
+			elif reply == QMessageBox.Discard:
+				event.accept()
+			else:
+				event.ignore()
+
+
 
 	def addLayout(self, layout):
 
