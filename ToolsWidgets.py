@@ -164,7 +164,7 @@ class ErrorBars(QWidget):
 
 
 #########################################
-#		       Main Window	            #
+#		       Hamiltonian	            #
 #########################################
 #
 #	This class create the object with the interface
@@ -256,7 +256,7 @@ class Hamiltonian(QWidget):
 
 
 #########################################
-#		       Main Window	            #
+#		    Terminal Window	            #
 #########################################
 #
 #	This class create the object with the interface
@@ -313,7 +313,6 @@ class FormulaEntry(QWidget):
 
 		self.lineEdit = QLineEdit(self)
 		self.runButton = QPushButton("Run", self)
-		####runButton.clicked.connect(self.formula_click)
 
 		vbox.addWidget(self.lineEdit)
 		hbox.addWidget(self.runButton)

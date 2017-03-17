@@ -20,7 +20,6 @@ from PyQt5.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QSizePolicy
 from PyQt5.QtCore import pyqtSlot
 
 class TableData(QWidget):
-	""" GUI Table to manage data in the interface """
 
 	def __init__(self):
 		

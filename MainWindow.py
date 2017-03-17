@@ -96,17 +96,18 @@ class Main_Window_GUI(QMainWindow):
 
 		logGraph = QAction('Logarithmic', self)
 		logGraph.setStatusTip('a*log(x) + b')
+		logGraph.triggered.connect(self.logarithmicGraph)
 
 		expGraph = QAction('Exponential', self)
 		expGraph.setStatusTip('b * e^(a*x)')
+		expGraph.triggered.connect(self.exponentialGraph)
 
 		polyGraph = QAction('Polynomial', self)
+		polyGraph.triggered.connect(self.polynomialGraph)
 
 		pepepeGraph = QAction('Pepe', self)
 		pepepeGraph.setStatusTip('a*x^m')
 		pepepeGraph.triggered.connect(self.pepepeGraph)
-
-		details = QAction('Show Details', self)
 
 		self.statusBar()
 
@@ -118,7 +119,6 @@ class Main_Window_GUI(QMainWindow):
 		graphMenu.addAction(expGraph)
 		graphMenu.addAction(polyGraph)
 		graphMenu.addAction(pepepeGraph)
-		graphMenu.addAction(details)
 
 	def toolsMenuBar(self):
 
@@ -151,7 +151,6 @@ class Main_Window_GUI(QMainWindow):
 			if reply == QMessageBox.Save:
 
 				self.save()
-
 			
 			elif reply == QMessageBox.Discard:
 				
@@ -172,8 +171,12 @@ class Main_Window_GUI(QMainWindow):
 
 			table, index = Open_file_CSV(fileName[0])
 
-			TAB[tabLayout.currentIndex()].dataTable.table = table
-			TAB[tabLayout.currentIndex()].dataTable.index = index
+			tab = TAB[tabLayout.currentIndex()]
+
+			tab.dataTable.table = table
+			tab.dataTable.index = index
+			tab.ErrBar.set_new_Columns_names(tab.dataTable.index)
+			tab.GrphAxes.setNames(tab.dataTable.index)
 
 			TAB[tabLayout.currentIndex()].dataTable.reDoTable()
 
@@ -213,7 +216,19 @@ class Main_Window_GUI(QMainWindow):
 
 	def linearGraph(self):
 
-		TAB[tabLayout.currentIndex()].plotLinearGraph()	
+		TAB[tabLayout.currentIndex()].plotLinearGraph()
+
+	def logarithmicGraph(self):
+
+		TAB[tabLayout.currentIndex()].plotLogGraph()
+
+	def exponentialGraph(self):
+
+		TAB[tabLayout.currentIndex()].plotExpGraph()
+
+	def polynomialGraph(self):
+
+		TAB[tabLayout.currentIndex()].plotPolyGraph()	
 
 	def pepepeGraph(self):
 

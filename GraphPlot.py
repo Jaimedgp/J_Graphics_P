@@ -5,9 +5,8 @@
 #	This class get and caulculate all needed
 #        values to plot a graph.
 #
-#	Required Attributes: - Columns values \ dict(table)
-#			             - Columns index \ dict(index)
-#                        - Indexes of the Columns you want to plot \ list(columns) [X-axis, Y-axis]
+#	Required Attributes: - Columns values \ list(valuesX, valuesY)
+#			             - Columns index \ list(str(TitleX), str(TitleY))
 #                        - Y-Axis' Error \ float or list \ by default is 0
 #
 #	Attributes: - X-axis values \ list(xAxis)
@@ -39,15 +38,15 @@ import numpy as np
 
 class GraphPlot():
 
-	def __init__(self, table, index, columns, Error=0):
+	def __init__(self, values, titles, Error=0):
 		from math import fabs
 
 		self.error = Error
-		self.xAxis = table[index[columns[0]]]
-		self.yAxis = table[index[columns[1]]]
+		self.xAxis = values[0]
+		self.yAxis = values[1]
 
-		self.xTitle = index[columns[0]]
-		self.yTitle = index[columns[1]]
+		self.xTitle = titles[0]
+		self.yTitle = titles[1]
 
 		xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
 		xdiff = max(xdiff)
@@ -88,7 +87,7 @@ class GraphPlot():
 			sumY2 += self.yAxis[i]**2
 
 		slope = (sumLnXY- sumY*sumLnX/len(self.xAxis))/(sumLn2X - sumLnX*sumLnX/len(self.xAxis))
-		intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.Dependent)
+		intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
 		self.text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
 
@@ -116,6 +115,7 @@ class GraphPlot():
 		import numpy as np
 
 		parameters = np.polyfit(self.xAxis, self.yAxis, grade)
+		z = map(chr, range(97, 123))
 
 		eqtion = 'y = ' + z[0] + '*x^' + str(len(parameters)-1)
 
@@ -131,8 +131,8 @@ class GraphPlot():
 
 		return parameters
 
-	def pepepe(self, m, path):
-		from SaveScrypt import saveLaTex
+	def pepepe(self, m, path=None):
+		from SaveScript import saveLaTex
 
 		if type(self.error) == float or type(self.error) == int:
 			self.error = [self.error for i in xrange(len(self.yAxis))]

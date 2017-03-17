@@ -29,6 +29,8 @@ class MainLayout(QWidget):
 		self.Formula = FormulaEntry()
 		self.Formula.runButton.clicked.connect(self.formula_click)
 		self.Terminal = Terminal_for_table()
+		#self.Terminal.pColButton.clicked.connect(self.addColumns)
+		#self.Terminal.nwTblButton.clicked.connect(self.changeColumns)
 
 		toolsTab = QTabWidget()
 		toolsTab.addTab(self.ErrBar, "Error Bars")
@@ -52,66 +54,20 @@ class MainLayout(QWidget):
 
 		self.setLayout(self.MainLyout)
 
-	def plotLinearGraph(self):
-
-		values = [self.combo.currentIndex(), self.combo1.currentIndex()]
-
-		types = self.errorBars.MainCombo.currentText()
-		
-		if types == "Fixed value":
-			error = float(self.errorBars.value.text())
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "Data column":
-			error = self.errorBars.combo.currentText()
-			error = self.dataTable.table[error]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "% of value":
-			error = float(self.errorBars.percenteg.text())
-			error = [ value* (error/100) for value in self.dataTable.table[str(values[1])] ]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-
-		else:
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values)
-
-		try:
-			self.Graph.set_linearGraph(graph)
-		except AttributeError:
-			self.Graph = Plot_Graph()
-			self.Graph.set_linearGraph(graph)
-
-		self.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-		self.result.setText(graph.text)
-
-		self.splitLyout.addWidget(self.Graph)
-
-	def saveGraph(self):
-
-		self.Graph.saveGraph()
-
 	def plotGraph(self):
-
-		values = [self.combo.currentIndex(), self.combo1.currentIndex()]
-
-		types = self.errorBars.MainCombo.currentText()
 		
-		if types == "Fixed value":
-			error = float(self.errorBars.value.text())
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "Data column":
-			error = self.errorBars.combo.currentText()
-			error = self.dataTable.table[error]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "% of value":
-			error = float(self.errorBars.percenteg.text())
-			error = [ value* (error/100) for value in self.dataTable.table[str(values[1])] ]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
+
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
 		else:
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values)
+			graph = GraphPlot(values, titles)
 
 		try:
 			self.Graph.setGraph(graph)
@@ -121,28 +77,124 @@ class MainLayout(QWidget):
 		self.Graph.setGraph(graph)
 		self.splitLyout.addWidget(self.Graph)
 
+	def plotLinearGraph(self):
+
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
+
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
+
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
+		else:
+			graph = GraphPlot(values, titles)
+
+		try:
+			self.Graph.set_linearGraph(graph)
+		except AttributeError:
+			self.Graph = Plot_Graph()
+			self.Graph.set_linearGraph(graph)
+
+		self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.GrphAxes.result.setText(graph.text)
+
+		self.splitLyout.addWidget(self.Graph)
+
+	def plotLogGraph(self):
+
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
+
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
+
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
+		else:
+			graph = GraphPlot(values, titles)
+
+		try:
+			self.Graph.set_logGraph(graph)
+		except AttributeError:
+			self.Graph = Plot_Graph()
+			self.Graph.set_logGraph(graph)
+
+		self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.GrphAxes.result.setText(graph.text)
+
+		self.splitLyout.addWidget(self.Graph)
+
+	def plotExpGraph(self):
+
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
+
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
+
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
+		else:
+			graph = GraphPlot(values, titles)
+
+		try:
+			self.Graph.set_expGraph(graph)
+		except AttributeError:
+			self.Graph = Plot_Graph()
+			self.Graph.set_expGraph(graph)
+
+		self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.GrphAxes.result.setText(graph.text)
+
+		self.splitLyout.addWidget(self.Graph)
+
+	def plotPolyGraph(self):
+
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
+
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
+
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
+		else:
+			graph = GraphPlot(values, titles)
+
+		try:
+			self.Graph.set_polyGraph(graph)
+		except AttributeError:
+			self.Graph = Plot_Graph()
+			self.Graph.set_polyGraph(graph)
+
+		self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.GrphAxes.result.setText(graph.text)
+
+		self.splitLyout.addWidget(self.Graph)
+
 	def plotPepeGraph(self):
 
-		values = [self.combo.currentIndex(), self.combo1.currentIndex()]
+		axesXTitle = self.GrphAxes.axesXCombo.currentText()
+		axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-		types = self.errorBars.MainCombo.currentText()
-		
-		if types == "Fixed value":
-			error = float(self.errorBars.value.text())
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "Data column":
-			error = self.errorBars.combo.currentText()
-			error = self.dataTable.table[error]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
-		
-		elif types == "% of value":
-			error = float(self.errorBars.percenteg.text())
-			error = [ value* (error/100) for value in self.dataTable.table[str(values[1])] ]
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values, error)
+		values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+		titles = [ axesXTitle , axesYTitle ]
 
+		types = self.ErrBar.MainCombo.currentText()
+		if types != 'None':
+			error = eval(self.ErrBar.Error[types])
+			graph = GraphPlot(values, titles, error)
 		else:
-			graph = GraphPlot(self.dataTable.table, self.dataTable.index, values)
+			graph = GraphPlot(values, titles)
 
 		try:
 			self.Graph.set_PepepeGraph(graph)
@@ -150,10 +202,14 @@ class MainLayout(QWidget):
 			self.Graph = Plot_Graph()
 			self.Graph.set_PepepeGraph(graph)
 
-		self.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-		self.result.setText(graph.text)
+		self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+		self.GrphAxes.result.setText(graph.text)
 
 		self.splitLyout.addWidget(self.Graph)
+
+	def saveGraph(self):
+
+		self.Graph.saveGraph()
 
 	@pyqtSlot()
 	def changeData(self):
