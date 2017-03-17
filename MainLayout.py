@@ -27,6 +27,7 @@ class MainLayout(QWidget):
 		self.CalcError = CalculateError()
 		self.GrphAxes = GraphAxes()
 		self.Formula = FormulaEntry()
+		self.Formula.runButton.clicked.connect(self.formula_click)
 		self.Terminal = Terminal_for_table()
 
 		toolsTab = QTabWidget()
@@ -183,9 +184,10 @@ class MainLayout(QWidget):
 
 	@pyqtSlot()
 	def formula_click(self):
-		table, index = Operations( self.lineEdit.text(), self.dataTable.table, self.dataTable.index ).main()
+		table, index = Operations( self.Formula.lineEdit.text(), self.dataTable.table, self.dataTable.index ).main()
 
 		self.dataTable.table = table
 		self.dataTable.index = index
 		self.dataTable.reDoTable()
-		self.redoNmaes()
+		self.ErrBar.set_new_Columns_names(self.dataTable.index)
+		self.GrphAxes.setNames(self.dataTable.index)
