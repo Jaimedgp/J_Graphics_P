@@ -2,15 +2,19 @@
 #		       Table Layout	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#	This class create the object with the interface required 
+#		to generate a Table Widgets in which the data are going
+#		to be introduce.
 #
-#	This class allows to make all the mathematical operations
+#	Attributes: - The Table widget \ QTableWidget(tableWidget)
+#				- Columns values \ dict(table)
+#			    - Columns index \ dict(index)
 #
-#	Required: 
+#	reDoTable: this function update the table widget
+#				with the new values and names of the 
+#				columns (table, index).
 #
-#	Return: 
-#
-##############################################################################
+#####################################################################
 
 from PyQt5.QtWidgets import QWidget, QTableWidget, QTableWidgetItem, QSizePolicy
 from PyQt5.QtCore import pyqtSlot
@@ -33,8 +37,6 @@ class TableData(QWidget):
 		for n in range(0,10):
 			for i in range(0,20):
 				self.tableWidget.setItem(i,n, QTableWidgetItem())
-		
-		# table selection change
 		
 	def reDoTable(self):
 

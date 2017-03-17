@@ -8,6 +8,7 @@
 #	Required Attributes: - Columns values \ dict(table)
 #			             - Columns index \ dict(index)
 #                        - Indexes of the Columns you want to plot \ list(columns) [X-axis, Y-axis]
+#                        - Y-Axis' Error \ float or list \ by default is 0
 #
 #	Attributes: - X-axis values \ list(xAxis)
 #               - Y-axis values \ list(yAxis)
