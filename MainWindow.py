@@ -2,7 +2,7 @@
 #		       Main Window	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#	this class is my class and in my class I write what I want
 #
 #	This class allows to make all the mathematical operations
 #
