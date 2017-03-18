@@ -2,7 +2,7 @@
 #		       Main Window	            #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#	This class create the object required
 #
 #	This class allows to make all the mathematical operations
 #
