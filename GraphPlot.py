@@ -121,12 +121,12 @@ class GraphPlot():
 
 		for i in range(1, len(parameters)):
 			eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
-		
+
 		solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(parameters[0])
-		
+
 		for i in range(1, len(parameters)):
 			solution += "\n" + z[i] + ": " + "\t" + "%g" %(parameters[i])
-		
+
 		self.text = "    " + eqtion + solution
 
 		return parameters
@@ -141,17 +141,24 @@ class GraphPlot():
 		index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta y$"}
 		m = float(m)
 
-		xm = [ x**m for x in self.xAxis ]
+        if m < 0:
+            division0 = lambda x, m: x**m if x != 0 else 0
+            xm = [ division0(x,m) for x in self.xAxis ]
+            division0 = lambda x, m : x**(2*m) if x != 0 else 0
+            x2m = [ division0(x,m) for x in self.xAxis ]
+
+        else:
+            xm = [ x**m for x in self.xAxis ]
+            x2m = [ x**(2*m) for x in self.xAxis ]
+
 		table["$x^m$"] = xm
+		table["$x^{2m}$"] = x2m
 		index[3] = "$x^m$"
+		index[5] = "$x^{2m}$"
 
 		absxm = [ abs(xmElement) for xmElement in xm ]
 		table["$|x^m|$"] = absxm
 		index[4] = "$|x^m|$"
-
-		x2m = [ x**(2*m) for x in self.xAxis ]
-		table["$x^{2m}$"] = x2m
-		index[5] = "$x^{2m}$"
 
 		yxm = [ self.yAxis[i] * xm[i] for i in range(len(xm)) ]
 		table["$yx^m$"] = yxm
