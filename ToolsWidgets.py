@@ -22,9 +22,9 @@ from PyQt5.QtCore import Qt
 class CalculateError(QWidget):
 
 	def __init__(self):
-	
+
 		super(QWidget, self).__init__()
-	
+
 		symbLabl = QLabel("<i>Variables<\i>", self)
 		self.symbInput = QLineEdit(self)
 
@@ -73,7 +73,7 @@ class CalculateError(QWidget):
 		values = eval(self.valsInput.text())
 		errors = eval(self.errInput.text())
 		function = str(self.funcInput.text())
-		
+
 		valuError = ErrorsCalculator(symbol, values, errors, function)
 
 		self.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
@@ -354,7 +354,7 @@ class GraphAxes(QWidget):
 		fbox = QFormLayout()
 		fbox.addRow(axesXLabl, self.axesXCombo)
 		fbox.addRow(axesYLabl, self.axesYCombo)
-		
+
 		hbox = QHBoxLayout()
 		self.result = QLabel('', self)
 		hbox.addWidget(self.result)

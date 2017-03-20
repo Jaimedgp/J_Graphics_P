@@ -18,7 +18,7 @@ class MainLayout(QWidget):
 
 		dataLyout = QHBoxLayout()
 		self.widgetsLyout = QVBoxLayout()
-		
+
 		self.dataTable = TableData()
 		self.dataTable.tableWidget.itemChanged.connect(self.changeData)
 
@@ -41,7 +41,7 @@ class MainLayout(QWidget):
 		self.widgetsLyout.addWidget(self.GrphAxes)
 		self.widgetsLyout.addWidget(self.Formula)
 		self.widgetsLyout.addWidget(self.Terminal)
-		
+
 		self.splitLyout = QSplitter(Qt.Vertical)
 		self.splitLyout.setGeometry(0, 0, 1500, 1000)
 		self.splitLyout.addWidget(self.dataTable.tableWidget)
@@ -55,7 +55,7 @@ class MainLayout(QWidget):
 		self.setLayout(self.MainLyout)
 
 	def plotGraph(self):
-		
+
 		axesXTitle = self.GrphAxes.axesXCombo.currentText()
 		axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
@@ -64,7 +64,12 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -87,7 +92,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -113,7 +122,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -139,7 +152,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -165,7 +182,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -191,7 +212,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-			error = eval(self.ErrBar.Error[types])
+            try:
+                error = eval(self.ErrBar.Error[types].text())
+            except AttributeError:
+                error = self.ErrBar.Error[types].currentText()
+                error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -222,7 +247,7 @@ class MainLayout(QWidget):
 				try:
 					if item.text() == '':
 						if item.row() >= len(self.dataTable.table[self.dataTable.index[item.column()]]):
-							self.dataTable.table[self.dataTable.index[item.column()]]							
+							self.dataTable.table[self.dataTable.index[item.column()]]
 						else:
 							del self.dataTable.table[self.dataTable.index[item.column()]][item.row()]
 						boolean = False
