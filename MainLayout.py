@@ -64,12 +64,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -92,11 +91,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -122,11 +121,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -152,11 +151,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -182,11 +181,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)
@@ -212,11 +211,11 @@ class MainLayout(QWidget):
 
 		types = self.ErrBar.MainCombo.currentText()
 		if types != 'None':
-            try:
-                error = eval(self.ErrBar.Error[types].text())
-            except AttributeError:
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
+			try:
+				error = eval(self.ErrBar.Error[types].text())
+			except AttributeError:
+				error = self.ErrBar.Error[types].currentText()
+				error = self.dataTable.table[error]
 			graph = GraphPlot(values, titles, error)
 		else:
 			graph = GraphPlot(values, titles)

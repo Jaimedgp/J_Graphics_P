@@ -46,14 +46,12 @@ class Operations():
 
 		try:
 			self.index[self.newIndex]
-
 			try:
 				indexFunction = self.action.index("name(")
 				self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
 				eval(self.action)
 				return self.table, self.index
 			except ValueError:
-
 				try:
 					indexFunction = self.action.index("delete(")
 					self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
@@ -62,7 +60,7 @@ class Operations():
 				except ValueError:
 					self.calculator()
 					return self.table, self.index
-					
+
 		except KeyError:
 			self.index[self.newIndex] = str(self.newIndex)
 			self.calculator()
@@ -73,7 +71,6 @@ class Operations():
 			indexFunction = self.action.index("Errors(")
 			self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
 			eval(self.action)
-			return self.table, self.index
 		except ValueError:
 
 			try:

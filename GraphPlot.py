@@ -141,15 +141,15 @@ class GraphPlot():
 		index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta y$"}
 		m = float(m)
 
-        if m < 0:
-            division0 = lambda x, m: x**m if x != 0 else 0
-            xm = [ division0(x,m) for x in self.xAxis ]
-            division0 = lambda x, m : x**(2*m) if x != 0 else 0
-            x2m = [ division0(x,m) for x in self.xAxis ]
+		if m < 0:
+			division0 = lambda x, m: x**m if x != 0 else 0
+			xm = [ division0(x,m) for x in self.xAxis ]
+			division0 = lambda x, m : x**(2*m) if x != 0 else 0
+			x2m = [ division0(x,m) for x in self.xAxis ]
 
-        else:
-            xm = [ x**m for x in self.xAxis ]
-            x2m = [ x**(2*m) for x in self.xAxis ]
+		else:
+			xm = [ x**m for x in self.xAxis ]
+			x2m = [ x**(2*m) for x in self.xAxis ]
 
 		table["$x^m$"] = xm
 		table["$x^{2m}$"] = x2m
