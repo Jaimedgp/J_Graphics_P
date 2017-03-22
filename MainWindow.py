@@ -44,7 +44,7 @@ class Main_Window_GUI(QMainWindow):
 
 		deleteProject = QAction('Delete Project', self)
 		deleteProject.setShortcut('Ctrl+W')
-		deleteProject.triggered.connect(self.closeEvent)
+		deleteProject.triggered.connect(self.closeProject)
 
 		openAction = QAction('Open file', self)
 		openAction.setShortcut('Ctrl+O')
@@ -141,7 +141,7 @@ class Main_Window_GUI(QMainWindow):
 		TAB.append(mainLayout2)
 
 		tabLayout.addTabs(mainLayout2)
-	
+
 	def closeProject(self):
 
 		if not TAB[tabLayout.currentIndex()].dataSaved:
@@ -151,17 +151,17 @@ class Main_Window_GUI(QMainWindow):
 			if reply == QMessageBox.Save:
 
 				self.save()
-			
+
 			elif reply == QMessageBox.Discard:
-				
+
 				del TAB[tabLayout.currentIndex()]
-				
+
 				tabLayout.deleteTabs(tabLayout.currentIndex())
 
 		else:
 
 			del TAB[tabLayout.currentIndex()]
-				
+
 			tabLayout.deleteTabs(tabLayout.currentIndex())
 
 	def openFile(self):
@@ -203,12 +203,12 @@ class Main_Window_GUI(QMainWindow):
 		if text == 'all':
 			saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, TAB[tabLayout.currentIndex()].dataTable.index.keys(), fname[1])
 		else:
-			 
+
 			saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, eval(text), fname[1])
 
 	def saveFigure(self):
 
-		TAB[tabLayout.currentIndex()].saveGraph()		
+		TAB[tabLayout.currentIndex()].saveGraph()
 
 	def graph(self):
 
@@ -228,7 +228,7 @@ class Main_Window_GUI(QMainWindow):
 
 	def polynomialGraph(self):
 
-		TAB[tabLayout.currentIndex()].plotPolyGraph()	
+		TAB[tabLayout.currentIndex()].plotPolyGraph()
 
 	def pepepeGraph(self):
 
@@ -243,7 +243,7 @@ class Main_Window_GUI(QMainWindow):
 				boolean = False
 
 		if boolean:
-		
+
 			event.accept()
 
 		else:
