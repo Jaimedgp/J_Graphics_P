@@ -41,17 +41,20 @@ class GraphPlot():
 	def __init__(self, values, titles, Error=0):
 		from math import fabs
 
-		self.error = Error
 		self.xAxis = values[0]
 		self.yAxis = values[1]
 
 		self.xTitle = titles[0]
 		self.yTitle = titles[1]
+		
+		self.error = Error
+		if type(self.error) == float or type(self.error) == int:
+			self.error = [self.error for i in xrange(len(self.yAxis))]
 
 		xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
 		xdiff = max(xdiff)
 
-		ydiff = [fabs(self.yAxis[i+1] - self.yAxis[i]) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
+		ydiff = [fabs((self.yAxis[i+1]+self.error[i+1]) - (self.yAxis[i]-self.error[i])) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
 		ydiff = max(ydiff)
 
 		self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
@@ -133,9 +136,6 @@ class GraphPlot():
 
 	def pepepe(self, m, path=None):
 		from SaveScript import saveLaTex
-
-		if type(self.error) == float or type(self.error) == int:
-			self.error = [self.error for i in xrange(len(self.yAxis))]
 
 		table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta y$": self.error}
 		index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta y$"}
