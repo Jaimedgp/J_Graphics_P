@@ -42,6 +42,20 @@ class Plot_Graph(FigureCanvas):
 		axes.set_ylim(self.Graph.yInterval)
 		self.draw()
 
+	def set_Hamil_Graph(self, GraphPlot):
+		self.Graph = GraphPlot
+
+		axes = self.fig.add_subplot(111)
+
+		axes.clear()
+
+		axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'b')
+		axes.set_xlabel(self.Graph.xTitle)
+		axes.set_ylabel(self.Graph.yTitle)
+		axes.set_xlim(self.Graph.xInterval)
+		axes.set_ylim(self.Graph.yInterval)
+		self.draw()
+
 	def set_linearGraph(self, GraphPlot):
 
 		self.Graph = GraphPlot

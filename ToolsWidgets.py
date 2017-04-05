@@ -238,9 +238,17 @@ class Hamiltonian(QWidget):
 
 		self.calcButton.clicked.connect(self.calculate)
 
-		self.setLayout(hbox)
+		mainVbox = QVBoxLayout()
+		mainVbox.addLayout(hbox)
+
+		self.graphLayout = QHBoxLayout()
+		mainVbox.addLayout(self.graphLayout)
+
+		self.setLayout(mainVbox)
 
 	def calculate(self):
+
+		from WidgetsScript import Hamiltonian as Hamil
 
 		m = float(self.mInput.text())
 		k = float(self.kInput.text())
@@ -252,7 +260,23 @@ class Hamiltonian(QWidget):
 		n = int(self.nInput.text())
 		dt = float(self.dtInput.text())
 
-		self.Path = Hamiltonian(m, k, l0, r0, theta0, vr, vtheta, n, dt)
+		self.table, self.index = Hamil(m, k, l0, r0, theta0, vr, vtheta, n, dt)
+
+		self.graph()
+
+	def graph(self):
+
+		from PlotGraph import Plot_Graph
+		from GraphPlot import GraphPlot
+
+		values = [self.table[self.index[0]], self.table[self.index[3]]]
+		names = [self.index[0], self.index[3]]
+
+		graph = GraphPlot(values, names)
+		Graphic = Plot_Graph()
+		Graphic.set_Hamil_Graph(graph)
+
+		self.graphLayout.addWidget(Graphic)
 
 
 #########################################

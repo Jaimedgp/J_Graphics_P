@@ -19,16 +19,20 @@
 
 def Hamiltonian(m, k, l0, r0, theta0, vr, vtheta, n, dt):
 
-	path = "./File.csv"
-	fw = open(path, 'w')
+	dataT = []
+	dataR = []
+	dataTheta = []
+	dataH = []
 
 	t = 0.0
 	pr0 = m*vr # initial radial moment
 	ptheta0 = m*r0*r0*vtheta # initial angular moment
 	h = ptheta0*ptheta0/(2.0*m*r0*r0)+pr0*pr0/(2.0*m)+(k/2.0)*(r0-l0)*(r0-l0)
 
-	fw.write("Tiempo/s , Radio/cm , Angulo/rad , Hamiltoniano"+"\n")
-	fw.write('%g' %(t)+" , "+'%g' %(r0)+" , " +'%g' %(theta0)+" , "+'%g' %(h)+"\n")
+	dataT.append(t)
+	dataR.append(r0)
+	dataTheta.append(theta0)
+	dataH.append(h)
 
 	for i in range(1,n):
 		derR = pr0/m
@@ -42,15 +46,23 @@ def Hamiltonian(m, k, l0, r0, theta0, vr, vtheta, n, dt):
 		ptheta = ptheta0+dt*derPtheta
 		h = ptheta*ptheta/(2.0*m*r*r)+pr*pr/(2.0*m)+(k/2.0)*(r-l0)*(r-l0)
 
-		fw.write('%g' %(t)+" , "+'%g' %(r)+" , " +'%g' %(theta)+" , "+'%g' %(h)+"\n")
+		dataT.append(t)
+		dataR.append(r)
+		dataTheta.append(theta)
+		dataH.append(h)
 
 		r0 = r
 		theta0 = theta
 		pr0 = pr
 		ptheta0 = ptheta
 
-	fw.close()
-	return path
+	data = [dataT, dataR, dataTheta, dataH]
+	names = ["$t/s$", "$r/cm$", "$\Theta/rad$", "$H/J$"]
+
+	table = {names[i]:data[i] for i in range(len(data))}
+	index = {i:names[i] for i in range(len(names))}
+
+	return table, index
 
 
 #########################################
