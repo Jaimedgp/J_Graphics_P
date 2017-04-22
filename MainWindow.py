@@ -269,8 +269,6 @@ class Main_Window_GUI(QMainWindow):
 			else:
 				event.ignore()
 
-
-
 	def addLayout(self, layout):
 
 		self.setCentralWidget(layout)

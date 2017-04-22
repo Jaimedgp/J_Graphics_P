@@ -63,6 +63,7 @@ class GraphPlot():
 		self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
 
 	def setError(self, Error):
+		
 		self.error = Error
 
 	def linearRegression(self):
