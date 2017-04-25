@@ -21,7 +21,6 @@
 >* [Numpy](http://www.numpy.org/) 
 >* [matplotlib](http://matplotlib.org/) 
 >* [SciPy](https://www.scipy.org/install.html)
-
 > You could download [Anaconda](https://www.continuum.io/downloads) for Python 2.7 which provides it. The version for Python 3.5 is not compatible and matplotlib.pyplot does not work
 
 ## <a name="installation"></a> 2. Installation
