@@ -47,13 +47,13 @@ if it is not, you should download the zip with all the repository and unzip it:
 ``` shell
 cd
 
-unzip J_Graphics_P-Development.zip
+unzip J_Graphics_P-master.zip
 ```
 
 you could also add an alias on your .bashrc file running this command [Recommended]
 
 ``` shell
-echo "alias JGP='python ./J_Graphics_P-Development/MainWindow.py'" >> ~/.bashrc
+echo "alias JGP='python ./J_Graphics_P-master/MainWindow.py'" >> ~/.bashrc
 ```
 
 ## <a name="UserGuide"></a> 3. User's guide
