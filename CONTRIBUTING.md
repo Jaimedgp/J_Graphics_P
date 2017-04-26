@@ -42,4 +42,8 @@ Ademas la forma en la que el usuario interactue con esta nueva funcion puede ser
 
 ### <a name="escalas"></a> Escala de los ejes
 
-A la hora de crear la ventana de la gráfica se han de definir los intervalos de los ejes entre los cuales se quiere hacer la representación. 
+A la hora de crear la ventana de la gráfica se han de definir los intervalos de los ejes entre los cuales se quiere hacer la representación.
+
+### <a name="Aleatoriedad"></a> Aleatoriedad del Formula Entry
+
+El Formula Entry no permite modificar columnas con datos
