@@ -38,143 +38,146 @@ import numpy as np
 
 class GraphPlot():
 
-	def __init__(self, values, titles, Error=0):
-		from math import fabs
+    def __init__(self, values, titles, Error=0):
+        from math import fabs
 
-		self.xAxis = values[0]
-		self.yAxis = values[1]
+        self.xAxis = values[0]
+        self.yAxis = values[1]
 
-		self.xTitle = titles[0]
-		self.yTitle = titles[1]
-		
-		self.error = Error
-		if type(self.error) == float or type(self.error) == int:
-			self.error = [self.error for i in xrange(len(self.yAxis))]
+        self.xTitle = titles[0]
+        self.yTitle = titles[1]
 
-		xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
-		xdiff = max(xdiff)
+        self.error = Error
+        if type(self.error) == float or type(self.error) == int:
+            self.error = [self.error for i in xrange(len(self.yAxis))]
 
-		ydiff = [fabs((self.yAxis[i+1]+self.error[i+1]) - (self.yAxis[i]-self.error[i])) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
-		ydiff = max(ydiff)
+        xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
+        xdiff = max(xdiff)
 
-		self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
-		self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
+        ydiff = [fabs((self.yAxis[i+1]+self.error[i+1]) - (self.yAxis[i]-self.error[i])) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
+        ydiff = max(ydiff)
 
-		self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
+        self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
+        self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
 
-	def setError(self, Error):
-		
-		self.error = Error
+        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
 
-	def linearRegression(self):
-		from scipy import stats
+    def setError(self, Error):
 
-		slope, intercept, r_value, p_value, std_err = stats.linregress(self.xAxis, self.yAxis)
+        self.error = Error
 
-		self.text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+    def linearRegression(self):
+        from scipy import stats
 
-		return slope, intercept
+        slope, intercept, r_value, p_value, std_err = stats.linregress(self.xAxis, self.yAxis)
 
-	def logarithmicRegression(self):
-		from math import log
+        self.text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
 
-		sumX = sum(self.xAxis)
-		sumY= sum(self.yAxis)
-		sumLnX = 0
-		sumLn2X = 0
-		sumLnXY = 0
-		sumY2 = 0
-		for i in xrange(len(self.xAxis)):
-			sumLnX += log(self.xAxis[i])
-			sumLn2X += log(self.xAxis[i])**2
-			sumLnXY += log(self.xAxis[i])*self.yAxis[i]
-			sumY2 += self.yAxis[i]**2
+        return slope, intercept
 
-		slope = (sumLnXY- sumY*sumLnX/len(self.xAxis))/(sumLn2X - sumLnX*sumLnX/len(self.xAxis))
-		intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
+    def logarithmicRegression(self):
+        from math import log
 
-		self.text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+        sumX = sum(self.xAxis)
+        sumY= sum(self.yAxis)
+        sumLnX = 0
+        sumLn2X = 0
+        sumLnXY = 0
+        sumY2 = 0
+        for i in xrange(len(self.xAxis)):
+            sumLnX += log(self.xAxis[i])
+            sumLn2X += log(self.xAxis[i])**2
+            sumLnXY += log(self.xAxis[i])*self.yAxis[i]
+            sumY2 += self.yAxis[i]**2
 
-		return slope, intercept
+        slope = (sumLnXY- sumY*sumLnX/len(self.xAxis))/(sumLn2X - sumLnX*sumLnX/len(self.xAxis))
+        intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
-	def exponentialRegression(self):
-		from math import exp, log
+        self.text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
 
-		Mxx = [x**2 for x in self.xAxis]
-		sumy = sum( [ log(y) for y in self.yAxis ] )
-		medy = sumy / len(self.yAxis)
-		xMedian = sum([x for x in self.xAxis]) / len(self.xAxis)
+        return slope, intercept
 
-		sumXLn = sum( [ self.xAxis[i]*log(self.yAxis[i])  for i in range(len(self.xAxis)) ] )
+    def exponentialRegression(self):
+        from math import exp, log
 
-		slope = (sumXLn - (medy*sum(self.xAxis))) / (sum(Mxx)-xMedian*sum(self.xAxis))
+        Mxx = [x**2 for x in self.xAxis]
+        sumy = sum( [ log(y) for y in self.yAxis ] )
+        medy = sumy / len(self.yAxis)
+        xMedian = sum([x for x in self.xAxis]) / len(self.xAxis)
 
-		intercept = exp(medy-slope*xMedian)
+        sumXLn = sum( [ self.xAxis[i]*log(self.yAxis[i])  for i in range(len(self.xAxis)) ] )
 
-		self.text = "    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+        slope = (sumXLn - (medy*sum(self.xAxis))) / (sum(Mxx)-xMedian*sum(self.xAxis))
 
-		return slope, intercept
+        intercept = exp(medy-slope*xMedian)
 
-	def polynomialRegression(self, grade):
-		import numpy as np
+        self.text = "    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
 
-		parameters = np.polyfit(self.xAxis, self.yAxis, grade)
-		z = map(chr, range(97, 123))
+        return slope, intercept
 
-		eqtion = 'y = ' + z[0] + '*x^' + str(len(parameters)-1)
+    def polynomialRegression(self, grade):
+        import numpy as np
 
-		for i in range(1, len(parameters)):
-			eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
+        parameters = np.polyfit(self.xAxis, self.yAxis, grade)
+        z = map(chr, range(97, 123))
 
-		solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(parameters[0])
+        eqtion = 'y = ' + z[0] + '*x^' + str(len(parameters)-1)
 
-		for i in range(1, len(parameters)):
-			solution += "\n" + z[i] + ": " + "\t" + "%g" %(parameters[i])
+        for i in range(1, len(parameters)):
+            eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
 
-		self.text = "    " + eqtion + solution
+        solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(parameters[0])
 
-		return parameters
+        for i in range(1, len(parameters)):
+            solution += "\n" + z[i] + ": " + "\t" + "%g" %(parameters[i])
 
-	def pepepe(self, m, path=None):
-		from SaveScript import saveLaTex
+        self.text = "    " + eqtion + solution
 
-		table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta y$": self.error}
-		index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta y$"}
-		m = float(m)
+        return parameters
 
-		if m < 0:
-			division0 = lambda x, m: x**m if x != 0 else 0
-			xm = [ division0(x,m) for x in self.xAxis ]
-			division0 = lambda x, m : x**(2*m) if x != 0 else 0
-			x2m = [ division0(x,m) for x in self.xAxis ]
+    def pepepe(self, m, path=None):
+        from SaveScript import saveLaTex
 
-		else:
-			xm = [ x**m for x in self.xAxis ]
-			x2m = [ x**(2*m) for x in self.xAxis ]
+        table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta "+self.yTitle+"$": self.error}
+        index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta "+self.yTitle+"$"}
+        m = float(m)
 
-		table["$x^m$"] = xm
-		table["$x^{2m}$"] = x2m
-		index[3] = "$x^m$"
-		index[5] = "$x^{2m}$"
+        if m < 0:
+            division0 = lambda x, m: x**m if x != 0 else 0
+            xm = [ division0(x,m) for x in self.xAxis ]
+            division0 = lambda x, m : x**(2*m) if x != 0 else 0
+            x2m = [ division0(x,m) for x in self.xAxis ]
 
-		absxm = [ abs(xmElement) for xmElement in xm ]
-		table["$|x^m|$"] = absxm
-		index[4] = "$|x^m|$"
+        else:
+            xm = [ x**m for x in self.xAxis ]
+            x2m = [ x**(2*m) for x in self.xAxis ]
 
-		yxm = [ self.yAxis[i] * xm[i] for i in range(len(xm)) ]
-		table["$yx^m$"] = yxm
-		index[6] = "$yx^m$"
+        table["$"+self.xTitle+"^{2\cdot{"+str(m)+"}}$"] = x2m
+        table["$"+self.xTitle+"^{"+str(m)+"}$"] = xm
+        index[3] = "$"+self.xTitle+"^{"+str(m)+"}$"
+        index[5] = "$"+self.xTitle+"^{2\cdot{"+str(m)+"}}$"
 
-		absxmDy = [absxm[i]*self.error[i] for i in range(len(absxm))]
-		table["$|x^m|\Delta y$"] = absxmDy
-		index[7] = "$|x^m|\Delta y$"
+        absxm = [ abs(xmElement) for xmElement in xm ]
+        table["$|"+self.xTitle+"^{"+str(m)+"}|$"] = absxm
+        index[4] = "$|"+self.xTitle+"^{"+str(m)+"}|$"
 
+        yxm = [ self.yAxis[i] * xm[i] for i in range(len(xm)) ]
+        table["$"+self.yTitle+""+self.xTitle+"^{"+str(m)+"}$"] = yxm
+        index[6] = "$"+self.yTitle+""+self.xTitle+"^{"+str(m)+"}$"
 
-		saveLaTex(table, index, [0,1,2,3,4,5,6,7], path)
+        absxmDy = [absxm[i]*self.error[i] for i in range(len(absxm))]
+        table["$|"+self.xTitle+"^{"+str(m)+"}|\Delta "+self.yTitle+"$"] = absxmDy
+        index[7] = "$|"+self.xTitle+"^{"+str(m)+"}|\Delta "+self.yTitle+"$"
 
-		a = sum(yxm)/sum(x2m)
-		Da = sum(absxmDy)/sum(x2m)
+        table[index[5]].append(sum(x2m))
+        table[index[6]].append(sum(yxm))
+        table[index[7]].append(sum(absxmDy))
 
-		self.text = 'y = %s * x ^ %s' %(a, m) + '\n' + 'Error de a = %s' %(Da)
+        saveLaTex(table, index, [0,1,2,3,4,5,6,7], path)
 
-		return a , Da
+        a = sum(yxm)/sum(x2m)
+        Da = sum(absxmDy)/sum(x2m)
+
+        self.text = 'y = %s * x ^ %s' %(a, m) + '\n' + 'Error de a = %s' %(Da)
+
+        return a , Da
