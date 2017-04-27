@@ -125,15 +125,11 @@ class Main_Window_GUI(QMainWindow):
 		diffCalculator = QAction('Derivative', self)
 		diffCalculator.setStatusTip('Calculate the derivative between two columns')
 
-		refreshed = QAction('Refresh Window', self)
-		refreshed.setShortcut('Ctrl+R')
-
 		self.statusBar()
 
 		menubar = self.menuBar()
 		toolsMenu = menubar.addMenu('&Tools')
 		toolsMenu.addAction(diffCalculator)
-		toolsMenu.addAction(refreshed)
 
 	def openAProject(self):
 		mainLayout2 = MainLayout()
