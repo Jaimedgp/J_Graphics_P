@@ -9,8 +9,8 @@
 * [Aleatoriedad del Formula Entry](#Aleatoriedad)
 
 #### Mejoras Posibles 
-* Tamaño de los titulos y numeros en la grafica
-* Volver a hacer útil la funcion Errors en el Formula Entry
+* [Tamaño de los titulos y numeros en la grafica](#tamano)
+* [Volver a hacer útil la funcion Errors en el Formula Entry](#funcion_error)
 
 ## Nuevas Ideas a Implementar
 
@@ -42,8 +42,21 @@ Ademas la forma en la que el usuario interactue con esta nueva funcion puede ser
 
 ### <a name="escalas"></a> Escala de los ejes
 
-A la hora de crear la ventana de la gráfica se han de definir los intervalos de los ejes entre los cuales se quiere hacer la representación.
+A la hora de crear la ventana de la gráfica se han de definir los intervalos de los ejes entre los cuales se quiere hacer la representación. Para ello se deja de margen la mitad del intervalo mayor entre puntos para cada eje. Dicho codigo se encuentra en las lineas [54, 61] del archivo GraphPlot.
+
+Sin embargo, cuando los valores del eje y en vez de ir de menor a mayor van de mayor a menor, los ejes cortan la grafica perdiendo información.
+
+Se quiere buscar una forma de solucionar este problema pero tambien se busca una nueva forma de obtener los ejes correctos para que en la grafica se observen correctamente los datos.
 
 ### <a name="Aleatoriedad"></a> Aleatoriedad del Formula Entry
 
-El Formula Entry no permite modificar columnas con datos
+El Formula Entry no permite modificar columnas con datos. El codigo del Formula Entry se encuentra en el archivo Calculator.
+
+## Mejoras Posibles
+
+### <a name="tamano"></a>Tamaño de los titulos y números en la gráfica
+### <a name="funcion_error"></a> Funcion Errors en Formula Entry
+
+Todavia no se ha implementado la función Errors del Formula Entry a la nueva estructura del programa. La anterior versión del programa trabajaba los datos como atributos de una clase en vez de utilizar diccionarios y todavia no se ha implementado el codigo de la función para que trabaje de la nueva forma.
+
+El codigo de la funcion Errors se encuentra en la clase Operations del archivo Calculator, a partir de la linea 105. Dicha función utiliza la función ErrorsCalculator del archivo WidgetsScript que se encuentra en las lineas [85,114]. 
