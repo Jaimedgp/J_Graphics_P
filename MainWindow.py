@@ -1,14 +1,14 @@
 #########################################
-#		       Main Window	            #
+#              Main Window              #
 #########################################
 #
-#	this class is my class and in my class I write what I want
+#   this class is my class and in my class I write what I want
 #
-#	This class allows to make all the mathematical operations
+#   This class allows to make all the mathematical operations
 #
-#	Required: 
+#   Required: 
 #
-#	Return: 
+#   Return: 
 #
 ##############################################################################
 
@@ -273,16 +273,16 @@ class Main_Window_GUI(QMainWindow):
 
 
 #########################################
-#		       Main Window	            #
+#              Main Window              #
 #########################################
 #
-#	FALTA EL COMANDO SELF.SHOW()
+#   FALTA EL COMANDO SELF.SHOW()
 #
-#	This class allows to make all the mathematical operations
+#   This class allows to make all the mathematical operations
 #
-#	Required: 
+#   Required: 
 #
-#	Return: 
+#   Return: 
 #
 ##############################################################################
 

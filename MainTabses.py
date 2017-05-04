@@ -2,23 +2,25 @@ from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 
 class TabMain(QWidget):
 
-	def __init__(self):
+    def __init__(self):
 
-		super(QWidget, self).__init__()
+        super(QWidget, self).__init__()
 
-		layout = QVBoxLayout()
+        layout = QVBoxLayout()
 
-		self.tabMain = QTabWidget()
-		layout.addWidget(self.tabMain)
+        self.tabMain = QTabWidget()
+        layout.addWidget(self.tabMain)
 
-		self.setLayout(layout)
+        self.setLayout(layout)
 
-	def currentIndex(self):
-		return self.tabMain.currentIndex()
+    def currentIndex(self):
 
-	def deleteTabs(self, int):
-		self.tabMain.removeTab(int)
+        return self.tabMain.currentIndex()
 
-	def addTabs(self, layout):
+    def deleteTabs(self, int):
 
-		self.tabMain.addTab(layout, "Data %s" %(self.tabMain.count()+1))
+        self.tabMain.removeTab(int)
+
+    def addTabs(self, layout):
+
+        self.tabMain.addTab(layout, "Data %s" %(self.tabMain.count()+1))
