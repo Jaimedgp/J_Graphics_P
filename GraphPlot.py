@@ -1,22 +1,22 @@
 #########################################
-#		    Graphics Values     	    #
+#           Graphics Values             #
 #########################################
 #
-#	This class get and caulculate all needed
+#   This class get and caulculate all needed
 #        values to plot a graph.
 #
-#	Required Attributes: - Columns values \ list(valuesX, valuesY)
-#			             - Columns index \ list(str(TitleX), str(TitleY))
+#   Required Attributes: - Columns values \ list(valuesX, valuesY)
+#                        - Columns index \ list(str(TitleX), str(TitleY))
 #                        - Y-Axis' Error \ float or list \ by default is 0
 #
-#	Attributes: - X-axis values \ list(xAxis)
+#   Attributes: - X-axis values \ list(xAxis)
 #               - Y-axis values \ list(yAxis)
 #               - X-axis title \ str(xTitle)
 #               - Y-axis title \ str(yTitle)
 #               - X-axis interval \ list(xInterval) = [min, max]
 #               - X-axis interval \ list(yInterval) = [min, max]
 #
-#	Function: - linearRegression: Calculate the coefficients of a linear regression
+#   Function: - linearRegression: Calculate the coefficients of a linear regression
 #                         * Return list(m, b) 
 #                                  y = m*x + b
 #             - logarithmicRegression: Calculate the coefficients of a logarithmic regression
