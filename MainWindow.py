@@ -30,7 +30,8 @@ class Main_Window_GUI(QMainWindow):
 
 		self.setGeometry(0, 0, 2000, 1100)
 		self.setWindowTitle("Just a Graphics Printer")
-		self.setWindowIcon( QIcon("/home/jaime/J_Graphics_P/Photos/JGP(icon).png") )
+		self.setWindowIcon(
+            QIcon("/home/jaime/J_Graphics_P/Photos/JGP(icon).png"))
 
 		self.fileMenuBar()
 		self.graphMenuBar()
