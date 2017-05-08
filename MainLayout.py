@@ -29,8 +29,6 @@ class MainLayout(QWidget):
         self.Formula = FormulaEntry()
         self.Formula.runButton.clicked.connect(self.formula_click)
         self.Terminal = Terminal_for_table()
-        #self.Terminal.pColButton.clicked.connect(self.addColumns)
-        #self.Terminal.nwTblButton.clicked.connect(self.changeColumns)
 
         toolsTab = QTabWidget()
         toolsTab.addTab(self.ErrBar, "Error Bars")
@@ -65,7 +63,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1]]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
@@ -92,7 +94,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1] ]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
@@ -122,7 +128,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1]]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
@@ -152,7 +162,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1]]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
@@ -182,7 +196,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1]]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
@@ -212,7 +230,11 @@ class MainLayout(QWidget):
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
             try:
-                error = eval(self.ErrBar.Error[types].text())
+                if types == 'Fixed value':
+                    error = eval(self.ErrBar.Error[types].text())
+                elif types == '% of value':
+                    percent = eval(self.ErrBar.Error[types].text())
+                    error = [(percent*0.01)*y for y in values[1]]
             except AttributeError:
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
