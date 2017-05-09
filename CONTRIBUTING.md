@@ -3,6 +3,7 @@
 #### Nuevas Ideas a Implementar
 * [Varias funciones, 1 sola grafica](#varias_funciones)
 * [Personalizacion de las graficas](#personalizacion)
+* [Sumatorios y demas](#sumdemas)
 
 #### Problemas Detectados a Solucionar
 * [Escala de los ejes](#escalas)
@@ -37,6 +38,10 @@ Actualmente el programa no te permite personalizar nada de la grafica y tan solo
 Para ello habria que modificar la clase del archivo Plot_Graph que es la encargada de crear el objeto grafica. Esta clase utiliza la libreria [matplotlib](http://matplotlib.org/).
 
 Ademas la forma en la que el usuario interactue con esta nueva funcion puede ser añadiendo un nuevo menu en el toolbar. Para ello habria que modificar el archivo MainWindow.py.
+
+### <a name="sumdemas"></a> Sumatorio y demás
+
+Como otra de las funciones se podria abrir una ventana en la que te muestre sumatorio, media, ...
 
 ## Problemas Detectados a Solucionar
 
