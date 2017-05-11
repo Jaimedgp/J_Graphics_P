@@ -105,7 +105,8 @@ class Operations():
 
     def Errors(self, symbols, values, errors, function):
 
-        from WidgetsScrypt import ErrorsCalculator
+        from WidgetsScript import ErrorsCalculator
+
         tableValues = []
         newValues = [eval(values[i].replace('C', 'self.table[self.index[') + ']]') for i in range(len(values))]
         newErrors = [eval(errors[i].replace('C', 'self.table[self.index[') + ']]') for i in range(len(errors))]
@@ -113,8 +114,8 @@ class Operations():
         for i in range(len(newValues[0])):
             values = [newValues[n][i] for n in range(len(newValues))]
             errors = [newErrors[n][i] for n in range(len(newErrors))]
-            err = ErrorsCalculator(symbols, values, errors, funcion)
+            err = ErrorsCalculator(symbols, values, errors, function)
             tableValues.append(err)
 
-        self.index[newIndex] = "Error"
+        self.index[self.newIndex] = "Error"
         self.table["Error"] = tableValues
