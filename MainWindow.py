@@ -127,11 +127,23 @@ class Main_Window_GUI(QMainWindow):
         diffCalculator = QAction('Derivative', self)
         diffCalculator.setStatusTip('Calculate the derivative between two columns')
 
+        helpView = QAction('Help', self)
+        helpView.setStatusTip('Open the README help')
+        helpView.triggered.connect(self.html)
+
         self.statusBar()
 
         menubar = self.menuBar()
         toolsMenu = menubar.addMenu('&Tools')
         toolsMenu.addAction(diffCalculator)
+        toolsMenu.addAction(helpView)
+
+    def html(self):
+
+        from ToolsWidgets import HtmlReadme
+
+        self.window = HtmlReadme(self)
+        self.window.show()
 
     def openAProject(self):
         mainLayout2 = MainLayout()

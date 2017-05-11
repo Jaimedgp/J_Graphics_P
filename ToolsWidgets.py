@@ -404,3 +404,29 @@ class GraphAxes(QWidget):
         self.axesYCombo.clear()
         for name in index.values():
             self.axesYCombo.addItem(name)
+
+
+#########################################
+#              Html View                #
+#########################################
+#
+#   This class create the window to show the README file
+#
+##########################################################
+
+from PyQt5.QtWidgets import QMainWindow
+
+class HtmlReadme(QMainWindow):
+
+    def __init__(self, parent=None):
+
+        super(HtmlReadme, self).__init__(parent)
+
+        from PyQt5.QtWebKitWidgets import QWebView
+        from PyQt5.QtCore import QUrl
+
+        web = QWebView()
+        web.load(QUrl("file:///home/jaime/J_Graphics_P/README.html"))
+
+        self.setCentralWidget(web)
+
