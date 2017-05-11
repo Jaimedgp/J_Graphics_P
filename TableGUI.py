@@ -10,6 +10,10 @@
 #               - Columns values \ dict(table)
 #               - Columns index \ dict(index)
 #
+#   addColumnRow: this function check if it is necessary to increase
+#                  the number of columns or rows to be sure that 
+#                  always is one empty.
+#
 #   reDoTable: this function update the table widget
 #               with the new values and names of the 
 #               columns (table, index).
@@ -40,15 +44,19 @@ class TableData(QWidget):
             for i in range(0,20):
                 self.tableWidget.setItem(i,n, QTableWidgetItem())
 
-    def reDoTable(self):
+    def addColumnRow(self):
 
-        if self.numRows == max([i for i in [len(i) for i in self.table.values()]]):
+        if self.numRows-1 == max([i for i in [len(i) for i in self.table.values()]]):
             self.tableWidget.insertRow(self.numRows)
             self.numRows = self.numRows + 1
 
         if self.numColumns == len(self.index): 
             self.tableWidget.insertColumn(self.numColumns)
             self.numColumns = self.numColumns + 1
+
+    def reDoTable(self):
+
+        self.addColumnRow() # check if it's necessary to add a Column or row
 
         self.tableWidget.setHorizontalHeaderLabels(self.index.values())
 

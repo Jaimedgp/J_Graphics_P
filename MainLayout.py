@@ -284,6 +284,8 @@ class MainLayout(QWidget):
                     self.ErrBar.set_new_Columns_names(self.dataTable.index)
                     self.GrphAxes.setNames(self.dataTable.index)
 
+        self.dataTable.addColumnRow()
+
     @pyqtSlot()
     def formula_click(self):
 
