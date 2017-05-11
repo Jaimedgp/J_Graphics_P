@@ -28,9 +28,12 @@ class TableData(QWidget):
         self.table = {}
         self.index = {}
 
+        self.numRows = 20
+        self.numColumns = 10
+
         self.tableWidget = QTableWidget()
-        self.tableWidget.setRowCount(20)
-        self.tableWidget.setColumnCount(11)
+        self.tableWidget.setRowCount(self.numRows)
+        self.tableWidget.setColumnCount(self.numColumns)
         self.tableWidget.move(0,0)
 
         for n in range(0,10):
@@ -38,6 +41,14 @@ class TableData(QWidget):
                 self.tableWidget.setItem(i,n, QTableWidgetItem())
 
     def reDoTable(self):
+
+        if self.numRows == max([i for i in [len(i) for i in self.table.values()]]):
+            self.tableWidget.insertRow(self.numRows)
+            self.numRows = self.numRows + 1
+
+        if self.numColumns == len(self.index): 
+            self.tableWidget.insertColumn(self.numColumns)
+            self.numColumns = self.numColumns + 1
 
         self.tableWidget.setHorizontalHeaderLabels(self.index.values())
 
