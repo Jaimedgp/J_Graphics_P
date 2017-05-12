@@ -80,6 +80,9 @@ class MainLayout(QWidget):
         except AttributeError:
             self.Graph = Plot_Graph()
 
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+
         self.Graph.setGraph(graph)
         self.splitLyout.addWidget(self.Graph)
 

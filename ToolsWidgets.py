@@ -384,16 +384,29 @@ class GraphAxes(QWidget):
         self.result = QLabel('', self)
         hbox.addWidget(self.result)
 
-        VMainBox = QVBoxLayout()
-        VMainBox.addLayout(fbox)
-        VMainBox.addLayout(hbox)
+        self.VMainBox = QVBoxLayout()
+        self.VMainBox.addLayout(fbox)
+        self.VMainBox.addLayout(hbox)
 
-        graphics.setLayout(VMainBox)
+        graphics.setLayout(self.VMainBox)
+
+        self.checkObject()
 
         Main = QHBoxLayout()
         Main.addWidget(graphics)
 
         self.setLayout(Main)
+
+    def checkObject(self):
+        from PyQt5.QtWidgets import QCheckBox
+
+        self.check = QCheckBox('Replot', self)
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.check)
+        hbox.addStretch(1)
+
+        self.VMainBox.addLayout(hbox)
 
     def setNames(self, index):
 
