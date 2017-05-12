@@ -39,7 +39,6 @@ import numpy as np
 class GraphPlot():
 
     def __init__(self, values, titles, Error=0):
-        from math import fabs
 
         self.xAxis = values[0]
         self.yAxis = values[1]
@@ -53,14 +52,19 @@ class GraphPlot():
 
         self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
 
-        xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
+        self.setInterval(self.xAxis, self.yAxis)
+
+    def setInterval(self, x, y):
+        from math import fabs
+
+        xdiff = [fabs(x[i+1] - x[i]) for i in range(len(x)-1) if x[i+1] - x[i] != 0]
         xdiff = max(xdiff)
 
-        ydiff = [fabs((self.yAxis[i+1]+self.error[i+1]) - (self.yAxis[i]-self.error[i])) for i in range(len(self.yAxis)-1) if self.yAxis[i+1] - self.yAxis[i] != 0]
+        ydiff = [fabs((y[i+1]+self.error[i+1]) - (y[i]-self.error[i])) for i in range(len(y)-1) if y[i+1] - y[i] != 0]
         ydiff = max(ydiff)
 
-        self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
-        self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
+        self.xInterval = [min(x) - fabs(xdiff)*0.5 , max(x) + fabs(xdiff)*0.5]
+        self.yInterval = [min(y) - fabs(ydiff)*0.5 , max(y) + fabs(ydiff)*0.5]
 
 
     def setError(self, Error):
