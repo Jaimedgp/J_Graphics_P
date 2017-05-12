@@ -51,6 +51,8 @@ class GraphPlot():
         if type(self.error) == float or type(self.error) == int:
             self.error = [self.error for i in xrange(len(self.yAxis))]
 
+        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
+
         xdiff = [fabs(self.xAxis[i+1] - self.xAxis[i]) for i in range(len(self.xAxis)-1) if self.xAxis[i+1] - self.xAxis[i] != 0]
         xdiff = max(xdiff)
 
@@ -60,7 +62,6 @@ class GraphPlot():
         self.xInterval = [min(self.xAxis) - fabs(xdiff)*0.5 , max(self.xAxis) + fabs(xdiff)*0.5]
         self.yInterval = [min(self.yAxis) - fabs(ydiff)*0.5 , max(self.yAxis) + fabs(ydiff)*0.5]
 
-        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
 
     def setError(self, Error):
 
