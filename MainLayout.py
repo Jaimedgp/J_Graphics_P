@@ -75,13 +75,12 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.setGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()
 
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
 
         self.Graph.setGraph(graph)
         self.splitLyout.addWidget(self.Graph)
@@ -109,11 +108,14 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.set_linearGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
-            self.Graph.set_linearGraph(graph)
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()
+
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
+
+        self.Graph.set_linearGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
@@ -143,11 +145,14 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.set_logGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
-            self.Graph.set_logGraph(graph)
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()
+
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
+
+        self.Graph.set_logGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
@@ -177,11 +182,14 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.set_expGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
-            self.Graph.set_expGraph(graph)
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()            
+
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
+
+        self.Graph.set_expGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
@@ -211,11 +219,14 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.set_polyGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
-            self.Graph.set_polyGraph(graph)
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()            
+
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
+
+        self.Graph.set_polyGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
@@ -245,11 +256,15 @@ class MainLayout(QWidget):
         else:
             graph = GraphPlot(values, titles)
 
-        try:
-            self.Graph.set_PepepeGraph(graph)
-        except AttributeError:
-            self.Graph = Plot_Graph()
-            self.Graph.set_PepepeGraph(graph)
+        if not hasattr(self, 'Graph'):
+           self.Graph = Plot_Graph()
+            
+
+        if not self.GrphAxes.check.isChecked():
+            self.Graph.axes.clear()
+            self.GrphAxes.result.setText('')
+
+        self.Graph.set_PepepeGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
