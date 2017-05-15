@@ -81,7 +81,7 @@ class MainLayout(QWidget):
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
-
+       
         self.Graph.setGraph(graph)
         self.splitLyout.addWidget(self.Graph)
 
