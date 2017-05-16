@@ -26,33 +26,29 @@ class Plot_Graph(FigureCanvas):
                 QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
+        self.axes = self.fig.add_subplot(111)
+
     def setGraph(self, GraphPlot):
+
         self.Graph = GraphPlot
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def set_Hamil_Graph(self, GraphPlot):
+
         self.Graph = GraphPlot
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'b')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'b')
+        self.axes.set_xlabel(self.Graph.xTitle)
+        self.axes.set_ylabel(self.Graph.yTitle)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def set_linearGraph(self, GraphPlot):
@@ -61,19 +57,15 @@ class Plot_Graph(FigureCanvas):
 
         slope, intercept = self.Graph.linearRegression()
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xTh, slope*self.Graph.xTh+intercept, 'b')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, slope*self.Graph.xTh+intercept, 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
-	
+
     def set_logGraph(self, GraphPlot):
 
         from math import log
@@ -81,19 +73,16 @@ class Plot_Graph(FigureCanvas):
         self.Graph = GraphPlot
 
         slope, intercept = self.Graph.logarithmicRegression()
+
         yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(self.Graph.xTh.size)]
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xTh, yTh, 'b')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, yTh, 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def set_expGraph(self, GraphPlot):
@@ -105,17 +94,13 @@ class Plot_Graph(FigureCanvas):
         slope, intercept = self.Graph.exponentialRegression()
         yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xTh, yTh, 'b')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, yTh, 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def set_polyGraph(self, GraphPlot):
@@ -133,17 +118,13 @@ class Plot_Graph(FigureCanvas):
         polynom = poly1d(parameters)
         yTh = [polynom(self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xTh, yTh, 'b')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, yTh, 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def set_PepepeGraph(self, GraphPlot):
@@ -162,17 +143,13 @@ class Plot_Graph(FigureCanvas):
 
         slope, d = self.Graph.pepepe(m, fname[1])
 
-        axes = self.fig.add_subplot(111)
-
-        axes.clear()
-
-        axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        axes.plot(self.Graph.xTh, slope*(self.Graph.xTh**m), 'b')
-        axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        axes.set_xlabel(self.Graph.xTitle)
-        axes.set_ylabel(self.Graph.yTitle)
-        axes.set_xlim(self.Graph.xInterval)
-        axes.set_ylim(self.Graph.yInterval)
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, slope*(self.Graph.xTh**m), 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
     def saveGraph(self):
@@ -187,5 +164,5 @@ class Plot_Graph(FigureCanvas):
         fname = fname[1].split("'")
         file = fname[1]
 
-        dpi = 172
+        self.fig.set_size_inches(9,6)
         self.fig.savefig(file, bbox_inches='tight')
