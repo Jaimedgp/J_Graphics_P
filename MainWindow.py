@@ -3,7 +3,7 @@
 #########################################
 #
 #   this class is my class and in my class I write what I want
-#
+# ejemplo para inigo
 #   This class allows to make all the mathematical operations
 #
 #   Required: 
