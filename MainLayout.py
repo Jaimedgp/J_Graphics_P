@@ -62,13 +62,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1]]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
@@ -81,7 +80,7 @@ class MainLayout(QWidget):
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
-       
+
         self.Graph.setGraph(graph)
         self.splitLyout.addWidget(self.Graph)
 
@@ -95,13 +94,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1] ]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
@@ -132,13 +130,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1]]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
@@ -169,13 +166,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1]]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
@@ -206,13 +202,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1]]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
@@ -243,13 +238,12 @@ class MainLayout(QWidget):
 
         types = self.ErrBar.MainCombo.currentText()
         if types != 'None':
-            try:
-                if types == 'Fixed value':
-                    error = eval(self.ErrBar.Error[types].text())
-                elif types == '% of value':
-                    percent = eval(self.ErrBar.Error[types].text())
-                    error = [(percent*0.01)*y for y in values[1]]
-            except AttributeError:
+            if types == 'Fixed value':
+                error = eval(self.ErrBar.Error[types].text())
+            elif types == '% of value':
+                percent = eval(self.ErrBar.Error[types].text())
+                error = [(percent*0.01)*y for y in values[1]]
+            elif types == 'Data column':
                 error = self.ErrBar.Error[types].currentText()
                 error = self.dataTable.table[error]
             graph = GraphPlot(values, titles, error)
