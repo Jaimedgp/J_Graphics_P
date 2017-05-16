@@ -1,32 +1,17 @@
 # Contributing to J_Graphics_P
 
 #### Nuevas Ideas a Implementar
-* [Varias funciones, 1 sola grafica](#varias_funciones)
 * [Personalizacion de las graficas](#personalizacion)
 * [Sumatorios y demas](#sumdemas)
 
 #### Problemas Detectados a Solucionar
+* [Varias funciones, 1 sola grafica](#varias_funciones)
 * [Escala de los ejes](#escalas)
 * [Aleatoriedad del Formula Entry](#Aleatoriedad)
 
-#### Mejoras Posibles 
-* [Tamaño de los titulos y numeros en la grafica](#tamano)
+<!-- ### Mejoras Posibles -->
 
 ## Nuevas Ideas a Implementar
-
-### <a name="varias_funciones"></a> Varias funciones
-
-La idea es poder representar en una misma grafica diferentes tomas de datos para una misma variable independiente y asi poder compararlos de forma mas visual.
-
-El problema para esto es ver la forma en la que el usuario escoge que columnas quiere representar, pues la interfaz actual solo permite escoger dos columnas (eje X y eje Y).
-
-Para ello habria que modificar los siguientes archivos:
-
->* Del archivo ToolsWidgets.py la clase GraphAxes que crea la interfaz necesaria para escoger las columnas que se representaran.
-
->* La clase del archivo Plot_Graph que es la encargada de crear el objeto grafica. Esta clase utiliza la libreria [matplotlib](http://matplotlib.org/).
-
-Ademas habria que estudiar la forma en la que ambas clases se comunican para ejecutar la funcion. En caso de no encontrar la forma de conectarlas directamente sin tener que utilizar ninguna otra clase, se podrian modificar las clases de los archivos MainWindow.py y MainLayout.py.
 
 ### <a name="personalizacion"></a> Personalizacion de las graficas
 
@@ -43,6 +28,12 @@ Ademas la forma en la que el usuario interactue con esta nueva funcion puede ser
 Como otra de las funciones se podria abrir una ventana en la que te muestre sumatorio, media, ...
 
 ## Problemas Detectados a Solucionar
+
+### <a name="varias_funciones"></a> Varias funciones
+
+La idea es poder representar en una misma grafica diferentes tomas de datos para una misma variable independiente y asi poder compararlos de forma mas visual. Para ello se indica mediante un CheckBox si se quiere borrar la anterior grafica o no (Re-Plot).
+
+El problema esta que al representar la nueva grafica a partir de la anterior el intervalo de los ejes se calcula con los valores nuevos de tal manera que se pueden perder algunos puntos de la anterior grafica. Este código se encuentra en la clase del archivo GraphPlot.py.
 
 ### <a name="escalas"></a> Escala de los ejes
 
