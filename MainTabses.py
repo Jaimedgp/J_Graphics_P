@@ -9,6 +9,7 @@ class TabMain(QWidget):
         layout = QVBoxLayout()
 
         self.tabMain = QTabWidget()
+        self.tabMain.setMovable(True)
         layout.addWidget(self.tabMain)
 
         self.setLayout(layout)
