@@ -66,7 +66,6 @@ class GraphPlot():
         self.xInterval = [min(x) - fabs(xdiff)*0.5 , max(x) + fabs(xdiff)*0.5]
         self.yInterval = [min(y) - fabs(ydiff)*0.5 , max(y) + fabs(ydiff)*0.5]
 
-
     def setError(self, Error):
 
         self.error = Error
@@ -143,8 +142,11 @@ class GraphPlot():
     def pepepe(self, m, path=None):
         from SaveScript import saveLaTex
 
-        table = {self.xTitle : self.xAxis, self.yTitle:self.yAxis, "$\Delta "+self.yTitle+"$": self.error}
-        index = {0 : self.xTitle, 1 : self.yTitle, 2 : "$\Delta "+self.yTitle+"$"}
+        xTitle = self.xTitle.split('/')[0].replace('$', '')
+        yTitle = self.yTitle.split('/')[0].replace('$', '')
+
+        table = {self.xTitle.split('/')[0]+'$' : self.xAxis, self.yTitle.split('/')[0]+'$':self.yAxis, "$\Delta "+yTitle+"$": self.error}
+        index = {0 : self.xTitle.split('/')[0]+'$', 1 : self.yTitle.split('/')[0]+'$', 2 : "$\Delta "+yTitle+"$"}
         m = float(m)
 
         if m < 0:
@@ -157,22 +159,22 @@ class GraphPlot():
             xm = [ x**m for x in self.xAxis ]
             x2m = [ x**(2*m) for x in self.xAxis ]
 
-        table["$"+self.xTitle+"^{2\cdot{"+str(m)+"}}$"] = x2m
-        table["$"+self.xTitle+"^{"+str(m)+"}$"] = xm
-        index[3] = "$"+self.xTitle+"^{"+str(m)+"}$"
-        index[5] = "$"+self.xTitle+"^{2\cdot{"+str(m)+"}}$"
+        table["$"+xTitle+"^{2\cdot{"+str(int(m))+"}}$"] = x2m
+        table["$"+xTitle+"^{"+str(int(m))+"}$"] = xm
+        index[3] = "$"+xTitle+"^{"+str(int(m))+"}$"
+        index[5] = "$"+xTitle+"^{2\cdot{"+str(int(m))+"}}$"
 
         absxm = [ abs(xmElement) for xmElement in xm ]
-        table["$|"+self.xTitle+"^{"+str(m)+"}|$"] = absxm
-        index[4] = "$|"+self.xTitle+"^{"+str(m)+"}|$"
+        table["$|"+xTitle+"^{"+str(int(m))+"}|$"] = absxm
+        index[4] = "$|"+xTitle+"^{"+str(int(m))+"}|$"
 
         yxm = [ self.yAxis[i] * xm[i] for i in range(len(xm)) ]
-        table["$"+self.yTitle+""+self.xTitle+"^{"+str(m)+"}$"] = yxm
-        index[6] = "$"+self.yTitle+""+self.xTitle+"^{"+str(m)+"}$"
+        table["$"+yTitle+""+xTitle+"^{"+str(int(m))+"}$"] = yxm
+        index[6] = "$"+yTitle+""+xTitle+"^{"+str(int(m))+"}$"
 
         absxmDy = [absxm[i]*self.error[i] for i in range(len(absxm))]
-        table["$|"+self.xTitle+"^{"+str(m)+"}|\Delta "+self.yTitle+"$"] = absxmDy
-        index[7] = "$|"+self.xTitle+"^{"+str(m)+"}|\Delta "+self.yTitle+"$"
+        table["$|"+xTitle+"^{"+str(int(m))+"}|\Delta "+yTitle+"$"] = absxmDy
+        index[7] = "$|"+xTitle+"^{"+str(int(m))+"}|\Delta "+yTitle+"$"
 
         table[index[5]].append(sum(x2m))
         table[index[6]].append(sum(yxm))
