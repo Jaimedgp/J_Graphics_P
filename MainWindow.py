@@ -12,15 +12,16 @@
 #
 ##############################################################################
 
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QFileDialog, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QFileDialog, 
+                                                   QInputDialog, QMessageBox)
 from PyQt5.QtGui import QIcon
 import sys
 
 from MainLayout import MainLayout
 from MainTabses import TabMain
 
-from OpenScript import Open_file_CSV
-from SaveScript import saveCSV, saveLaTex
+from OpenScript import Open_file_CSV, Open_file_TXT
+from SaveScript import saveCSV, saveTXT, saveLaTex
 
 class Main_Window_GUI(QMainWindow):
 
@@ -156,7 +157,12 @@ class Main_Window_GUI(QMainWindow):
 
         if not TAB[tabLayout.currentIndex()].dataSaved:
 
-            reply = QMessageBox.information(self, ' ', "Save changes before closing?", QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Save)
+            reply = QMessageBox.information(self, ' ', 
+                                            "Save changes before closing?", 
+                                                       ( QMessageBox.Save | 
+                                                       QMessageBox.Cancel | 
+                                                      QMessageBox.Discard), 
+                                                          QMessageBox.Save)
 
             if reply == QMessageBox.Save:
 
@@ -175,11 +181,15 @@ class Main_Window_GUI(QMainWindow):
             tabLayout.deleteTabs(tabLayout.currentIndex())
 
     def openFile(self):
-        fileName = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime', 'Text File (*.csv *.txt)')
+        fileName = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime'
+                                                   , 'Text File (*.csv *.txt)')
 
         if '/home/jaime' in fileName[0]:
 
-            table, index = Open_file_CSV(fileName[0])
+            if ".csv" in fileName[0]:
+                table, index = Open_file_CSV(fileName[0])
+            elif ".txt" in fileName[0]:
+                table, index = Open_file_TXT(fileName[0])
 
             tab = TAB[tabLayout.currentIndex()]
 
@@ -191,30 +201,43 @@ class Main_Window_GUI(QMainWindow):
             TAB[tabLayout.currentIndex()].dataTable.reDoTable()
 
     def save(self):
-
-        fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Calc files (*.csv *.txt)"))
+        fname = str(QFileDialog.getSaveFileName(self, 'Open file',
+                                  '/home/jaime/', "Calc files (*.csv *.txt)"))
         fname = fname.split(',')[0]
         fname = fname.split('(u')
         fname = fname[1].split("'")
 
-        saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
+        if ".csv" in fname[1]:
+            saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
+                      TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
+        elif ".txt" in fname[1]:
+            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
+                      TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
 
         TAB[tabLayout.currentIndex()].dataSaved = True
 
     def saveIntoTex(self):
 
-        text, ok = QInputDialog.getText(self, 'Export LaTex', '    Columns <h6>e.j."1,2" for columns C1 and C2<\h6> or "all" for all table:')
+        text, ok = QInputDialog.getText(self, 'Export LaTex', 
+                              '    Columns <h6>e.j."1,2" for columns C1'+ 
+                                      ' and C2<\h6> or "all" for all table:')
         if ok:
-            fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "LaTex files (*.tex)"))
+            fname = str(QFileDialog.getSaveFileName(self, 'Open file',
+                                      '/home/jaime/', "LaTex files (*.tex)"))
             fname = fname.split(',')[0]
             fname = fname.split('(u')
             fname = fname[1].split("'")
 
         if text == 'all':
-            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, TAB[tabLayout.currentIndex()].dataTable.index.keys(), fname[1])
+            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table,
+                      TAB[tabLayout.currentIndex()].dataTable.index,
+                      TAB[tabLayout.currentIndex()].dataTable.index.keys(),
+                                                                   fname[1])
         else:
 
-            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table, TAB[tabLayout.currentIndex()].dataTable.index, eval(text), fname[1])
+            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table,
+                      TAB[tabLayout.currentIndex()].dataTable.index,
+                                                       eval(text), fname[1])
 
     def saveFigure(self):
 
@@ -258,19 +281,25 @@ class Main_Window_GUI(QMainWindow):
 
         else:
 
-            reply = QMessageBox.information(self, ' ', "Save changes before closing?", QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Save)
+            reply = QMessageBox.information(self, ' ', "Save changes before"+
+                                            "closing", (QMessageBox.Save | 
+                                                      QMessageBox.Cancel |
+                                                      QMessageBox.Discard),
+                                                             QMessageBox.Save)
 
             if reply == QMessageBox.Save:
 
                 for tab in TAB:
                     if not tab.dataSaved:
 
-                        fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Calc files (*.csv *.txt)"))
+                        fname = str(QFileDialog.getSaveFileName(self,'Open file',
+                                     '/home/jaime/', "Calc files (*.csv *.txt)"))
                         fname = fname.split(',')[0]
                         fname = fname.split('(u')
                         fname = fname[1].split("'")
 
-                        saveCSV(tab.dataTable.table, tab.dataTable.index, fname[1])
+                        saveCSV(tab.dataTable.table, tab.dataTable.index,
+                                                                        fname[1])
 
                 event.accept()
 
