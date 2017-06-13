@@ -85,7 +85,8 @@ def Hamiltonian(m, k, l0, r0, theta0, vr, vtheta, n, dt):
 def ErrorsCalculator(symbol, values, errors, function):
 
     from sympy import symbols, evalf, diff
-    from math import fabs, sqrt, log, exp, sin, pi, cos, tan, acos, asin, atan
+    from math import (fabs, sqrt, log, exp, sin, pi, cos, tan, acos, asin,
+                                                                      atan)
 
     symbol = symbol.split(' ')
     S = symbols(symbol)
@@ -137,12 +138,9 @@ def derivative(table, index, columns):
 
     derivative = [ (y[i+1]-y[i]) / (x[i+1]-x[i]) for i in xrange(len(x)-1) ]
 
-    try:
-        table["Derivative"]
-        table["Derivative 1"] = derivative
-        index[max(index.keys())+1] = "Derivative 1"
-    except KeyError:
+    if not "Derivative" in table:
         table["Derivative"] = derivative
         index[max(index.keys())+1] = "Derivative"
-
-    return table, index
+    else:
+        table["Derivative 1"] = derivative
+        index[max(index.keys())+1] = "Derivative 1"
