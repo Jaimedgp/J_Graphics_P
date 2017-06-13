@@ -42,54 +42,55 @@ class Operations():
         q = 1.6 * (10**(-19)) # set elementary charge
         k = 8.988 * (10**(9)) # set coulomb's constant on the vacuum
 
-        try:
-            self.index[self.newIndex]
-            try:
+        if self.newIndex in self.index:
+
+            if "name(" in self.action:
+
                 indexFunction = self.action.index("name(")
-                self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
+                self.action = (self.action[:indexFunction-1] + 'self.' +
+                                                 self.action[indexFunction-1:])
                 eval(self.action)
                 return self.table, self.index
-            except ValueError:
-                try:
-                    indexFunction = self.action.index("delete(")
-                    self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
-                    eval(self.action)
-                    return self.table, self.index
-                except ValueError:
-                    self.calculator()
-                    return self.table, self.index
 
-        except KeyError:
+            elif "delete(" in self.action:
+                indexFunction = self.action.index("delete(")
+                self.action = (self.action[:indexFunction-1] + 'self.' + 
+                                                 self.action[indexFunction-1:])
+                eval(self.action)
+                return self.table, self.index
+
+            else:
+                self.calculator()
+                return self.table, self.index
+
+        else:
             self.index[self.newIndex] = str(self.newIndex)
             self.calculator()
             return self.table, self.index
 
     def calculator(self):
 
-        try:
+        if "Errors(" in self.action:
             indexFunction = self.action.index("Errors(")
             self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
             eval(self.action)
-        except ValueError:
 
-            try:
-                boolean = True
-                element = 0
-                self.action = self.action.replace('C', 'self.table[self.index[')
-                initialI = self.action.index('self.table[self.index[') + 22
-                finalI = initialI+1
-                involvedColumn = int(self.action[initialI:finalI])
-                while boolean:
-                    try:
-                        element = self.action.index('self.table[self.index[', element, len(self.action))+23
-                        self.action = self.action[:element] + ']][i]' + self.action[element:]
-                    except ValueError:
-                        boolean = False
-                values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
-                self.table[str(self.newIndex)] = values
-                self.table, self.index
-            except (NameError, IndexError, ValueError, IOError):
-                return 0
+        else:
+            boolean = True
+            element = 0
+            self.action = self.action.replace('C', 'self.table[self.index[')
+            initialI = self.action.index('self.table[self.index[') + 22
+            finalI = initialI+1
+            involvedColumn = int(self.action[initialI:finalI])
+            while boolean:
+                try:
+                    element = self.action.index('self.table[self.index[', element, len(self.action))+23
+                    self.action = self.action[:element] + ']][i]' + self.action[element:]
+                except ValueError:
+                    boolean = False
+            values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
+            self.table[str(self.newIndex)] = values
+            self.table, self.index
 
     def name(self, name):
 
