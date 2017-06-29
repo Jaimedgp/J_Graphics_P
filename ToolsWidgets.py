@@ -442,4 +442,3 @@ class HtmlReadme(QMainWindow):
         web.load(QUrl("file:///home/jaime/J_Graphics_P/README.html"))
 
         self.setCentralWidget(web)
-
