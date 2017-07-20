@@ -58,6 +58,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -90,6 +92,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -126,6 +130,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -162,6 +168,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -198,6 +206,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -234,6 +244,8 @@ class MainLayout(QWidget):
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
         values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        if len(values[0]) != len(values[1]):
+        	return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
