@@ -28,12 +28,13 @@ class Plot_Graph(FigureCanvas):
 
         self.axes = self.fig.add_subplot(111)
 
-    def setGraph(self, GraphPlot):
+    def setGraph(self, GraphPlot, marker='ro'):
 
         self.Graph = GraphPlot
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        if marker == 'ro':
+        	self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt=marker, ecolor='r')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, marker)
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)

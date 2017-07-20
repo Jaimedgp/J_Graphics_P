@@ -52,7 +52,7 @@ class MainLayout(QWidget):
 
         self.setLayout(self.MainLyout)
 
-    def plotGraph(self):
+    def plotGraph(self, marker):
 
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
@@ -83,7 +83,7 @@ class MainLayout(QWidget):
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
 
-        self.Graph.setGraph(graph)
+        self.Graph.setGraph(graph, marker)
         self.splitLyout.addWidget(self.Graph)
 
     def plotLinearGraph(self):

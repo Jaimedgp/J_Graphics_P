@@ -89,9 +89,12 @@ class Main_Window_GUI(QMainWindow):
 
     def graphMenuBar(self):
 
-        Graph = QAction('Graphic', self)
-        Graph.setShortcut('Ctrl+G')
-        Graph.triggered.connect(self.graph)
+        GraphDots = QAction('Dots', self)
+        GraphDots.setShortcut('Ctrl+G')
+        GraphDots.triggered.connect(self.graphdot)
+
+        GraphLine = QAction('Line', self)
+        GraphLine.triggered.connect(self.graphline)
 
         linearGraph = QAction('Linear', self)
         linearGraph.setStatusTip('y = a*x + b')
@@ -116,7 +119,10 @@ class Main_Window_GUI(QMainWindow):
 
         menubar = self.menuBar()
         graphMenu = menubar.addMenu('&Curve Fit')
-        graphMenu.addAction(Graph)
+        simpleGraph = graphMenu.addMenu('Graphic')
+        simpleGraph.addAction(GraphDots)
+        simpleGraph.addAction(GraphLine)
+        graphMenu.addSeparator()
         graphMenu.addAction(linearGraph)
         graphMenu.addAction(logGraph)
         graphMenu.addAction(expGraph)
@@ -243,9 +249,13 @@ class Main_Window_GUI(QMainWindow):
 
         TAB[tabLayout.currentIndex()].saveGraph()
 
-    def graph(self):
+    def graphdot(self):
 
-        TAB[tabLayout.currentIndex()].plotGraph()
+        TAB[tabLayout.currentIndex()].plotGraph('ro')
+
+    def graphline(self):
+
+        TAB[tabLayout.currentIndex()].plotGraph('b')
 
     def linearGraph(self):
 
