@@ -20,6 +20,7 @@ import sys
 from MainLayout import MainLayout
 from MainTabses import TabMain
 
+from WidgetsScript import derivative
 from OpenScript import Open_file_CSV, Open_file_TXT
 from SaveScript import saveCSV, saveTXT, saveLaTex
 
@@ -60,6 +61,7 @@ class Main_Window_GUI(QMainWindow):
 
         saveAs = QAction('Save as', self)
         saveAs.setStatusTip('Save table')
+        saveAs.triggered.connect(self.saveAs)
 
         savepng = QAction('Save Figure', self)
         savepng.setStatusTip('Save Figure')
@@ -133,6 +135,7 @@ class Main_Window_GUI(QMainWindow):
 
         diffCalculator = QAction('Derivative', self)
         diffCalculator.setStatusTip('Calculate the derivative between two columns')
+        diffCalculator.triggered.connect(self.differential)
 
         helpView = QAction('Help', self)
         helpView.setStatusTip('Open the README help')
@@ -207,18 +210,34 @@ class Main_Window_GUI(QMainWindow):
             TAB[tabLayout.currentIndex()].dataTable.reDoTable()
 
     def save(self):
+        if hasattr(self, 'fname'):
+
+            if ".csv" in self.path:
+                saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
+                        TAB[tabLayout.currentIndex()].dataTable.index,
+                                                            self.path)            
+            elif ".txt" in self.path:
+                saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
+                        TAB[tabLayout.currentIndex()].dataTable.index,
+                                                            self.path)
+        else:
+        	self.saveAs()
+
+        TAB[tabLayout.currentIndex()].dataSaved = True
+
+    def saveAs(self):
         fname = str(QFileDialog.getSaveFileName(self, 'Open file',
                                   '/home/jaime/', "Calc files (*.csv *.txt)"))
         fname = fname.split(',')[0]
         fname = fname.split('(u')
-        fname = fname[1].split("'")
+        self.path = fname[1].split("'")[1]
 
-        if ".csv" in fname[1]:
+        if ".csv" in self.path:
             saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
-                      TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
-        elif ".txt" in fname[1]:
+                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+        elif ".txt" in self.path:
             saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
-                      TAB[tabLayout.currentIndex()].dataTable.index, fname[1])
+                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
 
         TAB[tabLayout.currentIndex()].dataSaved = True
 
@@ -244,6 +263,19 @@ class Main_Window_GUI(QMainWindow):
             saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table,
                       TAB[tabLayout.currentIndex()].dataTable.index,
                                                        eval(text), fname[1])
+    
+    def differential(self):
+
+        text, ok = QInputDialog.getText(self, 'Derivative',
+                              '    Columns <h6>e.j."1,2" for columns C1'+
+                                                           ' and C2<\h6> :')
+        if ok:
+            derivative(TAB[tabLayout.currentIndex()].dataTable.table,
+                      TAB[tabLayout.currentIndex()].dataTable.index,
+                                                                 eval(text))
+
+        TAB[tabLayout.currentIndex()].dataTable.reDoTable()
+        TAB[tabLayout.currentIndex()].dataSaved = True
 
     def saveFigure(self):
 
