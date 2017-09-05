@@ -46,7 +46,9 @@ class TableData(QWidget):
 
     def addColumnRow(self):
 
-        if self.numRows-1 <= max([i for i in [len(i) for i in self.table.values()]]):
+##############################################################################
+        if self.numRows-1 <= max([i for i in 
+        	                           [len(i) for i in self.table.values()]]):
             self.tableWidget.insertRow(self.numRows)
             self.numRows = self.numRows + 1
 
@@ -68,7 +70,8 @@ class TableData(QWidget):
 
         for n in range(len(self.index)):
             for i in range(length):
-                try:
-                    self.tableWidget.setItem(i,n, QTableWidgetItem(str(self.table[self.index[n]][i])))
+                try:               	
+                    self.tableWidget.setItem(i,n, QTableWidgetItem(str(
+                    	                        self.table[self.index[n]][i])))
                 except IndexError:
                     error = 1

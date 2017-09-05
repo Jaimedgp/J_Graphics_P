@@ -32,7 +32,9 @@ def Open_file_CSV(path):
                 error = 1
         row = fr.readline().split(',') # read another row
 
-    table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(numColumns)])
+    table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(
+                                                                  numColumns)])
+ 
     index = dict([(i, titles[i].split()[0]) for i in xrange(numColumns)])
 
     return table, index
@@ -71,7 +73,9 @@ def Open_file_TXT(path):
                 error = 1
         row = fr.readline().split('\t') # read another row
 
-    table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(numColumns)])
+    table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(
+    	                                                          numColumns)])
+
     index = dict([(i, titles[i].split()[0]) for i in xrange(numColumns)])
 
     return table, index

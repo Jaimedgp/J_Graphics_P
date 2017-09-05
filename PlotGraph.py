@@ -33,7 +33,9 @@ class Plot_Graph(FigureCanvas):
         self.Graph = GraphPlot
 
         if marker == 'ro':
-        	self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt=marker, ecolor='r')
+        	self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        		               yerr=self.Graph.error, fmt=marker, ecolor='r')
+
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, marker)
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
@@ -58,7 +60,9 @@ class Plot_Graph(FigureCanvas):
 
         slope, intercept = self.Graph.linearRegression()
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        	               yerr=self.Graph.error, fmt='ro', ecolor='r')
+      
         self.axes.plot(self.Graph.xTh, slope*self.Graph.xTh+intercept, 'b')
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -75,9 +79,12 @@ class Plot_Graph(FigureCanvas):
 
         slope, intercept = self.Graph.logarithmicRegression()
 
-        yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(self.Graph.xTh.size)]
+        yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(
+        	                                             self.Graph.xTh.size)]
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        	               yerr=self.Graph.error, fmt='ro', ecolor='r')
+
         self.axes.plot(self.Graph.xTh, yTh, 'b')
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -93,9 +100,12 @@ class Plot_Graph(FigureCanvas):
         self.Graph = GraphPlot
 
         slope, intercept = self.Graph.exponentialRegression()
-        yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
+        yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(
+        	                                              self.Graph.xTh.size)]     
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        	               yerr=self.Graph.error, fmt='ro', ecolor='r')
+
         self.axes.plot(self.Graph.xTh, yTh, 'b')
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -119,7 +129,8 @@ class Plot_Graph(FigureCanvas):
         polynom = poly1d(parameters)
         yTh = [polynom(self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        	yerr=self.Graph.error, fmt='ro', ecolor='r')
         self.axes.plot(self.Graph.xTh, yTh, 'b')
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -137,14 +148,18 @@ class Plot_Graph(FigureCanvas):
         text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
         m = text
 
-        fname = str(QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "LaTex files (*.tex)"))
+        fname = str(QFileDialog.getSaveFileName(self, 'Open file', 
+        	                                          '/home/jaime/',
+        	                                           "LaTex files (*.tex)"))
+
         fname = fname.split(',')[0]
         fname = fname.split('(u')
         fname = fname[1].split("'")
 
         slope, d = self.Graph.pepepe(m, fname[1])
 
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+        	               yerr=self.Graph.error, fmt='ro', ecolor='r')
         self.axes.plot(self.Graph.xTh, slope*(self.Graph.xTh**m), 'b')
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -157,7 +172,9 @@ class Plot_Graph(FigureCanvas):
 
         from PyQt5.QtWidgets import QFileDialog
 
-        fileWindow = QFileDialog.getSaveFileName(self, 'Open file', '/home/jaime/', "Image files (*.png)")
+        fileWindow = QFileDialog.getSaveFileName(self, 'Open file',
+                                                       '/home/jaime/', 
+                                                       "Image files (*.png)")
 
         fileWindow = str(fileWindow)
         fname = fileWindow.split(',')[0]

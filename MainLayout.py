@@ -57,7 +57,9 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] , 
+                   self.dataTable.table[axesYTitle] ]
+
         if len(values[0]) != len(values[1]):
         	return
         titles = [ axesXTitle , axesYTitle ]
@@ -91,7 +93,9 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] ,
+                   self.dataTable.table[axesYTitle] ]
+
         if len(values[0]) != len(values[1]):
         	return
         titles = [ axesXTitle , axesYTitle ]
@@ -129,9 +133,11 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] ,
+                   self.dataTable.table[axesYTitle] ]
+
         if len(values[0]) != len(values[1]):
-        	return
+            return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -167,9 +173,11 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] ,
+                   self.dataTable.table[axesYTitle] ]
+
         if len(values[0]) != len(values[1]):
-        	return
+            return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -205,7 +213,8 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] ,
+                   self.dataTable.table[axesYTitle] ]
         if len(values[0]) != len(values[1]):
         	return
         titles = [ axesXTitle , axesYTitle ]
@@ -243,7 +252,8 @@ class MainLayout(QWidget):
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
 
-        values = [ self.dataTable.table[axesXTitle] , self.dataTable.table[axesYTitle] ]
+        values = [ self.dataTable.table[axesXTitle] ,
+                   self.dataTable.table[axesYTitle] ]
         if len(values[0]) != len(values[1]):
         	return
         titles = [ axesXTitle , axesYTitle ]
@@ -290,17 +300,23 @@ class MainLayout(QWidget):
             boolean = True
             while boolean:
                 try:
-                    if item.text() == '':
-                        if item.row() >= len(self.dataTable.table[self.dataTable.index[item.column()]]):
-                            self.dataTable.table[self.dataTable.index[item.column()]]
+                    if item.text() == '':                   	
+                        if item.row() >= len(self.dataTable.table[
+                        	            self.dataTable.index[item.column()]]):
+
+                            self.dataTable.table[self.dataTable.index[
+                                                               item.column()]]
                         else:
-                            del self.dataTable.table[self.dataTable.index[item.column()]][item.row()]
+                            del self.dataTable.table[self.dataTable.index[
+                                                   item.column()]][item.row()]
                         boolean = False
                     else:
-                        self.dataTable.table[self.dataTable.index[item.column()]][item.row()] = float(item.text())
+                        self.dataTable.table[self.dataTable.index[
+                              item.column()]][item.row()] = float(item.text())
                         boolean = False
                 except IndexError:
-                    self.dataTable.table[self.dataTable.index[item.column()]].append(float(item.text()))
+                    self.dataTable.table[self.dataTable.index[item.column()]
+                                                  ].append(float(item.text()))
                     boolean = False
                 except KeyError:
                     self.dataTable.table[str(item.column())] = []
@@ -313,7 +329,9 @@ class MainLayout(QWidget):
     @pyqtSlot()
     def formula_click(self):
 
-        table, index = Operations( self.Formula.lineEdit.text(), self.dataTable.table, self.dataTable.index ).main()
+        table, index = Operations( self.Formula.lineEdit.text(),
+                                   self.dataTable.table, 
+                                   self.dataTable.index ).main()
 
         self.dataTable.table = table
         self.dataTable.index = index

@@ -106,8 +106,9 @@ def saveLaTex(table, index, columns, path):
 
     # LaTex Header
     fw.write('\\begin{table}[H]'+'\n')
-    fw.write('\t'+'\\centering'+'\n')
-    fw.write('\t'+'\\begin{tabular}{ '+ ' '.join([ 'c ' for i in columns])+ '}'+'\n')
+    fw.write('\t'+'\\centering'+'\n')   
+    fw.write('\t'+'\\begin{tabular}{ '+ ' '.join([ 'c ' for i in columns])+ 
+    	                                                              '}'+'\n')
     fw.write('\t'+'\t'+ '\\'+ '\\\hline'+'\n')
     fw.write('\t'+'\t'+'\\centering'+'\n')
 

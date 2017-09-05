@@ -21,6 +21,7 @@
 #
 ##############################################################################
 
+
 from math import *
 
 class Operations():
@@ -71,8 +72,9 @@ class Operations():
     def calculator(self):
 
         if "Errors(" in self.action:
-            indexFunction = self.action.index("Errors(")
-            self.action = self.action[:indexFunction-1] + 'self.' + self.action[indexFunction-1:]
+            indexFunction = self.action.index("Errors(")          
+            self.action = (self.action[:indexFunction-1] + 'self.' + 
+            	                                 self.action[indexFunction-1:])
             eval(self.action)
 
         else:
@@ -83,12 +85,15 @@ class Operations():
             finalI = initialI+1
             involvedColumn = int(self.action[initialI:finalI])
             while boolean:
-                try:
-                    element = self.action.index('self.table[self.index[', element, len(self.action))+23
-                    self.action = self.action[:element] + ']][i]' + self.action[element:]
+                try:               	
+                    element = self.action.index('self.table[self.index[', 
+                    	                          element, len(self.action))+23
+                    self.action = (self.action[:element] + ']][i]' + 
+                                                         self.action[element:])
                 except ValueError:
                     boolean = False
-            values = [ eval(str(self.action)) for i in range(len(self.table[self.index[involvedColumn]])) ]
+            values = [ eval(str(self.action)) for i in range(len(self.table[
+            	                                self.index[involvedColumn]])) ]
             self.table[str(self.newIndex)] = values
             self.table, self.index
 
@@ -109,8 +114,11 @@ class Operations():
         from WidgetsScript import ErrorsCalculator
 
         tableValues = []
-        newValues = [eval(values[i].replace('C', 'self.table[self.index[') + ']]') for i in range(len(values))]
-        newErrors = [eval(errors[i].replace('C', 'self.table[self.index[') + ']]') for i in range(len(errors))]
+      
+        newValues = [eval(values[i].replace('C', 'self.table[self.index[') + 
+        	                                 ']]') for i in range(len(values))]
+        newErrors = [eval(errors[i].replace('C', 'self.table[self.index[') + 
+        	                                 ']]') for i in range(len(errors))]
 
         for i in range(len(newValues[0])):
             values = [newValues[n][i] for n in range(len(newValues))]

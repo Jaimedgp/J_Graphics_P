@@ -116,7 +116,8 @@ class ErrorBars(QWidget):
         hBox.addLayout(self.VBox)
         VMainBox.addLayout(hBox)
 
-        self.Error = {"% of value":self.percenValue, "Fixed value":self.value, "Data column":self.errColumn}
+        self.Error = {"% of value":self.percenValue, "Fixed value":self.value,
+                                                  "Data column":self.errColumn}
 
         self.setLayout(VMainBox)
 
