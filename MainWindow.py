@@ -33,7 +33,7 @@ class Main_Window_GUI(QMainWindow):
         self.setGeometry(0, 0, 2000, 1100)
         self.setWindowTitle("Just a Graphics Printer")
         self.setWindowIcon(
-            QIcon("~/J_Graphics_P/Photos/JGP(icon).png"))
+            QIcon("../J_Graphics_P/Photos/JGP(icon).png"))
 
         self.fileMenuBar()
         self.graphMenuBar()
@@ -227,27 +227,29 @@ class Main_Window_GUI(QMainWindow):
         TAB[tabLayout.currentIndex()].dataSaved = True
 
     def saveAs(self):
-        fname = str(QFileDialog.getSaveFileName(self, 'Open file',
-                                  '/home/jaime/', "Calc files (*.csv *.txt)"))
-        fname = fname.split(',')[0]
-        fname = fname.split('(u')
-        self.path = fname[1].split("'")[1]
 
-        if ".csv" in self.path:
-            saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
-                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+        fname, ok = QFileDialog.getSaveFileName(self, 'Open file',
+                                  '../', "Calc files (*.csv *.txt)")
+        
+        if ok:
 
-            name = self.path.split(".csv")[0]
+	        self.path = str(fname)
 
-        elif ".txt" in self.path:
-            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
-                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
-            
-            name = self.path.split(".csv")[0]
+	        if ".csv" in self.path:
+	            saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
+	                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
 
-        TAB[tabLayout.currentIndex()].dataSaved = True
+	            name = self.path.split(".csv")[0]
 
-        tabLayout.tabMain.setTabText(tabLayout.currentIndex(), name.split("/")[-1])
+	        elif ".txt" in self.path:
+	            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
+	                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+	            
+	            name = self.path.split(".csv")[0]
+
+	        TAB[tabLayout.currentIndex()].dataSaved = True
+
+	        tabLayout.tabMain.setTabText(tabLayout.currentIndex(), name.split("/")[-1])
 
     def saveIntoTex(self):
 
