@@ -280,12 +280,14 @@ class MainLayout(QWidget):
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
 
-        self.Graph.set_PepepeGraph(graph)
+        correct = self.Graph.set_PepepeGraph(graph)
 
-        self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.GrphAxes.result.setText(graph.text)
+        if correct:
 
-        self.splitLyout.addWidget(self.Graph)
+            self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+            self.GrphAxes.result.setText(graph.text)
+
+            self.splitLyout.addWidget(self.Graph)
 
     def saveGraph(self):
 

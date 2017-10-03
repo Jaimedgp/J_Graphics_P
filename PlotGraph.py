@@ -146,17 +146,21 @@ class Plot_Graph(FigureCanvas):
         self.Graph = GraphPlot
 
         text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
-        m = text
+        if ok:
+            m = text
+        else:
+            return False
 
-        fname = str(QFileDialog.getSaveFileName(self, 'Open file', 
+        fname, ok = QFileDialog.getSaveFileName(self, 'Open file', 
         	                                          '/home/jaime/',
-        	                                           "LaTex files (*.tex)"))
+        	                                           "LaTex files (*.tex)")
 
-        fname = fname.split(',')[0]
-        fname = fname.split('(u')
-        fname = fname[1].split("'")
+        if fname == '':
+            return False
 
-        slope, d = self.Graph.pepepe(m, fname[1])
+        fname = str(fname)
+
+        slope, d = self.Graph.pepepe(m, fname)
 
         self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
         	               yerr=self.Graph.error, fmt='ro', ecolor='r')
@@ -168,19 +172,19 @@ class Plot_Graph(FigureCanvas):
         self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
+        return True
+
     def saveGraph(self):
 
         from PyQt5.QtWidgets import QFileDialog
 
-        fileWindow = QFileDialog.getSaveFileName(self, 'Open file',
+        file, ok = QFileDialog.getSaveFileName(self, 'Open file',
                                                        '/home/jaime/', 
                                                        "Image files (*.png)")
 
-        fileWindow = str(fileWindow)
-        fname = fileWindow.split(',')[0]
-        fname = fname.split('(u')
-        fname = fname[1].split("'")
-        file = fname[1]
+        if ok:
 
-        self.fig.set_size_inches(9,6)
-        self.fig.savefig(file, bbox_inches='tight')
+            file = str(file)
+
+            self.fig.set_size_inches(9,6)
+            self.fig.savefig(file, bbox_inches='tight')
