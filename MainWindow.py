@@ -33,7 +33,7 @@ class Main_Window_GUI(QMainWindow):
         self.setGeometry(0, 0, 2000, 1100)
         self.setWindowTitle("Just a Graphics Printer")
         self.setWindowIcon(
-            QIcon("/home/jaime/J_Graphics_P/Photos/JGP(icon).png"))
+            QIcon("~/J_Graphics_P/Photos/JGP(icon).png"))
 
         self.fileMenuBar()
         self.graphMenuBar()
@@ -60,6 +60,7 @@ class Main_Window_GUI(QMainWindow):
         saveAction.triggered.connect(self.save)
 
         saveAs = QAction('Save as', self)
+        saveAs.setShortcut('Ctrl+Shift+S')
         saveAs.setStatusTip('Save table')
         saveAs.triggered.connect(self.saveAs)
 
@@ -235,11 +236,18 @@ class Main_Window_GUI(QMainWindow):
         if ".csv" in self.path:
             saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
                       TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+
+            name = self.path.split(".csv")[0]
+
         elif ".txt" in self.path:
             saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
                       TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+            
+            name = self.path.split(".csv")[0]
 
         TAB[tabLayout.currentIndex()].dataSaved = True
+
+        tabLayout.tabMain.setTabText(tabLayout.currentIndex(), name.split("/")[-1])
 
     def saveIntoTex(self):
 
