@@ -301,10 +301,16 @@ class Terminal_for_table(QWidget):
         hbox = QHBoxLayout()
 
         self.edit = QTextEdit()
-        self.pColButton = QPushButton('Add Columns', self)
-        #self.pColButton.clicked.connect(self.doAddColumns)
-        self.nwTblButton = QPushButton('New Table', self)
-        #self.nwTblButton.clicked.connect(self.doChangeColumns)
+
+        self.edit.canPaste()
+        self.edit.append('>>>')
+
+        self.pColButton = QPushButton('Run', self)
+        self.pColButton.setShortcut('Ctrl+E')
+        self.pColButton.clicked.connect(self.python)
+
+        self.nwTblButton = QPushButton('Clear', self)
+        self.nwTblButton.clicked.connect(self.clear)
 
         hbox.addWidget(self.pColButton)
         hbox.addWidget(self.nwTblButton)
@@ -313,6 +319,27 @@ class Terminal_for_table(QWidget):
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
+
+    def python(self):
+
+
+        from math import *
+
+        text = self.edit.toPlainText().split('>>>')[-1]
+
+        try:
+
+            result = eval(text)
+
+            self.edit.append(str(result) + '\n'+'>>>')
+
+        except NameError, TypeError:
+            self.edit.append('Error' + '\n'+'>>>')
+
+    def clear(self):
+
+        self.edit.clear()
+        self.edit.append('>>>')
 
 
 #########################################
