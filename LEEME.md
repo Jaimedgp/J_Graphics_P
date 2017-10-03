@@ -1,60 +1,60 @@
 # Just a Graphics Printer (JGP)
 
-  Just a Graphics Printer es un pequeño proyecto personal desarrollado de manera paralela con los estudios del grado en Física utilizando diferentes paquetes de python como numpy, matplotlib.pyplot o PyQt5. Su finalidad es facilitar todo el procesamiento de datos, así como su presentación en los informes, de las diversas prácticas de laboratorio que se realizan en el grado. De esta manera, a medida que las prácticas iban requiriendo mayor sofisticación, he ido incorporando diversas funciones al programa en función de lo que se me exigía.
+  Just a Graphics Printer es un pequeño proyecto personal desarrollado de manera paralela con los estudios del grado en Física utilizando diferentes paquetes de python como numpy, matplotlib o PyQt5. Su finalidad es facilitar todo el procesamiento de datos, así como su presentación en los informes, de las diversas prácticas de laboratorio que se realizan en el grado. De esta manera, a medida que las prácticas iban requiriendo mayor sofisticación, he ido incorporando diversas funciones al programa en función de lo que se me exigía.
   
-  ![alt text](/home/jaimedgp/Photos/Screenshot_JGP.png "Logo Title Text 1")
+  ![alt text](Photos/Screenshot_JGP.png "Logo Title Text 1")
 
-## Index
+## Índice
 
-1. [Requisites](#requisites)
-2. [Installation](#installation)
-3. [User's Guide](#UserGuide)
+1. [Requisitos](#requisites)
+2. [Instalación](#installation)
+3. [Guía de usuario](#UserGuide)
 	* [Formula Entry](#formulaEntry)
 	* [Errors Calculator](#errorsCalculator)
 	* [Hamiltonian](#hamiltonian)
   
-## <a name="requisites"></a> 1. Requisites
+## <a name="requisites"></a> 1. Requisitos
   
->* [Python 2.7](https://www.python.org/download/releases/2.7/) || 3.5 is not compatible.
->* [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5) || It provides the GUI interface
+>* [Python 2.7](https://www.python.org/download/releases/2.7/) || 3.5 no es compatible.
+>* [PyQt5](https://www.riverbankcomputing.com/software/pyqt/download5) || Esto proporciona la interfaz GUI
 
 >* [Numpy](http://www.numpy.org/) 
 >* [matplotlib](http://matplotlib.org/) 
 >* [SciPy](https://www.scipy.org/install.html)
 
-> You could download [Anaconda](https://www.continuum.io/downloads) for Python 2.7 which provides it. The version for Python 3.5 is not compatible and matplotlib.pyplot does not work
+> También se puede descargar el paquete [Anaconda](https://www.continuum.io/downloads) para Python 2.7 el cuál te proveé de dichos paquetes. La versión para Python 3.5 no es compatible y da ciertos errores.
 
-## <a name="installation"></a> 2. Installation
+## <a name="installation"></a> 2. Instalación
 
-Once you have installed all the software listed under "Requisites" you can now begin the installation process:
+Una vez que ya has descargado todos los paquetes que se muestran en "Requisitos" puedes comenzar con el proceso de instalación:
 
-#### 1. get the source
+#### 1. Obtener el código del programa
 
-if you had installed git you could run this command on your shell terminal
-
-``` shell
-git clone https://github.com/Jaimedgp/J_Graphics_P.git
-```
-
-then you could add an alias on your .bashrc file running this command [Recommended]
-
-``` shell
-echo "alias JGP='python ~/J_Graphics_P/MainWindow.py'" >> ~/.bashrc
-```
-  
-if it is not, you should download the zip with all the repository and unzip it:
+Si ya tienes instalado git en tu ordenador podrás obtener el programa corriendo el siguiente comando en tú terminal
 
 ``` shell
 cd
 
-unzip J_Graphics_P-master.zip
+git clone https://github.com/Jaimedgp/J_Graphics_P.git
 ```
 
-you could also add an alias on your .bashrc file running this command [Recommended]
+Si en tú caso no tienes instalado git puedes descargarte el zip de ésta página web y descomprimirlo (se recomienda guardar el archivo en el directorio principal ~/). Si por el contrario prefieres utilizar la terminal puedes usar los siguientes comandos:
 
 ``` shell
-echo "alias JGP='python ~/J_Graphics_P-master/MainWindow.py'" >> ~/.bashrc
+cd
+
+wget https://github.com/Jaimedgp/J_Graphics_P/archive/master.zip
+
+unzip master.zip
 ```
+
+En ambos casos obtendremos en nustro ordenador una carpeta llamada J_Graphics_P (J_Graphics_P-master en el caso del zip) en nuestro directorio principal. Para ejecutar el programa hay que compilar el script MainWindow.py mediante el siguiente comando: 
+
+``` shell
+python ~/J_Graphics_P/MainWindow.py
+```
+
+Recordar que si se ha descargado el programa mediante el archivo zip la carpeta J_Graphics_P se llama J_Graphics_P-master
 
 ## <a name="UserGuide"></a> 3. User's guide
 
@@ -67,15 +67,15 @@ Working on it
 
 ### <a name="formulaEntry"></a> Formula Entry
 
-![alt text](/home/jaimedgp/Photos/FormulaEntry.png "Logo Title Text 1")
+![alt text](Photos/FormulaEntry.png "Logo Title Text 1")
 
 
 ### <a name="errorsCalculator"></a> Errors Calculator
 
-![alt text](/home/jaimedgp/Photos/ErrorCalc.png "Logo Title Text 1")
+![alt text](Photos/ErrorCalc.png "Logo Title Text 1")
 
 #### 
 
 ### <a name="hamiltonian"></a> Hamiltonian
 
-![alt text](/home/jaimedgp/Photos/Hamil.png)
+![alt text](Photos/Hamil.png)
