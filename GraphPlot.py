@@ -63,6 +63,11 @@ class GraphPlot():
         ydiff = [fabs((y[i+1]+self.error[i+1]) - (y[i]-self.error[i])) for i in range(len(y)-1) if y[i+1] - y[i] != 0]
         ydiff = max(ydiff)
 
+        if ydiff == 0:
+
+            ydiff = [fabs((y[i]+self.error[i]) - (y[i+1]-self.error[i+1])) for i in range(len(y)-1) if y[i+1] - y[i] != 0]
+            ydiff = max(ydiff)
+
         self.xInterval = [min(x) - fabs(xdiff)*0.5 , max(x) + fabs(xdiff)*0.5]
         self.yInterval = [min(y) - fabs(ydiff)*0.5 , max(y) + fabs(ydiff)*0.5]
 
