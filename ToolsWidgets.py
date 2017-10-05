@@ -356,7 +356,6 @@ class Terminal_for_table(QWidget):
     def normalConsole(self, text):
 
     	from math import *
-        import matplotlib.pyplot as plt
 
         try:
 
