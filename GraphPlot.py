@@ -193,3 +193,17 @@ class GraphPlot():
         self.text = 'y = %s * x ^ %s' %(a, m) + '\n' + 'Error de a = %s' %(Da)
 
         return a , Da
+
+    def generalFit(self, guess, function):
+
+        from scipy.optimize import leastsq
+
+        global x
+        x = np.asarray(self.xAxis)
+        y = np.asarray(self.yAxis)
+
+        func = lambda t: eval(function) - y
+
+        self.text = "hola"
+
+        return leastsq(func, guess)[0]

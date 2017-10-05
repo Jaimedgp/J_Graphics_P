@@ -103,6 +103,9 @@ class Main_Window_GUI(QMainWindow):
         linearGraph.setStatusTip('y = a*x + b')
         linearGraph.triggered.connect(self.linearGraph)
 
+        CurveFitGraph = QAction('Curve Fit', self)
+        CurveFitGraph.triggered.connect(self.CurveFitGraph)
+
         logGraph = QAction('Logarithmic', self)
         logGraph.setStatusTip('a*log(x) + b')
         logGraph.triggered.connect(self.logarithmicGraph)
@@ -127,6 +130,7 @@ class Main_Window_GUI(QMainWindow):
         simpleGraph.addAction(GraphLine)
         graphMenu.addSeparator()
         graphMenu.addAction(linearGraph)
+        graphMenu.addAction(CurveFitGraph)
         graphMenu.addAction(logGraph)
         graphMenu.addAction(expGraph)
         graphMenu.addAction(polyGraph)
@@ -318,6 +322,10 @@ class Main_Window_GUI(QMainWindow):
     def pepepeGraph(self):
 
         TAB[tabLayout.currentIndex()].plotPepeGraph()
+
+    def CurveFitGraph(self):
+
+        TAB[tabLayout.currentIndex()].plotCurveFitgraph()    
 
     def closeEvent(self, event):
 

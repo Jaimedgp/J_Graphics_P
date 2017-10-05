@@ -174,6 +174,37 @@ class Plot_Graph(FigureCanvas):
 
         return True
 
+    def set_generalFit(self, GraphPlot):
+
+        from PyQt5.QtWidgets import QInputDialog, QFileDialog
+        import numpy as np
+
+        self.Graph = GraphPlot
+
+        text, ok = QInputDialog.getText(self, 'Curve Fit', 'Function:')
+        if ok:
+            func, parameters = text.split(";")
+        else:
+            return False
+
+        parameters = eval(parameters)
+
+        t = self.Graph.generalFit(parameters, func)
+        func = func.replace('x', 'self.Graph.xTh')
+        yTh = eval(func)
+
+        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+                           yerr=self.Graph.error, fmt='ro', ecolor='r')
+        self.axes.plot(self.Graph.xTh, yTh, 'b')
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
+        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
+        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
+        self.axes.set_xlim(self.Graph.xInterval)
+        self.axes.set_ylim(self.Graph.yInterval)
+        self.draw()
+
+        return True
+
     def saveGraph(self):
 
         from PyQt5.QtWidgets import QFileDialog
