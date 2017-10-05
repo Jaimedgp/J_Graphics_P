@@ -5,11 +5,9 @@
 * [Sumatorios y demas](#sumdemas)
 
 #### Problemas Detectados a Solucionar
-* [Varias funciones, 1 sola grafica](#varias_funciones)
 * [Escala de los ejes](#escalas)
 * [Aleatoriedad del Formula Entry](#Aleatoriedad)
 
-<!-- ### Mejoras Posibles -->
 
 ## Nuevas Ideas a Implementar
 
@@ -29,12 +27,6 @@ Como otra de las funciones se podria abrir una ventana en la que te muestre suma
 
 ## Problemas Detectados a Solucionar
 
-### <a name="varias_funciones"></a> Varias funciones
-
-La idea es poder representar en una misma grafica diferentes tomas de datos para una misma variable independiente y asi poder compararlos de forma mas visual. Para ello se indica mediante un CheckBox si se quiere borrar la anterior grafica o no (Re-Plot).
-
-El problema esta que al representar la nueva grafica a partir de la anterior el intervalo de los ejes se calcula con los valores nuevos de tal manera que se pueden perder algunos puntos de la anterior grafica. Este código se encuentra en la clase del archivo GraphPlot.py.
-
 ### <a name="escalas"></a> Escala de los ejes
 
 A la hora de crear la ventana de la gráfica se han de definir los intervalos de los ejes entre los cuales se quiere hacer la representación. Para ello se deja de margen la mitad del intervalo mayor entre puntos para cada eje. Dicho codigo se encuentra en las lineas [54, 61] del archivo GraphPlot.
@@ -47,6 +39,3 @@ Se quiere buscar una forma de solucionar este problema pero tambien se busca una
 
 El Formula Entry no permite modificar columnas con datos. El codigo del Formula Entry se encuentra en el archivo Calculator.
 
-## Mejoras Posibles
-
-### <a name="tamano"></a>Tamaño de los titulos y números en la gráfica
