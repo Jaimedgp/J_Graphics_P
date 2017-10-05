@@ -302,6 +302,7 @@ class Terminal_for_table(QWidget):
 
         self.edit = QTextEdit()
 
+
         self.edit.canPaste()
         self.edit.append('>>>')
 
@@ -322,10 +323,40 @@ class Terminal_for_table(QWidget):
 
     def python(self):
 
-
-        from math import *
-
         text = self.edit.toPlainText().split('>>>')[-1]
+
+        if "..." in text:
+        	self.withStatement(text)
+
+        elif ":" in text[-1]:
+        	self.edit.append("..."+"\t")
+
+        else:
+        	self.normalConsole(text)
+
+
+    def withStatement(self, text):
+
+    	text = text.split("...")
+
+    	if "\t" not in text[-1]:
+    		text = "".join(text)
+
+    		try:
+    			exec(text)
+    		except (SyntaxError, NameError, TypeError):
+    			self.edit.append("Error")
+
+    		self.edit.append(">>>")
+
+    	else:
+
+    		self.edit.append("..."+"\t")
+
+    def normalConsole(self, text):
+
+    	from math import *
+        import matplotlib.pyplot as plt
 
         try:
 
@@ -333,8 +364,8 @@ class Terminal_for_table(QWidget):
 
             self.edit.append(str(result) + '\n'+'>>>')
 
-        except NameError, TypeError:
-            self.edit.append('Error' + '\n'+'>>>')
+        except (SyntaxError, NameError, TypeError):
+            self.edit.append("Error"+"\n"+">>>")
 
     def clear(self):
 
@@ -467,6 +498,6 @@ class HtmlReadme(QMainWindow):
         from PyQt5.QtCore import QUrl
 
         web = QWebView()
-        web.load(QUrl("file:///home/jaime/J_Graphics_P/README.html"))
+        web.load(QUrl("file:///home/jaimedgp/J_Graphics_P/README.html"))
 
         self.setCentralWidget(web)
