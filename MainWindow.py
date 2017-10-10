@@ -10,7 +10,7 @@
 #
 #   Return: 
 #
-##############################################################################
+################################################################################
 
 from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QFileDialog, 
                                                    QInputDialog, QMessageBox)
@@ -195,36 +195,43 @@ class Main_Window_GUI(QMainWindow):
             tabLayout.deleteTabs(tabLayout.currentIndex())
 
     def openFile(self):
-        fileName = QFileDialog.getOpenFileName(self, 'Open file', '/home/jaime'
-                                                   , 'Text File (*.csv *.txt)')
+        
+        tab = TAB[tabLayout.currentIndex()]
+        fileName, ok = QFileDialog.getOpenFileName(self, 'Open file',
+                                       '/home/jaime', 'Text File (*.csv *.txt)')
 
-        if '/home/jaime' in fileName[0]:
+        if '/home/jaime' in fileName:
 
-            if ".csv" in fileName[0]:
-                table, index = Open_file_CSV(fileName[0])
-            elif ".txt" in fileName[0]:
-                table, index = Open_file_TXT(fileName[0])
+            if ".csv" in fileName:
+                table, index = Open_file_CSV(fileName)
+                name = fileName.split(".csv")[0]
+            elif ".txt" in fileName:
+                table, index = Open_file_TXT(fileName)
+                name = fileName.split(".txt")[0]
 
-            tab = TAB[tabLayout.currentIndex()]
-
+            tab.path = fileName
             tab.dataTable.table = table
             tab.dataTable.index = index
             tab.ErrBar.set_new_Columns_names(tab.dataTable.index)
             tab.GrphAxes.setNames(tab.dataTable.index)
 
+            tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
+                                                            name.split("/")[-1])
+
             TAB[tabLayout.currentIndex()].dataTable.reDoTable()
 
     def save(self):
-        if hasattr(self, 'fname'):
+        if TAB[tabLayout.currentIndex()].path != '/':
 
-            if ".csv" in self.path:
+            if ".csv" in TAB[tabLayout.currentIndex()].path:
                 saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
                         TAB[tabLayout.currentIndex()].dataTable.index,
-                                                            self.path)            
-            elif ".txt" in self.path:
+                                             TAB[tabLayout.currentIndex()].path)    
+        
+            elif ".txt" in TAB[tabLayout.currentIndex()].path:
                 saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
                         TAB[tabLayout.currentIndex()].dataTable.index,
-                                                            self.path)
+                                             TAB[tabLayout.currentIndex()].path)
         else:
         	self.saveAs()
 
@@ -233,27 +240,31 @@ class Main_Window_GUI(QMainWindow):
     def saveAs(self):
 
         fname, ok = QFileDialog.getSaveFileName(self, 'Open file',
-                                  '../', "Calc files (*.csv *.txt)")
+                                  TAB[tabLayout.currentIndex()].path, 
+                                                   "Calc files (*.csv *.txt)")
         
         if ok:
 
-	        self.path = str(fname)
+	        TAB[tabLayout.currentIndex()].path = str(fname)
 
-	        if ".csv" in self.path:
+	        if ".csv" in TAB[tabLayout.currentIndex()].path:
 	            saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
-	                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+	                      TAB[tabLayout.currentIndex()].dataTable.index, 
+	                                      TAB[tabLayout.currentIndex()].path)
 
 	            name = self.path.split(".csv")[0]
 
-	        elif ".txt" in self.path:
+	        elif ".txt" in TAB[tabLayout.currentIndex()].path:
 	            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
-	                      TAB[tabLayout.currentIndex()].dataTable.index, self.path)
+	                      TAB[tabLayout.currentIndex()].dataTable.index, 
+	                                      TAB[tabLayout.currentIndex()].path)
 	            
-	            name = self.path.split(".csv")[0]
+	            name = TAB[tabLayout.currentIndex()].path.split(".txt")[0]
 
 	        TAB[tabLayout.currentIndex()].dataSaved = True
 
-	        tabLayout.tabMain.setTabText(tabLayout.currentIndex(), name.split("/")[-1])
+	        tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
+	                                                        name.split("/")[-1])
 
     def saveIntoTex(self):
 
@@ -262,7 +273,7 @@ class Main_Window_GUI(QMainWindow):
                                       ' and C2<\h6> or "all" for all table:')
         if ok:
             fname = str(QFileDialog.getSaveFileName(self, 'Open file',
-                                      '/home/jaime/', "LaTex files (*.tex)"))
+                                      TAB[tabLayout.currentIndex()].path, "LaTex files (*.tex)"))
             fname = fname.split(',')[0]
             fname = fname.split('(u')
             fname = fname[1].split("'")

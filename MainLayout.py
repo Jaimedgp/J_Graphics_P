@@ -14,6 +14,8 @@ class MainLayout(QWidget):
 
         super(QWidget, self).__init__()
 
+        self.path = '/home/jaimedgp/'
+
         self.MainLyout = QHBoxLayout()
 
         dataLyout = QHBoxLayout()
