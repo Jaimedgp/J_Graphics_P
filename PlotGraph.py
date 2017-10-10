@@ -121,7 +121,7 @@ class Plot_Graph(FigureCanvas):
 
         self.Graph = GraphPlot
 
-        text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
+        text, ok = QInputDialog.getInt(self, 'Polynomial', 'Grade:')
         m = text
 
         parameters = self.Graph.polynomialRegression(m)
@@ -181,7 +181,7 @@ class Plot_Graph(FigureCanvas):
 
         self.Graph = GraphPlot
 
-        text, ok = QInputDialog.getText(self, 'Curve Fit', 'Function:')
+        text, ok = QInputDialog.getText(self, 'Curve Fit', 'Function:', text="t[0] * np.sin(t[1]*x + t[2]) + t[3] ; [1,1,1,1]")
         if ok:
             func, parameters = text.split(";")
         else:
