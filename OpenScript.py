@@ -16,21 +16,21 @@ def Open_file_CSV(path):
     if type(path) !=  str:
         path = str(path)
 
-    fr = open(path, 'r')
+    with open(path, 'r') as fr:
 
-    titles = fr.readline().split(',')
-    numColumns = len(titles)
+        titles = fr.readline().split(',')
+        numColumns = len(titles)
 
-    rowValues = [[] for x in xrange(numColumns)]
-    row = fr.readline().split(',')
+        rowValues = [[] for x in xrange(numColumns)]
+        row = fr.readline().split(',')
 
-    while row[0] != '':
-        for i in xrange(numColumns):
-            try:
-                rowValues[i].append(float(row[i])) # append each element to the list
-            except (ValueError):
-                error = 1
-        row = fr.readline().split(',') # read another row
+        while row[0] != '':
+            for i in xrange(numColumns):
+                try:
+                    rowValues[i].append(float(row[i])) # append each element to the list
+                except (ValueError):
+                    error = 1
+            row = fr.readline().split(',') # read another row
 
     table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(
                                                                   numColumns)])
@@ -57,21 +57,21 @@ def Open_file_TXT(path):
     if type(path) !=  str:
         path = str(path)
 
-    fr = open(path, 'r')
+    with open(path, 'r') as fr:
 
-    titles = fr.readline().split('\t')
-    numColumns = len(titles)
+        titles = fr.readline().split('\t')
+        numColumns = len(titles)
 
-    rowValues = [[] for x in xrange(numColumns)]
-    row = fr.readline().split('\t')
+        rowValues = [[] for x in xrange(numColumns)]
+        row = fr.readline().split('\t')
 
-    while row[0] != '':
-        for i in xrange(numColumns):
-            try:
-                rowValues[i].append(float(row[i])) # append each element to the list
-            except (ValueError):
-                error = 1
-        row = fr.readline().split('\t') # read another row
+        while row[0] != '':
+            for i in xrange(numColumns):
+                try:
+                    rowValues[i].append(float(row[i])) # append each element to the list
+                except (ValueError):
+                    error = 1
+            row = fr.readline().split('\t') # read another row
 
     table = dict([(titles[i].split()[0], rowValues[i]) for i in xrange(
     	                                                          numColumns)])
