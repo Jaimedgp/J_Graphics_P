@@ -252,7 +252,7 @@ class Main_Window_GUI(QMainWindow):
 	                      TAB[tabLayout.currentIndex()].dataTable.index, 
 	                                      TAB[tabLayout.currentIndex()].path)
 
-	            name = self.path.split(".csv")[0]
+	            name = TAB[tabLayout.currentIndex()].path.split(".csv")[0]
 
 	        elif ".txt" in TAB[tabLayout.currentIndex()].path:
 	            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
