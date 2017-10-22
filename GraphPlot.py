@@ -16,23 +16,28 @@
 #               - X-axis interval \ list(xInterval) = [min, max]
 #               - X-axis interval \ list(yInterval) = [min, max]
 #
-#   Function: - linearRegression: Calculate the coefficients of a linear regression
+#   Function: - linearRegression: Calculate the coefficients of a linear 
+#                                 regression
 #                         * Return list(m, b) 
 #                                  y = m*x + b
-#             - logarithmicRegression: Calculate the coefficients of a logarithmic regression
+#             - logarithmicRegression: Calculate the coefficients of a 
+#                                      logarithmic regression
 #                         * Return list(m, b) 
 #                                  y = m * ln(x) + b
-#             - exponentialRegression: Calculate the coefficients of an exponential regression
+#             - exponentialRegression: Calculate the coefficients of an 
+#                                      exponential regression
 #                         * Return list(m, b) 
 #                                 y = b * e^(m*x)
-#             - polynomialRegression: Calculate the coefficients of a polynomial regression
+#             - polynomialRegression: Calculate the coefficients of a polynomial
+#                                     regression
 #                         * Return array(an, ..., a2, a1, a0) 
 #                                  y = an*x^(n)+...+a2*x^2+a1*x+a0
-#             - PepepeRegression: Calculate the regression as my Laboratory's teacher wants
+#             - PepepeRegression: Calculate the regression as my Laboratory's 
+#                                 teacher wants
 #                         * Return list(a , error of a) 
 #                                  y = a*x^m
 #
-#######################################################################################################
+################################################################################
 
 import numpy as np
 
@@ -50,22 +55,26 @@ class GraphPlot():
         if type(self.error) == float or type(self.error) == int:
             self.error = [self.error for i in xrange(len(self.yAxis))]
 
-        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), ((max(self.xAxis)-min(self.xAxis))/100))
+        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), 
+        	                           ((max(self.xAxis)-min(self.xAxis))/1000))
 
         self.setInterval(self.xAxis, self.yAxis)
 
     def setInterval(self, x, y):
         from math import fabs
 
-        xdiff = [fabs(x[i+1] - x[i]) for i in range(len(x)-1) if x[i+1] - x[i] != 0]
+        xdiff = [fabs(x[i+1] - x[i]) for i in range(len(x)-1) 
+                                                          if x[i+1] - x[i] != 0]
         xdiff = max(xdiff)
 
-        ydiff = [fabs((y[i+1]+self.error[i+1]) - (y[i]-self.error[i])) for i in range(len(y)-1) if y[i+1] - y[i] != 0]
+        ydiff = [fabs((y[i+1]+self.error[i+1]) - (y[i]-self.error[i])) 
+                                 for i in range(len(y)-1) if y[i+1] - y[i] != 0]
         ydiff = max(ydiff)
 
         if ydiff == 0:
 
-            ydiff = [fabs((y[i]+self.error[i]) - (y[i+1]-self.error[i+1])) for i in range(len(y)-1) if y[i+1] - y[i] != 0]
+            ydiff = [fabs((y[i]+self.error[i]) - (y[i+1]-self.error[i+1])) 
+                                 for i in range(len(y)-1) if y[i+1] - y[i] != 0]
             ydiff = max(ydiff)
 
         self.xInterval = [min(x) - fabs(xdiff)*0.5 , max(x) + fabs(xdiff)*0.5]
@@ -78,9 +87,11 @@ class GraphPlot():
     def linearRegression(self):
         from scipy import stats
 
-        slope, intercept, r_value, p_value, std_err = stats.linregress(self.xAxis, self.yAxis)
+        slope, intercept, r_value, p_value, std_err = stats.linregress(
+        	                                             self.xAxis, self.yAxis)
 
-        self.text = "    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+        self.text = ("    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" +
+                        "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
 
         return slope, intercept
 
@@ -99,10 +110,12 @@ class GraphPlot():
             sumLnXY += log(self.xAxis[i])*self.yAxis[i]
             sumY2 += self.yAxis[i]**2
 
-        slope = (sumLnXY- sumY*sumLnX/len(self.xAxis))/(sumLn2X - sumLnX*sumLnX/len(self.xAxis))
+        slope = ((sumLnXY- sumY*sumLnX/len(self.xAxis))/
+        	                          (sumLn2X - sumLnX*sumLnX/len(self.xAxis)))
         intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
-        self.text = "    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+        self.text = ("    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + 
+        	    "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
 
         return slope, intercept
 
@@ -114,13 +127,16 @@ class GraphPlot():
         medy = sumy / len(self.yAxis)
         xMedian = sum([x for x in self.xAxis]) / len(self.xAxis)
 
-        sumXLn = sum( [ self.xAxis[i]*log(self.yAxis[i])  for i in range(len(self.xAxis)) ] )
+        sumXLn = sum([ self.xAxis[i]*log(self.yAxis[i])  
+        	                                for i in range(len(self.xAxis)) ])
 
-        slope = (sumXLn - (medy*sum(self.xAxis))) / (sum(Mxx)-xMedian*sum(self.xAxis))
+        slope = ((sumXLn - (medy*sum(self.xAxis))) / 
+        	                                 (sum(Mxx)-xMedian*sum(self.xAxis)))
 
         intercept = exp(medy-slope*xMedian)
 
-        self.text = "    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept)
+        self.text = ("    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" +
+                      "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
 
         return slope, intercept
 
@@ -135,10 +151,13 @@ class GraphPlot():
         for i in range(1, len(parameters)):
             eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
 
-        solution = "\t" + "\n" + z[0] + ': ' + "\t" + "%g" %(parameters[0])
-
-        for i in range(1, len(parameters)):
-            solution += "\n" + z[i] + ": " + "\t" + "%g" %(parameters[i])
+        solution = ("\n" + "\t" + z[0] + ': ' + "\t" + "%g" %(parameters[0]) +
+        	                  "\t" + z[1] + ': ' + "\t" + "%g" %(parameters[1]))
+################################################################################
+        for i in range(1, len(parameters)/2):
+            solution += ("\n" + z[2*i] + ": " + "\t" + "%g" %(parameters[2*i])
+                                        + "\t" + z[2*i+1] + ': ' + '\t' + '\t'
+                                            + "\t" + "%g" %(parameters[2*i+1]))
 
         self.text = "    " + eqtion + solution
 
@@ -150,8 +169,12 @@ class GraphPlot():
         xTitle = self.xTitle.split('/')[0].replace('$', '')
         yTitle = self.yTitle.split('/')[0].replace('$', '')
 
-        table = {self.xTitle.split('/')[0]+'$' : self.xAxis, self.yTitle.split('/')[0]+'$':self.yAxis, "$\Delta "+yTitle+"$": self.error}
-        index = {0 : self.xTitle.split('/')[0]+'$', 1 : self.yTitle.split('/')[0]+'$', 2 : "$\Delta "+yTitle+"$"}
+        table = {self.xTitle.split('/')[0]+'$' : self.xAxis, 
+                                      self.yTitle.split('/')[0]+'$':self.yAxis, 
+                                              "$\Delta "+yTitle+"$": self.error}
+        index = {0 : self.xTitle.split('/')[0]+'$',
+                                             1 : self.yTitle.split('/')[0]+'$',
+                                                      2 : "$\Delta "+yTitle+"$"}
         m = float(m)
 
         if m < 0:
@@ -204,6 +227,19 @@ class GraphPlot():
 
         func = lambda t: eval(function) - y
 
-        self.text = "hola"
+        self.text = function
 
-        return leastsq(func, guess)[0]
+        parameters = leastsq(func, guess)[0]
+
+        solution = ("\n" + "\t" + 't['+str(0)+']' + ': ' + "\t" +
+                       "%g" %(parameters[0]) + "\t" + 't['+str(1)+']' + 
+                                                  ': ' + "%g" %(parameters[1]))
+
+        for i in range(1, len(parameters)/2):
+            solution += ("\n" + '\t' + 't['+str(2*i)+']' + " : " + 
+            	        "%g" %(parameters[2*i]) + "\t" + 't['+str(2*i+1)+']' +
+            	         ': ' + '\t' + '\t' + "\t" + "%g" %(parameters[2*i+1]))
+
+        self.text = self.text + solution
+
+        return parameters
