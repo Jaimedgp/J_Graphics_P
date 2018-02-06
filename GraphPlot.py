@@ -36,6 +36,8 @@
 #                                 teacher wants
 #                         * Return list(a , error of a) 
 #                                  y = a*x^m
+#             - nodosChebyshev: Obtein the Chebyshev's nodes for the theorical 
+#                                 representation.
 #
 ################################################################################
 
@@ -55,10 +57,9 @@ class GraphPlot():
         if type(self.error) == float or type(self.error) == int:
             self.error = [self.error for i in xrange(len(self.yAxis))]
 
-        self.xTh = np.arange(min(self.xAxis),max(self.xAxis), 
-        	                           ((max(self.xAxis)-min(self.xAxis))/1000))
+        self.xTh = self.nodosChebyshev()
 
-        self.setInterval(self.xAxis, self.yAxis)
+        self.setInterval(self.xAxis, self.yAxis) 
 
     def setInterval(self, x, y):
         from math import fabs
@@ -88,7 +89,7 @@ class GraphPlot():
         from scipy import stats
 
         slope, intercept, r_value, p_value, std_err = stats.linregress(
-        	                                             self.xAxis, self.yAxis)
+                                                         self.xAxis, self.yAxis)
 
         self.text = ("    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" +
                         "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
@@ -111,11 +112,11 @@ class GraphPlot():
             sumY2 += self.yAxis[i]**2
 
         slope = ((sumLnXY- sumY*sumLnX/len(self.xAxis))/
-        	                          (sumLn2X - sumLnX*sumLnX/len(self.xAxis)))
+                                      (sumLn2X - sumLnX*sumLnX/len(self.xAxis)))
         intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
         self.text = ("    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + 
-        	    "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
+                "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
 
         return slope, intercept
 
@@ -128,10 +129,10 @@ class GraphPlot():
         xMedian = sum([x for x in self.xAxis]) / len(self.xAxis)
 
         sumXLn = sum([ self.xAxis[i]*log(self.yAxis[i])  
-        	                                for i in range(len(self.xAxis)) ])
+                                            for i in range(len(self.xAxis)) ])
 
         slope = ((sumXLn - (medy*sum(self.xAxis))) / 
-        	                                 (sum(Mxx)-xMedian*sum(self.xAxis)))
+                                             (sum(Mxx)-xMedian*sum(self.xAxis)))
 
         intercept = exp(medy-slope*xMedian)
 
@@ -152,8 +153,8 @@ class GraphPlot():
             eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
 
         solution = ("\n" + "\t" + z[0] + ': ' + "\t" + "%g" %(parameters[0]) +
-        	                  "\t" + z[1] + ': ' + "\t" + "%g" %(parameters[1]))
-################################################################################
+                              "\t" + z[1] + ': ' + "\t" + "%g" %(parameters[1]))
+
         for i in range(1, len(parameters)/2):
             solution += ("\n" + z[2*i] + ": " + "\t" + "%g" %(parameters[2*i])
                                         + "\t" + z[2*i+1] + ': ' + '\t' + '\t'
@@ -237,9 +238,24 @@ class GraphPlot():
 
         for i in range(1, len(parameters)/2):
             solution += ("\n" + '\t' + 't['+str(2*i)+']' + " : " + 
-            	        "%g" %(parameters[2*i]) + "\t" + 't['+str(2*i+1)+']' +
-            	         ': ' + '\t' + '\t' + "\t" + "%g" %(parameters[2*i+1]))
+                        "%g" %(parameters[2*i]) + "\t" + 't['+str(2*i+1)+']' +
+                         ': ' + '\t' + '\t' + "\t" + "%g" %(parameters[2*i+1]))
 
         self.text = self.text + solution
 
         return parameters
+
+    def nodosChebyshev(self):
+
+        n = 1000
+        x = np.zeros(n+4)
+        a = min(self.xAxis)
+        b = max(self.xAxis)
+        x[0] = b
+        x[n+3] = a
+
+        for i in range(1,n+2):
+            xC = np.cos((2*i+1)*np.pi/(2*n+2))
+            x[i] = (xC*(b-a)/2) + (b+a)/2
+
+        return x
