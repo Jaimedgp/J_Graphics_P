@@ -14,7 +14,7 @@ class MainLayout(QWidget):
 
         super(QWidget, self).__init__()
 
-        self.path = '/home/jaimedgp/'
+        self.path = '/'
 
         self.MainLyout = QHBoxLayout()
 
@@ -63,7 +63,7 @@ class MainLayout(QWidget):
                    self.dataTable.table[axesYTitle] ]
 
         if len(values[0]) != len(values[1]):
-        	return
+            return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -99,7 +99,7 @@ class MainLayout(QWidget):
                    self.dataTable.table[axesYTitle] ]
 
         if len(values[0]) != len(values[1]):
-        	return
+            return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -197,7 +197,7 @@ class MainLayout(QWidget):
             graph = GraphPlot(values, titles)
 
         if not hasattr(self, 'Graph'):
-           self.Graph = Plot_Graph()            
+           self.Graph = Plot_Graph()
 
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
@@ -218,7 +218,7 @@ class MainLayout(QWidget):
         values = [ self.dataTable.table[axesXTitle] ,
                    self.dataTable.table[axesYTitle] ]
         if len(values[0]) != len(values[1]):
-        	return
+            return
         titles = [ axesXTitle , axesYTitle ]
 
         types = self.ErrBar.MainCombo.currentText()
@@ -236,7 +236,7 @@ class MainLayout(QWidget):
             graph = GraphPlot(values, titles)
 
         if not hasattr(self, 'Graph'):
-           self.Graph = Plot_Graph()            
+           self.Graph = Plot_Graph()
 
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()

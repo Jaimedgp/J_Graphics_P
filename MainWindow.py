@@ -3,8 +3,6 @@
 #########################################
 #
 #   this class is my class and in my class I write what I want
-# ejemplo para inigo
-#   This class allows to make all the mathematical operations
 #
 #   Required: 
 #
@@ -12,10 +10,9 @@
 #
 ################################################################################
 
-from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QFileDialog, 
+from PyQt5.QtWidgets import (QMainWindow, QAction, QApplication, QFileDialog,
                                                    QInputDialog, QMessageBox)
 from PyQt5.QtGui import QIcon
-import sys
 
 from MainLayout import MainLayout
 from MainTabses import TabMain
@@ -24,16 +21,21 @@ from WidgetsScript import derivative
 from OpenScript import Open_file_CSV, Open_file_TXT
 from SaveScript import saveCSV, saveTXT, saveLaTex
 
+import os
+import sys
+
 class Main_Window_GUI(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, pathIcon, pathInicProyect):
 
         super(QMainWindow, self).__init__()
 
+        self.pathInicProyect = pathInicProyect
+        self.TAB = []
         self.setGeometry(0, 0, 2000, 1100)
         self.setWindowTitle("Just a Graphics Printer")
         self.setWindowIcon(
-            QIcon("../J_Graphics_P/Photos/JGP(icon).png"))
+            QIcon(pathIcon))
 
         self.fileMenuBar()
         self.graphMenuBar()
@@ -163,19 +165,19 @@ class Main_Window_GUI(QMainWindow):
     def openAProject(self):
         mainLayout2 = MainLayout()
 
-        TAB.append(mainLayout2)
+        self.TAB.append(mainLayout2)
 
         tabLayout.addTabs(mainLayout2)
 
     def closeProject(self):
 
-        if not TAB[tabLayout.currentIndex()].dataSaved:
+        if not self.TAB[tabLayout.currentIndex()].dataSaved:
 
-            reply = QMessageBox.information(self, ' ', 
-                                            "Save changes before closing?", 
-                                                       ( QMessageBox.Save | 
-                                                       QMessageBox.Cancel | 
-                                                      QMessageBox.Discard), 
+            reply = QMessageBox.information(self, ' ',
+                                            "Save changes before closing?",
+                                                       ( QMessageBox.Save |
+                                                       QMessageBox.Cancel |
+                                                      QMessageBox.Discard),
                                                           QMessageBox.Save)
 
             if reply == QMessageBox.Save:
@@ -184,23 +186,23 @@ class Main_Window_GUI(QMainWindow):
 
             elif reply == QMessageBox.Discard:
 
-                del TAB[tabLayout.currentIndex()]
+                del self.TAB[tabLayout.currentIndex()]
 
                 tabLayout.deleteTabs(tabLayout.currentIndex())
 
         else:
 
-            del TAB[tabLayout.currentIndex()]
+            del self.TAB[tabLayout.currentIndex()]
 
             tabLayout.deleteTabs(tabLayout.currentIndex())
 
     def openFile(self):
-        
-        tab = TAB[tabLayout.currentIndex()]
-        fileName, ok = QFileDialog.getOpenFileName(self, 'Open file',
-                                       '/home/jaime', 'Text File (*.csv *.txt)')
 
-        if '/home/jaime' in fileName:
+        tab = self.TAB[tabLayout.currentIndex()]
+        fileName, ok = QFileDialog.getOpenFileName(self, 'Open file',
+                                       self.pathInicProyect, 'Text File (*.csv *.txt)')
+
+        if ok:
 
             if ".csv" in fileName:
                 table, index = Open_file_CSV(fileName)
@@ -218,53 +220,58 @@ class Main_Window_GUI(QMainWindow):
             tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
                                                             name.split("/")[-1])
 
-            TAB[tabLayout.currentIndex()].dataTable.reDoTable()
+            self.TAB[tabLayout.currentIndex()].dataTable.reDoTable()
 
     def save(self):
-        if TAB[tabLayout.currentIndex()].path != '/':
+        if self.TAB[tabLayout.currentIndex()].path != '/':
 
-            if ".csv" in TAB[tabLayout.currentIndex()].path:
-                saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
-                        TAB[tabLayout.currentIndex()].dataTable.index,
-                                             TAB[tabLayout.currentIndex()].path)    
-        
-            elif ".txt" in TAB[tabLayout.currentIndex()].path:
-                saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
-                        TAB[tabLayout.currentIndex()].dataTable.index,
-                                             TAB[tabLayout.currentIndex()].path)
+            if ".csv" in self.TAB[tabLayout.currentIndex()].path:
+                saveCSV(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                        self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                             self.TAB[tabLayout.currentIndex()].path)
+
+            elif ".txt" in self.TAB[tabLayout.currentIndex()].path:
+                saveTXT(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                        self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                             self.TAB[tabLayout.currentIndex()].path)
         else:
-        	self.saveAs()
+            self.saveAs()
 
-        TAB[tabLayout.currentIndex()].dataSaved = True
+        self.TAB[tabLayout.currentIndex()].dataSaved = True
 
     def saveAs(self):
 
         fname, ok = QFileDialog.getSaveFileName(self, 'Open file',
-                                  TAB[tabLayout.currentIndex()].path, 
+                                  self.TAB[tabLayout.currentIndex()].path,
                                                    "Calc files (*.csv *.txt)")
-        
+
         if ok:
 
-	        TAB[tabLayout.currentIndex()].path = str(fname)
+            if os.path.isdir(fname):
 
-	        if ".csv" in TAB[tabLayout.currentIndex()].path:
-	            saveCSV(TAB[tabLayout.currentIndex()].dataTable.table, 
-	                      TAB[tabLayout.currentIndex()].dataTable.index, 
-	                                      TAB[tabLayout.currentIndex()].path)
+                self.TAB[tabLayout.currentIndex()].path = str(fname)
 
-	            name = TAB[tabLayout.currentIndex()].path.split(".csv")[0]
+                if ".csv" in self.TAB[tabLayout.currentIndex()].path:
+                    saveCSV(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                              self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                              self.TAB[tabLayout.currentIndex()].path)
 
-	        elif ".txt" in TAB[tabLayout.currentIndex()].path:
-	            saveTXT(TAB[tabLayout.currentIndex()].dataTable.table, 
-	                      TAB[tabLayout.currentIndex()].dataTable.index, 
-	                                      TAB[tabLayout.currentIndex()].path)
-	            
-	            name = TAB[tabLayout.currentIndex()].path.split(".txt")[0]
+                    name = self.TAB[tabLayout.currentIndex()].path.split(".csv")[0]
 
-	        TAB[tabLayout.currentIndex()].dataSaved = True
+                elif ".txt" in self.TAB[tabLayout.currentIndex()].path:
+                    saveTXT(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                              self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                              self.TAB[tabLayout.currentIndex()].path)
 
-	        tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
-	                                                        name.split("/")[-1])
+                    name = self.TAB[tabLayout.currentIndex()].path.split(".txt")[0]
+
+                self.TAB[tabLayout.currentIndex()].dataSaved = True
+
+                tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
+                                                                name.split("/")[-1])
+
+            else:
+                print 'GILIPOLLAS'
 
     def saveIntoTex(self):
 
@@ -272,77 +279,75 @@ class Main_Window_GUI(QMainWindow):
                               '    Columns <h6>e.j."1,2" for columns C1'+ 
                                       ' and C2<\h6> or "all" for all table:')
         if ok:
-            fname = str(QFileDialog.getSaveFileName(self, 'Open file',
-                                      TAB[tabLayout.currentIndex()].path, "LaTex files (*.tex)"))
-            fname = fname.split(',')[0]
-            fname = fname.split('(u')
-            fname = fname[1].split("'")
-
+            #CHANGE
+            fname, ok = (QFileDialog.getSaveFileName(self, 'Open file',
+                                      self.TAB[tabLayout.currentIndex()].path,
+                                                       "LaTex files (*.tex)"))
         if text == 'all':
-            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table,
-                      TAB[tabLayout.currentIndex()].dataTable.index,
-                      TAB[tabLayout.currentIndex()].dataTable.index.keys(),
-                                                                   fname[1])
+            saveLaTex(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                      self.TAB[tabLayout.currentIndex()].dataTable.index,
+                      self.TAB[tabLayout.currentIndex()].dataTable.index.keys(),
+                                                                   fname)
         else:
 
-            saveLaTex(TAB[tabLayout.currentIndex()].dataTable.table,
-                      TAB[tabLayout.currentIndex()].dataTable.index,
-                                                       eval(text), fname[1])
-    
+            saveLaTex(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                      self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                                       eval(text), fname)
+
     def differential(self):
 
         text, ok = QInputDialog.getText(self, 'Derivative',
                               '    Columns <h6>e.j."1,2" for columns C1'+
                                                            ' and C2<\h6> :')
         if ok:
-            derivative(TAB[tabLayout.currentIndex()].dataTable.table,
-                      TAB[tabLayout.currentIndex()].dataTable.index,
+            derivative(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                      self.TAB[tabLayout.currentIndex()].dataTable.index,
                                                                  eval(text))
 
-        TAB[tabLayout.currentIndex()].dataTable.reDoTable()
-        TAB[tabLayout.currentIndex()].dataSaved = True
+        self.TAB[tabLayout.currentIndex()].dataTable.reDoTable()
+        self.TAB[tabLayout.currentIndex()].dataSaved = True
 
     def saveFigure(self):
 
-        TAB[tabLayout.currentIndex()].saveGraph()
+        self.TAB[tabLayout.currentIndex()].saveGraph()
 
     def graphdot(self):
 
-        TAB[tabLayout.currentIndex()].plotGraph('ro')
+        self.TAB[tabLayout.currentIndex()].plotGraph('o')
 
     def graphline(self):
 
-        TAB[tabLayout.currentIndex()].plotGraph('b')
+        self.TAB[tabLayout.currentIndex()].plotGraph('b')
 
     def linearGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotLinearGraph()
+        self.TAB[tabLayout.currentIndex()].plotLinearGraph()
 
     def logarithmicGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotLogGraph()
+        self.TAB[tabLayout.currentIndex()].plotLogGraph()
 
     def exponentialGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotExpGraph()
+        self.TAB[tabLayout.currentIndex()].plotExpGraph()
 
     def polynomialGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotPolyGraph()
+        self.TAB[tabLayout.currentIndex()].plotPolyGraph()
 
     def pepepeGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotPepeGraph()
+        self.TAB[tabLayout.currentIndex()].plotPepeGraph()
 
     def CurveFitGraph(self):
 
-        TAB[tabLayout.currentIndex()].plotCurveFitgraph()    
+        self.TAB[tabLayout.currentIndex()].plotCurveFitgraph()
 
     def closeEvent(self, event):
 
         boolean = True
 
-        for tab in TAB:
+        for tab in self.TAB:
             if not tab.dataSaved:
                 boolean = False
 
@@ -353,24 +358,20 @@ class Main_Window_GUI(QMainWindow):
         else:
 
             reply = QMessageBox.information(self, ' ', "Save changes before"+
-                                            "closing", (QMessageBox.Save | 
+                                            "closing", (QMessageBox.Save |
                                                       QMessageBox.Cancel |
                                                       QMessageBox.Discard),
                                                              QMessageBox.Save)
 
             if reply == QMessageBox.Save:
 
-                for tab in TAB:
+                for tab in self.TAB:
                     if not tab.dataSaved:
 
-                        fname = str(QFileDialog.getSaveFileName(self,'Open file',
-                                     '/home/jaime/', "Calc files (*.csv *.txt)"))
-                        fname = fname.split(',')[0]
-                        fname = fname.split('(u')
-                        fname = fname[1].split("'")
-
+                        fname, ok = (QFileDialog.getSaveFileName(self,'Open file',
+                                self.pathInicProyect, "Calc files (*.csv *.txt)"))
                         saveCSV(tab.dataTable.table, tab.dataTable.index,
-                                                                        fname[1])
+                                fname)
 
                 event.accept()
 
@@ -384,21 +385,16 @@ class Main_Window_GUI(QMainWindow):
         self.setCentralWidget(layout)
 
 
-#########################################
-#              Main Window              #
-#########################################
-#
-#   FALTA EL COMANDO SELF.SHOW()
-#
-#   This class allows to make all the mathematical operations
-#
-#   Required: 
-#
-#   Return: 
-#
-##############################################################################
-
 if __name__ == '__main__':
+
+    home = os.path.expanduser("~")
+
+    os.chdir(home)
+
+    for root, dirs, files in os.walk(os.path.abspath("J_Graphics_P"), topdown=True):
+        for name in files:
+            if name.endswith(("Photos", "JGP(icon).png")):
+                pathIcon = os.path.join(root, "JGP(icon).png")
 
     app = QApplication(sys.argv)
 
@@ -406,11 +402,10 @@ if __name__ == '__main__':
 
     mainLayout = MainLayout()
 
-    TAB = [mainLayout]
-
     tabLayout.addTabs(mainLayout)
 
-    ex = Main_Window_GUI()
+    ex = Main_Window_GUI(pathIcon, home)
     ex.addLayout(tabLayout)
+    ex.TAB = [mainLayout]
     ex.show()
     sys.exit(app.exec_())
