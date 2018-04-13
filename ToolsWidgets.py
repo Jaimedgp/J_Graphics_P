@@ -17,7 +17,7 @@ from PyQt5.QtCore import Qt
 #
 #   On_click: CalculateErrors set a label with the result
 #
-#########################################################################
+################################################################################
 
 class CalculateError(QWidget):
 

@@ -247,31 +247,26 @@ class Main_Window_GUI(QMainWindow):
 
         if ok:
 
-            if os.path.isdir(fname):
+            self.TAB[tabLayout.currentIndex()].path = str(fname)
 
-                self.TAB[tabLayout.currentIndex()].path = str(fname)
+            if ".csv" in self.TAB[tabLayout.currentIndex()].path:
+                saveCSV(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                          self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                          self.TAB[tabLayout.currentIndex()].path)
 
-                if ".csv" in self.TAB[tabLayout.currentIndex()].path:
-                    saveCSV(self.TAB[tabLayout.currentIndex()].dataTable.table,
-                              self.TAB[tabLayout.currentIndex()].dataTable.index,
-                                              self.TAB[tabLayout.currentIndex()].path)
+                name = self.TAB[tabLayout.currentIndex()].path.split(".csv")[0]
 
-                    name = self.TAB[tabLayout.currentIndex()].path.split(".csv")[0]
+            elif ".txt" in self.TAB[tabLayout.currentIndex()].path:
+                saveTXT(self.TAB[tabLayout.currentIndex()].dataTable.table,
+                          self.TAB[tabLayout.currentIndex()].dataTable.index,
+                                             self.TAB[tabLayout.currentIndex()].path)
 
-                elif ".txt" in self.TAB[tabLayout.currentIndex()].path:
-                    saveTXT(self.TAB[tabLayout.currentIndex()].dataTable.table,
-                              self.TAB[tabLayout.currentIndex()].dataTable.index,
-                                              self.TAB[tabLayout.currentIndex()].path)
+                name = self.TAB[tabLayout.currentIndex()].path.split(".txt")[0]
 
-                    name = self.TAB[tabLayout.currentIndex()].path.split(".txt")[0]
+            self.TAB[tabLayout.currentIndex()].dataSaved = True
 
-                self.TAB[tabLayout.currentIndex()].dataSaved = True
-
-                tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
+            tabLayout.tabMain.setTabText(tabLayout.currentIndex(),
                                                                 name.split("/")[-1])
-
-            else:
-                print 'GILIPOLLAS'
 
     def saveIntoTex(self):
 

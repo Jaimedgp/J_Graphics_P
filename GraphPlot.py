@@ -91,8 +91,35 @@ class GraphPlot():
         slope, intercept, r_value, p_value, std_err = stats.linregress(
                                                          self.xAxis, self.yAxis)
 
-        self.text = ("    " + "y = mx + b " + "\t" + "\n" + "m : " + "\t" +
-                        "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
+        self.text = """<html>
+   <head>
+      <title>HTML Table Colspan/Rowspan</title>
+   </head>
+  
+   <body>
+      <center>
+      <table border = "1">
+         <tr>
+            <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
+         </tr>
+         <tr>
+            <td><center> m </center></td>
+            <td><center> """+"%g" %(slope)+""" </center></td>
+            <td><center> """+"%g" %(std_err)+""" </center></td>
+         </tr>
+         <tr>
+            <td><center> b </center></td>
+            <td><center> """+"%g" %(intercept)+""" </center></td>
+         </tr>
+         <tr>
+            <td><center> R </center></td>
+            <td><center> """+"%g" %(r_value)+""" </center></td>
+         </tr>
+      </table>
+      </center>
+   </body>
+  
+</html>"""
 
         return slope, intercept
 
@@ -115,8 +142,32 @@ class GraphPlot():
                                       (sumLn2X - sumLnX*sumLnX/len(self.xAxis)))
         intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
-        self.text = ("    " + "y = m * ln(x) + b" + "\t" + "\n" + "m : " + 
-                "\t" + "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
+        self.text = """<html>
+
+   <head>
+      <title>HTML Table Colspan/Rowspan</title>
+   </head>
+  
+   <body>
+      <center>
+      <table border = "1">
+         <tr>
+            <th colspan= "2"><center> """+"y = m * ln(x) + b"+""" </center></th>
+         </tr>
+         <tr>
+            <td><center> m </center></td>
+            <td><center> """+"%g" %(slope)+""" </center></td>
+         </tr>
+         <tr>
+            <td><center> b </center></td>
+            <td><center> """+"%g" %(intercept)+""" </center></td>
+            <td><center>  </center></td>
+         </tr>
+      </table>
+      </center>
+   </body>
+  
+</html>"""        
 
         return slope, intercept
 
@@ -136,8 +187,31 @@ class GraphPlot():
 
         intercept = exp(medy-slope*xMedian)
 
-        self.text = ("    " + "y = b * e^(m*x)" + "\t" + "\n" + "m : " + "\t" +
-                      "%g" %(slope) + "\n" + "b : " + "\t" + "%g" %(intercept))
+        self.text = """<html>
+   <head>
+      <title>HTML Table Colspan/Rowspan</title>
+   </head>
+  
+   <body>
+      <center>
+      <table border = "1">
+         <tr>
+            <th colspan= "2"><center> """+"y = b * e^(m*x)"+""" </center></th>
+         </tr>
+         <tr>
+            <td><center> m </center></td>
+            <td><center> """+"%g" %(slope)+""" </center></td>
+         </tr>
+         <tr>
+            <td><center> b </center></td>
+            <td><center> """+"%g" %(intercept)+""" </center></td>
+            <td><center>  </center></td>
+         </tr>
+      </table>
+      </center>
+   </body>
+  
+</html>"""        
 
         return slope, intercept
 
@@ -152,15 +226,37 @@ class GraphPlot():
         for i in range(1, len(parameters)):
             eqtion += ' + ' + z[i] + '*x^' + str(len(parameters)-(i+1))
 
-        solution = ("\n" + "\t" + z[0] + ': ' + "\t" + "%g" %(parameters[0]) +
-                              "\t" + z[1] + ': ' + "\t" + "%g" %(parameters[1]))
+        solution = ("""<tr>""" +
+                        """<td><center> """ + z[0] + """ </center></td> """ + 
+                        """<td><center> """ + "%g" %(parameters[0]) +  """ </center></td> """ + 
+                        """<td><center> """ + z[1] + """ </center></td> """ +
+                        """<td><center> """ + "%g" %(parameters[1])+""" </center></td> """+
+                    """</tr>""")
 
         for i in range(1, len(parameters)/2):
-            solution += ("\n" + z[2*i] + ": " + "\t" + "%g" %(parameters[2*i])
-                                        + "\t" + z[2*i+1] + ': ' + '\t' + '\t'
-                                            + "\t" + "%g" %(parameters[2*i+1]))
+            solution += ("""<tr>""" +
+                             """<td><center> """ + z[2*i] + """ </center></td> """ + 
+                             """<td><center> """ + "%g" %(parameters[2*i]) +  """ </center></td> """ + 
+                             """<td><center> """ + z[2*i+1] + """ </center></td> """ +
+                             """<td><center> """ + "%g" %(parameters[2*i+1])+""" </center></td> """+
+                         """</tr>""")
 
-        self.text = "    " + eqtion + solution
+        self.text = """<html>
+                           <head>
+                              <title>HTML Table Colspan/Rowspan</title>
+                           </head>
+                          
+                           <body>
+                              <center>
+                              <table border = "1">
+                                 <tr>
+                                    <th colspan= "4"><center> """+eqtion+""" </center></th>
+                                 </tr>
+                                 """+solution+"""
+                              </table>
+                              </center>
+                           </body>
+                        </html>"""
 
         return parameters
 
