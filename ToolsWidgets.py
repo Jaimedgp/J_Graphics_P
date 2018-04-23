@@ -107,9 +107,9 @@ class ErrorBars(QWidget):
         # Combo box to choose the error's type
         self.MainCombo = QComboBox(self)
         self.MainCombo.addItem("None")
-        self.MainCombo.addItem("% of value")
-        self.MainCombo.addItem("Fixed value")
         self.MainCombo.addItem("Data column")
+        self.MainCombo.addItem("Fixed value")
+        self.MainCombo.addItem("% of value")
         hBox.addWidget(self.MainCombo)
 
         VMainBox = QVBoxLayout()
