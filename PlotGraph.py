@@ -27,7 +27,7 @@ class Plot_Graph(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
         self.axes = self.fig.add_subplot(111)
-        self.color = ['r', 'b']
+        self.color = ["r", "b", "g", 'c', "k"]
         self.nc = 0 #graph color index 
 
     def setGraph(self, GraphPlot, marker='o'):
