@@ -27,7 +27,8 @@ class Plot_Graph(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
         self.axes = self.fig.add_subplot(111)
-        self.color = 'r'
+        self.color = ['r', 'b']
+        self.nc = 0 #graph color index 
 
     def setGraph(self, GraphPlot, marker='o'):
 
@@ -35,9 +36,9 @@ class Plot_Graph(FigureCanvas):
 
         if marker == 'o':
             self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                    yerr=self.Graph.error, fmt=self.color+marker, ecolor=self.color)
+                    yerr=self.Graph.error, fmt=self.color[self.nc]+marker, ecolor=self.color[self.nc])
 
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+marker)
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color[self.nc]+marker)
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)
@@ -123,10 +124,10 @@ class Plot_Graph(FigureCanvas):
             yTh = eval(func)
 
         self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                           yerr=self.Graph.error, fmt=self.color+'o', ecolor=self.color)
+                           yerr=self.Graph.error, fmt=self.color[self.nc]+'o', ecolor=self.color[self.nc])
       
-        self.axes.plot(self.Graph.xTh, yTh, self.color)
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+'o')
+        self.axes.plot(self.Graph.xTh, yTh, self.color[self.nc])
+        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color[self.nc]+'o')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)
