@@ -86,6 +86,11 @@ class MainLayout(QWidget):
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
+            self.Graph.nc = -1
+
+        self.Graph.nc = self.Graph.nc + 1
+        if self.Graph.nc >= len(self.Graph.color):
+            self.Graph.nc = 0
 
         self.Graph.setGraph(graph, marker)
         self.splitLyout.addWidget(self.Graph)
@@ -122,6 +127,12 @@ class MainLayout(QWidget):
         if not self.GrphAxes.check.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
+            self.Graph.nc = -1
+
+        self.Graph.nc = self.Graph.nc + 1
+        if self.Graph.nc >= len(self.Graph.color):
+            self.Graph.nc = 0
+
 
         if typof == 'lin':
             correct = self.Graph.set_Regression(graph, 'lin')
