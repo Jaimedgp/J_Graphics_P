@@ -328,15 +328,15 @@ class Main_Window_GUI(QMainWindow):
 
     def polynomialGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotPolyGraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('poly')
 
     def pepepeGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotPepeGraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('pepe')
 
     def CurveFitGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotCurveFitgraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('general')
 
     def closeEvent(self, event):
 

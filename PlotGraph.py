@@ -44,121 +44,89 @@ class Plot_Graph(FigureCanvas):
         self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
-    def set_Regression(self, GraphPlot, type):
+    def set_Regression(self, GraphPlot, types):
 
         self.Graph = GraphPlot
 
-        if type=='lin':
+        if types=='lin':
             slope, intercept = self.Graph.linearRegression()
             yTh = [slope*self.Graph.xTh[i]+intercept for i in range(
                                                          self.Graph.xTh.size)]
-        elif type=='log':
+        
+        elif types=='log':
             from math import log
 
             slope, intercept = self.Graph.logarithmicRegression()
             yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(self.Graph.xTh.size)]
             
-        elif type=='exp':
+        elif types=='exp':
             from math import exp
 
             slope, intercept = self.Graph.exponentialRegression()
             yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(
                                                           self.Graph.xTh.size)]
+        
+        elif types == 'poly':
+            from PyQt5.QtWidgets import QInputDialog, QFileDialog
+            from numpy import poly1d
+
+            self.Graph = GraphPlot
+
+            text, ok = QInputDialog.getInt(self, 'Polynomial', 'Grade:')
+            m = text
+
+            parameters = self.Graph.polynomialRegression(m)
+
+            polynom = poly1d(parameters)
+            yTh = [polynom(self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
+
+        elif types == 'pepe':
+            from PyQt5.QtWidgets import QInputDialog, QFileDialog
+
+            self.Graph = GraphPlot
+
+            text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
+            if ok:
+                m = text
+            else:
+                return False
+
+            fname, ok = QFileDialog.getSaveFileName(self, 'Open file', 
+                                                          '/home/jaime/',
+                                                           "LaTex files (*.tex)")
+
+            if fname == '':
+                return False
+
+            fname = str(fname)
+
+            slope, d = self.Graph.pepepe(m, fname)
+            yTh = [slope*(self.Graph.xTh**m) for i in range(
+                                                           self.Graph.xTh.size)]
+
+        elif types == 'general':
+            from PyQt5.QtWidgets import QInputDialog, QFileDialog
+            import numpy as np
+
+            self.Graph = GraphPlot
+
+            text, ok = QInputDialog.getText(self, 'Curve Fit', 'Function:', text="t[0] * np.sin(t[1]*x + t[2]) + t[3] ; [1,1,1,1]")
+            if ok:
+                func, parameters = text.split(";")
+            else:
+                return False
+
+            parameters = eval(parameters)
+
+            t = self.Graph.generalFit(parameters, func)
+            func = func.replace('x', 'self.Graph.xTh')
+            yTh = eval(func)
 
         self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
                            yerr=self.Graph.error, fmt=self.color+'o', ecolor=self.color)
       
         self.axes.plot(self.Graph.xTh, yTh, self.color)
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+'o')
-        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
-        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
-        self.axes.set_xlim(self.Graph.xInterval)
-        self.axes.set_ylim(self.Graph.yInterval)
-        self.draw()
-
-    def set_polyGraph(self, GraphPlot):
-
-        from PyQt5.QtWidgets import QInputDialog, QFileDialog
-        from numpy import poly1d
-
-        self.Graph = GraphPlot
-
-        text, ok = QInputDialog.getInt(self, 'Polynomial', 'Grade:')
-        m = text
-
-        parameters = self.Graph.polynomialRegression(m)
-
-        polynom = poly1d(parameters)
-        yTh = [polynom(self.Graph.xTh[i]) for i in range(self.Graph.xTh.size)]
-
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                                   yerr=self.Graph.error, fmt='ro', ecolor='r')
-        self.axes.plot(self.Graph.xTh, yTh, 'b')
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
-        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
-        self.axes.set_xlim(self.Graph.xInterval)
-        self.axes.set_ylim(self.Graph.yInterval)
-        self.draw()
-
-    def set_PepepeGraph(self, GraphPlot):
-
-        from PyQt5.QtWidgets import QInputDialog, QFileDialog
-
-        self.Graph = GraphPlot
-
-        text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
-        if ok:
-            m = text
-        else:
-            return False
-
-        fname, ok = QFileDialog.getSaveFileName(self, 'Open file', 
-                                                      '/home/jaime/',
-                                                       "LaTex files (*.tex)")
-
-        if fname == '':
-            return False
-
-        fname = str(fname)
-
-        slope, d = self.Graph.pepepe(m, fname)
-
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                           yerr=self.Graph.error, fmt='ro', ecolor='r')
-        self.axes.plot(self.Graph.xTh, slope*(self.Graph.xTh**m), 'b')
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
-        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
-        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
-        self.axes.set_xlim(self.Graph.xInterval)
-        self.axes.set_ylim(self.Graph.yInterval)
-        self.draw()
-
-        return True
-
-    def set_generalFit(self, GraphPlot):
-
-        from PyQt5.QtWidgets import QInputDialog, QFileDialog
-        import numpy as np
-
-        self.Graph = GraphPlot
-
-        text, ok = QInputDialog.getText(self, 'Curve Fit', 'Function:', text="t[0] * np.sin(t[1]*x + t[2]) + t[3] ; [1,1,1,1]")
-        if ok:
-            func, parameters = text.split(";")
-        else:
-            return False
-
-        parameters = eval(parameters)
-
-        t = self.Graph.generalFit(parameters, func)
-        func = func.replace('x', 'self.Graph.xTh')
-        yTh = eval(func)
-
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                           yerr=self.Graph.error, fmt='ro', ecolor='r')
-        self.axes.plot(self.Graph.xTh, yTh, 'r')
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)
