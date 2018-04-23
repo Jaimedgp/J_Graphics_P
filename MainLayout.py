@@ -90,7 +90,7 @@ class MainLayout(QWidget):
         self.Graph.setGraph(graph, marker)
         self.splitLyout.addWidget(self.Graph)
 
-    def plotLinearGraph(self):
+    def plotRegressionGraph(self, type):
 
         axesXTitle = self.GrphAxes.axesXCombo.currentText()
         axesYTitle = self.GrphAxes.axesYCombo.currentText()
@@ -123,87 +123,13 @@ class MainLayout(QWidget):
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
 
-        self.Graph.set_linearGraph(graph)
+        if type=='lin':
+            self.Graph.set_Regression(graph, 'lin')
+        elif type=='log':
+            self.Graph.set_Regression(graph, 'log')
+        elif type=='exp':
+            self.Graph.set_Regression(graph, 'exp')
 
-        self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.GrphAxes.result.setText(graph.text)
-
-        self.splitLyout.addWidget(self.Graph)
-
-    def plotLogGraph(self):
-
-        axesXTitle = self.GrphAxes.axesXCombo.currentText()
-        axesYTitle = self.GrphAxes.axesYCombo.currentText()
-
-        values = [ self.dataTable.table[axesXTitle] ,
-                   self.dataTable.table[axesYTitle] ]
-
-        if len(values[0]) != len(values[1]):
-            return
-        titles = [ axesXTitle , axesYTitle ]
-
-        types = self.ErrBar.MainCombo.currentText()
-        if types != 'None':
-            if types == 'Fixed value':
-                error = eval(self.ErrBar.Error[types].text())
-            elif types == '% of value':
-                percent = eval(self.ErrBar.Error[types].text())
-                error = [(percent*0.01)*y for y in values[1]]
-            elif types == 'Data column':
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
-            graph = GraphPlot(values, titles, error)
-        else:
-            graph = GraphPlot(values, titles)
-
-        if not hasattr(self, 'Graph'):
-           self.Graph = Plot_Graph()
-
-        if not self.GrphAxes.check.isChecked():
-            self.Graph.axes.clear()
-            self.GrphAxes.result.setText('')
-
-        self.Graph.set_logGraph(graph)
-
-        self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.GrphAxes.result.setText(graph.text)
-
-        self.splitLyout.addWidget(self.Graph)
-
-    def plotExpGraph(self):
-
-        axesXTitle = self.GrphAxes.axesXCombo.currentText()
-        axesYTitle = self.GrphAxes.axesYCombo.currentText()
-
-        values = [ self.dataTable.table[axesXTitle] ,
-                   self.dataTable.table[axesYTitle] ]
-
-        if len(values[0]) != len(values[1]):
-            return
-        titles = [ axesXTitle , axesYTitle ]
-
-        types = self.ErrBar.MainCombo.currentText()
-        if types != 'None':
-            if types == 'Fixed value':
-                error = eval(self.ErrBar.Error[types].text())
-            elif types == '% of value':
-                percent = eval(self.ErrBar.Error[types].text())
-                error = [(percent*0.01)*y for y in values[1]]
-            elif types == 'Data column':
-                error = self.ErrBar.Error[types].currentText()
-                error = self.dataTable.table[error]
-            graph = GraphPlot(values, titles, error)
-        else:
-            graph = GraphPlot(values, titles)
-
-        if not hasattr(self, 'Graph'):
-           self.Graph = Plot_Graph()
-
-        if not self.GrphAxes.check.isChecked():
-            self.Graph.axes.clear()
-            self.GrphAxes.result.setText('')
-
-        self.Graph.set_expGraph(graph)
 
         self.GrphAxes.result.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
         self.GrphAxes.result.setText(graph.text)
