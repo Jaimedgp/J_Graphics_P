@@ -56,8 +56,8 @@ class Plot_Graph(FigureCanvas):
             from math import log
 
             slope, intercept = self.Graph.logarithmicRegression()
-            yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(
-                                                         self.Graph.xTh.size)]
+            yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(self.Graph.xTh.size)]
+            
         elif type=='exp':
             from math import exp
 
@@ -68,7 +68,7 @@ class Plot_Graph(FigureCanvas):
         self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
                            yerr=self.Graph.error, fmt=self.color+'o', ecolor=self.color)
       
-        self.axes.plot(self.Graph.xTh, slope*self.Graph.xTh+intercept, self.color)
+        self.axes.plot(self.Graph.xTh, yTh, self.color)
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+'o')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
