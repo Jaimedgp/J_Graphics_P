@@ -34,8 +34,8 @@ class Plot_Graph(FigureCanvas):
         self.Graph = GraphPlot
 
         if marker == 'o':
-        	self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-        		               yerr=self.Graph.error, fmt=self.color+marker, ecolor=self.color)
+            self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
+                    yerr=self.Graph.error, fmt=self.color+marker, ecolor=self.color)
 
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+marker)
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
@@ -44,60 +44,32 @@ class Plot_Graph(FigureCanvas):
         self.axes.set_ylim(self.Graph.yInterval)
         self.draw()
 
-    def set_linearGraph(self, GraphPlot):
+    def set_Regression(self, GraphPlot, type):
 
         self.Graph = GraphPlot
 
-        slope, intercept = self.Graph.linearRegression()
+        if type=='lin':
+            slope, intercept = self.Graph.linearRegression()
+            yTh = [slope*self.Graph.xTh[i]+intercept for i in range(
+                                                         self.Graph.xTh.size)]
+        elif type=='log':
+            from math import log
+
+            slope, intercept = self.Graph.logarithmicRegression()
+            yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(
+                                                         self.Graph.xTh.size)]
+        elif type=='exp':
+            from math import exp
+
+            slope, intercept = self.Graph.exponentialRegression()
+            yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(
+                                                          self.Graph.xTh.size)]
 
         self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
                            yerr=self.Graph.error, fmt=self.color+'o', ecolor=self.color)
       
         self.axes.plot(self.Graph.xTh, slope*self.Graph.xTh+intercept, self.color)
         self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+'o')
-        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
-        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
-        self.axes.set_xlim(self.Graph.xInterval)
-        self.axes.set_ylim(self.Graph.yInterval)
-        self.draw()
-
-    def set_logGraph(self, GraphPlot):
-
-        from math import log
-
-        self.Graph = GraphPlot
-
-        slope, intercept = self.Graph.logarithmicRegression()
-
-        yTh = [slope*log(self.Graph.xTh[i])+intercept for i in range(
-                                                         self.Graph.xTh.size)]
-
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                           yerr=self.Graph.error, fmt=self.color+'o', ecolor=self.color)
-
-        self.axes.plot(self.Graph.xTh, yTh, self.color)
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, self.color+'o')
-        self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
-        self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
-        self.axes.set_xlim(self.Graph.xInterval)
-        self.axes.set_ylim(self.Graph.yInterval)
-        self.draw()
-
-    def set_expGraph(self, GraphPlot):
-
-        from math import exp
-
-        self.Graph = GraphPlot
-
-        slope, intercept = self.Graph.exponentialRegression()
-        yTh = [intercept*exp(slope*self.Graph.xTh[i]) for i in range(
-                                                          self.Graph.xTh.size)]     
-
-        self.axes.errorbar(self.Graph.xAxis, self.Graph.yAxis, 
-                           yerr=self.Graph.error, fmt='ro', ecolor='r')
-
-        self.axes.plot(self.Graph.xTh, yTh, 'b')
-        self.axes.plot(self.Graph.xAxis, self.Graph.yAxis, 'ro')
         self.axes.set_xlabel(self.Graph.xTitle, fontsize=20)
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)
