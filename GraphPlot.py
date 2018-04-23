@@ -91,35 +91,35 @@ class GraphPlot():
         slope, intercept, r_value, p_value, std_err = stats.linregress(
                                                          self.xAxis, self.yAxis)
 
-        self.text = """<html>
-   <head>
-      <title>HTML Table Colspan/Rowspan</title>
-   </head>
-  
-   <body>
-      <center>
-      <table border = "1">
-         <tr>
-            <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
-         </tr>
-         <tr>
-            <td><center> m </center></td>
-            <td><center> """+"%g" %(slope)+""" </center></td>
-            <td><center> """+"%g" %(std_err)+""" </center></td>
-         </tr>
-         <tr>
-            <td><center> b </center></td>
-            <td><center> """+"%g" %(intercept)+""" </center></td>
-         </tr>
-         <tr>
-            <td><center> R </center></td>
-            <td><center> """+"%g" %(r_value)+""" </center></td>
-         </tr>
-      </table>
-      </center>
-   </body>
-  
-</html>"""
+        self.text = """
+    <html>
+    <head>
+        <title>HTML Table Colspan/Rowspan</title>
+    </head>
+
+    <body>
+        <center>
+        <table border = "1">
+            <tr>
+                <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
+            </tr>
+            <tr>
+                <td><center> m </center></td>
+                <td><center> """+"%g" %(slope)+""" </center></td>
+                <td><center> """+"%g" %(std_err)+""" </center></td>
+            </tr>
+            <tr>
+                <td><center> b </center></td>
+                <td><center> """+"%g" %(intercept)+""" </center></td>
+            </tr>
+            <tr>
+                <td><center> R </center></td>
+                <td><center> """+"%g" %(r_value)+""" </center></td>
+            </tr>
+        </table>
+        </center>
+    </body>
+    </html>"""
 
         return slope, intercept
 
@@ -142,32 +142,32 @@ class GraphPlot():
                                       (sumLn2X - sumLnX*sumLnX/len(self.xAxis)))
         intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
-        self.text = """<html>
+        self.text = """
+    <html>
 
-   <head>
-      <title>HTML Table Colspan/Rowspan</title>
-   </head>
-  
-   <body>
-      <center>
-      <table border = "1">
-         <tr>
-            <th colspan= "2"><center> """+"y = m * ln(x) + b"+""" </center></th>
-         </tr>
-         <tr>
-            <td><center> m </center></td>
-            <td><center> """+"%g" %(slope)+""" </center></td>
-         </tr>
-         <tr>
-            <td><center> b </center></td>
-            <td><center> """+"%g" %(intercept)+""" </center></td>
-            <td><center>  </center></td>
-         </tr>
-      </table>
-      </center>
-   </body>
-  
-</html>"""        
+        <head>
+            <title>HTML Table Colspan/Rowspan</title>
+        </head>
+
+        <body>
+            <center>
+            <table border = "1">
+                <tr>
+                    <th colspan= "2"><center> """+"y = m * ln(x) + b"+""" </center></th>
+                </tr>
+                <tr>
+                    <td><center> m </center></td>
+                    <td><center> """+"%g" %(slope)+""" </center></td>
+                </tr>
+                <tr>
+                    <td><center> b </center></td>
+                    <td><center> """+"%g" %(intercept)+""" </center></td>
+                    <td><center>  </center></td>
+                </tr>
+            </table>
+            </center>
+        </body>
+    </html>"""
 
         return slope, intercept
 
@@ -187,31 +187,31 @@ class GraphPlot():
 
         intercept = exp(medy-slope*xMedian)
 
-        self.text = """<html>
-   <head>
-      <title>HTML Table Colspan/Rowspan</title>
-   </head>
-  
-   <body>
-      <center>
-      <table border = "1">
-         <tr>
-            <th colspan= "2"><center> """+"y = b * e^(m*x)"+""" </center></th>
-         </tr>
-         <tr>
-            <td><center> m </center></td>
-            <td><center> """+"%g" %(slope)+""" </center></td>
-         </tr>
-         <tr>
-            <td><center> b </center></td>
-            <td><center> """+"%g" %(intercept)+""" </center></td>
-            <td><center>  </center></td>
-         </tr>
-      </table>
-      </center>
-   </body>
-  
-</html>"""        
+        self.text = """
+        <html>
+            <head>
+                <title>HTML Table Colspan/Rowspan</title>
+            </head>
+
+            <body>
+                <center>
+                <table border = "1">
+                    <tr>
+                        <th colspan= "2"><center> """+"y = b * e^(m*x)"+""" </center></th>
+                    </tr>
+                    <tr>
+                        <td><center> m </center></td>
+                        <td><center> """+"%g" %(slope)+""" </center></td>
+                    </tr>
+                    <tr>
+                        <td><center> b </center></td>
+                        <td><center> """+"%g" %(intercept)+""" </center></td>
+                        <td><center>  </center></td>
+                    </tr>
+                </table>
+                </center>
+            </body>
+        </html>"""
 
         return slope, intercept
 
@@ -245,7 +245,7 @@ class GraphPlot():
                            <head>
                               <title>HTML Table Colspan/Rowspan</title>
                            </head>
-                          
+
                            <body>
                               <center>
                               <table border = "1">
