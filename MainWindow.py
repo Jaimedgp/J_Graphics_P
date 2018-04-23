@@ -312,19 +312,19 @@ class Main_Window_GUI(QMainWindow):
 
     def graphline(self):
 
-        self.TAB[tabLayout.currentIndex()].plotGraph('b')
+        self.TAB[tabLayout.currentIndex()].plotGraph('')
 
     def linearGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotLinearGraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('lin')
 
     def logarithmicGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotLogGraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('log')
 
     def exponentialGraph(self):
 
-        self.TAB[tabLayout.currentIndex()].plotExpGraph()
+        self.TAB[tabLayout.currentIndex()].plotRegressionGraph('exp')
 
     def polynomialGraph(self):
 
