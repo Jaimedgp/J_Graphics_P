@@ -325,14 +325,18 @@ class Terminal_for_table(QWidget):
 
         text = self.edit.toPlainText().split('>>>')[-1]
 
-        if "..." in text:
-        	self.withStatement(text)
+        if not text=='':
 
-        elif ":" in text[-1]:
-        	self.edit.append("..."+"\t")
+            if "..." in text:
+                self.withStatement(text)
 
+            elif ":" in text[-1]:
+                self.edit.append("..."+"\t")
+
+            else:
+                self.normalConsole(text)
         else:
-        	self.normalConsole(text)
+            self.normalConsole(None)
 
 
     def withStatement(self, text):
@@ -357,14 +361,16 @@ class Terminal_for_table(QWidget):
 
     	from math import *
 
-        try:
+        if text == None:
+            self.edit.append(">>>")
+        else:
+            try:
+                result = eval(text)
 
-            result = eval(text)
+                self.edit.append(str(result) + '\n'+'>>>')
 
-            self.edit.append(str(result) + '\n'+'>>>')
-
-        except (SyntaxError, NameError, TypeError):
-            self.edit.append("Error"+"\n"+">>>")
+            except (SyntaxError, NameError, TypeError):
+                self.edit.append("Error"+"\n"+">>>")
 
     def clear(self):
 
