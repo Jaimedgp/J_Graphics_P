@@ -30,7 +30,7 @@ class Plot_Graph(FigureCanvas):
         self.color = ["r", "b", "g", 'c', "k"]
         self.nc = 0 #graph color index 
 
-    def setGraph(self, GraphPlot, marker='o'):
+    def setGraph(self, GraphPlot, marker='o', logX=False, logY=False):
 
         self.Graph = GraphPlot
 
@@ -43,6 +43,10 @@ class Plot_Graph(FigureCanvas):
         self.axes.set_ylabel(self.Graph.yTitle, fontsize=20)
         self.axes.set_xlim(self.Graph.xInterval)
         self.axes.set_ylim(self.Graph.yInterval)
+        if logX:
+            self.axes.set_xscale("log", nonposx='clip')
+        if logY:
+            self.axes.set_yscale("log", nonposx='clip')
         self.draw()
 
     def set_Regression(self, GraphPlot, types):
