@@ -104,6 +104,7 @@ class Plot_Graph(FigureCanvas):
             slope, d = self.Graph.pepepe(m, fname)
             yTh = [slope*(self.Graph.xTh**m) for i in range(
                                                            self.Graph.xTh.size)]
+            
 
         elif types == 'general':
             from PyQt5.QtWidgets import QInputDialog, QFileDialog

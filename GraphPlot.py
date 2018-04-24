@@ -310,7 +310,27 @@ class GraphPlot():
         a = sum(yxm)/sum(x2m)
         Da = sum(absxmDy)/sum(x2m)
 
-        self.text = 'y = %s * x ^ %s' %(a, m) + '\n' + 'Error de a = %s' %(Da)
+        self.text = self.text = """
+            <html>
+            <head>
+                <title>HTML Table Colspan/Rowspan</title>
+            </head>
+
+            <body>
+                <center>
+                <table border = "1">
+                    <tr>
+                        <th colspan= "3"><center> """+"y = mx^" + str(m) +""" </center></th>
+                    </tr>
+                    <tr>
+                        <td><center> m </center></td>
+                        <td><center> """+"%g" %(a)+""" </center></td>
+                        <td><center> """+"%g" %(Da)+""" </center></td>
+                    </tr>
+                </table>
+                </center>
+            </body>
+            </html>"""
 
         return a , Da
 
@@ -328,16 +348,40 @@ class GraphPlot():
 
         parameters = leastsq(func, guess)[0]
 
-        solution = ("\n" + "\t" + 't['+str(0)+']' + ': ' + "\t" +
-                       "%g" %(parameters[0]) + "\t" + 't['+str(1)+']' + 
-                                                  ': ' + "%g" %(parameters[1]))
+        solution = ("""<tr>""" +
+                        """<td><center> """ + "t[0]" + """ </center></td> """ + 
+                        """<td><center> """ + "%g" %(parameters[0]) +  """ </center></td> """ + 
+                        """<td><center> """ + "t[1]" + """ </center></td> """ +
+                        """<td><center> """ + "%g" %(parameters[1])+""" </center></td> """+
+                    """</tr>""")
 
         for i in range(1, len(parameters)/2):
-            solution += ("\n" + '\t' + 't['+str(2*i)+']' + " : " + 
-                        "%g" %(parameters[2*i]) + "\t" + 't['+str(2*i+1)+']' +
-                         ': ' + '\t' + '\t' + "\t" + "%g" %(parameters[2*i+1]))
+            solution += ("""<tr>""" +
+                             """<td><center> """ + "t[" + str(2*i) +" ]" + """ </center></td> """ + 
+                             """<td><center> """ + "%g" %(parameters[2*i]) +  """ </center></td> """ + 
+                             """<td><center> """ + "t[" + str(2*i+1) + "]" + """ </center></td> """ +
+                             """<td><center> """ + "%g" %(parameters[2*i+1])+""" </center></td> """+
+                         """</tr>""")
 
-        self.text = self.text + solution
+        self.text = """<html>
+                           <head>
+                              <title>HTML Table Colspan/Rowspan</title>
+                           </head>
+
+                           <body>
+                              <center>
+                              <table border = "1">
+                                 <tr>
+                                    <th colspan= "4"><center> """+function+""" </center></th>
+                                 </tr>
+                                 """+solution+"""
+                              </table>
+                              </center>
+                           </body>
+                        </html>"""
+
+
+
 
         return parameters
 
