@@ -464,10 +464,14 @@ class GraphAxes(QWidget):
     def checkObject(self):
         from PyQt5.QtWidgets import QCheckBox
 
-        self.check = QCheckBox('Replot', self)
+        self.checkReplot = QCheckBox('Replot', self)
+        self.checkLogAxsX = QCheckBox('Log Axis X', self)
+        self.checkLogAxsY = QCheckBox('Log Axis Y', self)
 
         hbox = QHBoxLayout()
-        hbox.addWidget(self.check)
+        hbox.addWidget(self.checkReplot)
+        hbox.addWidget(self.checkLogAxsX)
+        hbox.addWidget(self.checkLogAxsY)
         hbox.addStretch(1)
 
         self.VMainBox.addLayout(hbox)

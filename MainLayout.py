@@ -83,7 +83,7 @@ class MainLayout(QWidget):
         if not hasattr(self, 'Graph'):
            self.Graph = Plot_Graph()
 
-        if not self.GrphAxes.check.isChecked():
+        if not self.GrphAxes.checkReplot.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
             self.Graph.nc = -1
@@ -92,7 +92,14 @@ class MainLayout(QWidget):
         if self.Graph.nc >= len(self.Graph.color):
             self.Graph.nc = 0
 
-        self.Graph.setGraph(graph, marker)
+        logX, logY = False, False
+
+        if self.GrphAxes.checkLogAxsX.isChecked():
+            logX = True
+        if self.GrphAxes.checkLogAxsY.isChecked():
+            logY = True
+
+        self.Graph.setGraph(graph, marker, logX, logY)
         self.splitLyout.addWidget(self.Graph)
 
     def plotRegressionGraph(self, typof):
@@ -124,7 +131,7 @@ class MainLayout(QWidget):
         if not hasattr(self, 'Graph'):
            self.Graph = Plot_Graph()
 
-        if not self.GrphAxes.check.isChecked():
+        if not self.GrphAxes.checkReplot.isChecked():
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
             self.Graph.nc = -1
