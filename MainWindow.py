@@ -31,7 +31,7 @@ class Main_Window_GUI(QMainWindow):
         super(QMainWindow, self).__init__()
 
         self.pathInicProyect = pathInicProyect
-        self.TAB = []
+        self.TAB = {}
         self.setGeometry(0, 0, 2000, 1100)
         self.setWindowTitle("Just a Graphics Printer")
         self.setWindowIcon(
@@ -165,7 +165,7 @@ class Main_Window_GUI(QMainWindow):
     def openAProject(self):
         mainLayout2 = MainLayout()
 
-        self.TAB.append(mainLayout2)
+        self.TAB["Data %s" %(tabLayout.tabMain.count()+1)] = mainLayout2
 
         tabLayout.addTabs(mainLayout2)
 
@@ -401,6 +401,6 @@ if __name__ == '__main__':
 
     ex = Main_Window_GUI(pathIcon, home)
     ex.addLayout(tabLayout)
-    ex.TAB = [mainLayout]
+    ex.TAB = {"Data %s":mainLayout}
     ex.show()
     sys.exit(app.exec_())
