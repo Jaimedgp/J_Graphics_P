@@ -126,7 +126,7 @@ class Main_Window_GUI(QMainWindow):
         self.statusBar()
 
         menubar = self.menuBar()
-        graphMenu = menubar.addMenu('&Curve Fit')
+        graphMenu = menubar.addMenu('&Graph')
         simpleGraph = graphMenu.addMenu('Graphic')
         simpleGraph.addAction(GraphDots)
         simpleGraph.addAction(GraphLine)
