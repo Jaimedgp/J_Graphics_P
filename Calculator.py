@@ -36,13 +36,6 @@ class Operations():
 
     def main(self):
 
-        c = 2.998*(10**8) # set speed of ligth
-        g = 9.81 #set universal gravitational constant
-        G = 6.67408 * (10**(-11)) # set gravitational constant
-        h = 6.626 * (10**(-34)) # set Planck constant
-        q = 1.6 * (10**(-19)) # set elementary charge
-        k = 8.988 * (10**(9)) # set coulomb's constant on the vacuum
-
         if self.newIndex in self.index:
 
             if "name(" in self.action:
@@ -71,6 +64,13 @@ class Operations():
 
     def calculator(self):
 
+        c = 2.998*(10**8) # set speed of ligth
+        g = 9.81 #set universal gravitational constant
+        G = 6.67408 * (10**(-11)) # set gravitational constant
+        h = 6.626 * (10**(-34)) # set Planck constant
+        q = 1.6 * (10**(-19)) # set elementary charge
+        k = 8.988 * (10**(9)) # set coulomb's constant on the vacuum
+
         if "Errors(" in self.action:
             indexFunction = self.action.index("Errors(")          
             self.action = (self.action[:indexFunction-1] + 'self.' + 
@@ -82,12 +82,34 @@ class Operations():
             element = 0
             self.action = self.action.replace('C', 'self.table[self.index[')
             initialI = self.action.index('self.table[self.index[') + 22
-            finalI = initialI+1
+
+            isFloatCol = True
+            indexColnum = 1
+            while isFloatCol:
+                try:
+                    numCol = float(self.action[initialI+indexColnum])
+                    indexColnum = indexColnum+1
+                except (ValueError, IndexError):
+                    isFloatCol = False
+                    finalI = initialI+indexColnum
+
+            print finalI
             involvedColumn = int(self.action[initialI:finalI])
             while boolean:
-                try:               	
+                try:
+
+                    isFloatCol = True
+                    indexColnum = 1
+                    while isFloatCol:
+                        try:
+                            numCol = float(self.action[initialI+indexColnum])
+                            indexColnum = indexColnum+1
+                        except (ValueError, IndexError):
+                            isFloatCol = False
+                            finalI = 22+indexColnum
+
                     element = self.action.index('self.table[self.index[', 
-                    	                          element, len(self.action))+23
+                    	                          element, len(self.action))+finalI
                     self.action = (self.action[:element] + ']][i]' + 
                                                          self.action[element:])
                 except ValueError:
