@@ -68,7 +68,7 @@ def Open_file_TXT(path):
         while row[0] != '':
             for i in xrange(numColumns):
                 try:
-                    rowValues[i].append(float(row[i])) # append each element to the list
+                    rowValues[i].append(row[i]) # append each element to the list
                 except (ValueError):
                     error = 1
             row = fr.readline().split('\t') # read another row

@@ -90,36 +90,40 @@ class GraphPlot():
 
         slope, intercept, r_value, p_value, std_err = stats.linregress(
                                                          self.xAxis, self.yAxis)
+        mean = np.mean(self.xAxis)
+        sx2 = ((self.xAxis-mean)**2).sum()
+        std_inter = std_err * np.sqrt(1./len(self.xAxis) + mean*mean/sx2)
 
         self.text = """
-    <html>
-    <head>
-        <title>HTML Table Colspan/Rowspan</title>
-    </head>
+	    <html>
+	    <head>
+	        <title>HTML Table Colspan/Rowspan</title>
+	    </head>
 
-    <body>
-        <center>
-        <table border = "1">
-            <tr>
-                <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
-            </tr>
-            <tr>
-                <td><center> m </center></td>
-                <td><center> """+"%g" %(slope)+""" </center></td>
-                <td><center> """+"%g" %(std_err)+""" </center></td>
-            </tr>
-            <tr>
-                <td><center> b </center></td>
-                <td><center> """+"%g" %(intercept)+""" </center></td>
-            </tr>
-            <tr>
-                <td><center> R </center></td>
-                <td><center> """+"%g" %(r_value)+""" </center></td>
-            </tr>
-        </table>
-        </center>
-    </body>
-    </html>"""
+	    <body>
+	        <center>
+	        <table border = "1">
+	            <tr>
+	                <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
+	            </tr>
+	            <tr>
+	                <td><center> m </center></td>
+	                <td><center> """+"%g" %(slope)+""" </center></td>
+	                <td><center> """+"%g" %(std_err)+""" </center></td>
+	            </tr>
+	            <tr>
+	                <td><center> b </center></td>
+	                <td><center> """+"%g" %(intercept)+""" </center></td>
+	                <td><center> """+"%g" %(std_inter)+""" </center></td>
+	            </tr>
+	            <tr>
+	                <td><center> R </center></td>
+	                <td><center> """+"%g" %(r_value)+""" </center></td>
+	            </tr>
+	        </table>
+	        </center>
+	    </body>
+	    </html>"""
 
         return slope, intercept
 
@@ -348,20 +352,28 @@ class GraphPlot():
 
         parameters = leastsq(func, guess)[0]
 
-        solution = ("""<tr>""" +
-                        """<td><center> """ + "t[0]" + """ </center></td> """ + 
-                        """<td><center> """ + "%g" %(parameters[0]) +  """ </center></td> """ + 
-                        """<td><center> """ + "t[1]" + """ </center></td> """ +
-                        """<td><center> """ + "%g" %(parameters[1])+""" </center></td> """+
-                    """</tr>""")
+        try:
 
-        for i in range(1, len(parameters)/2):
-            solution += ("""<tr>""" +
-                             """<td><center> """ + "t[" + str(2*i) +" ]" + """ </center></td> """ + 
-                             """<td><center> """ + "%g" %(parameters[2*i]) +  """ </center></td> """ + 
-                             """<td><center> """ + "t[" + str(2*i+1) + "]" + """ </center></td> """ +
-                             """<td><center> """ + "%g" %(parameters[2*i+1])+""" </center></td> """+
-                         """</tr>""")
+            solution = ("""<tr>""" +
+                            """<td><center> """ + "t[0]" + """ </center></td> """ + 
+                            """<td><center> """ + "%g" %(parameters[0]) +  """ </center></td> """ + 
+                            """<td><center> """ + "t[1]" + """ </center></td> """ +
+                            """<td><center> """ + "%g" %(parameters[1])+""" </center></td> """+
+                        """</tr>""")
+
+            for i in range(1, len(parameters)/2):
+                solution += ("""<tr>""" +
+                                 """<td><center> """ + "t[" + str(2*i) +" ]" + """ </center></td> """ + 
+                                 """<td><center> """ + "%g" %(parameters[2*i]) +  """ </center></td> """ + 
+                                 """<td><center> """ + "t[" + str(2*i+1) + "]" + """ </center></td> """ +
+                                 """<td><center> """ + "%g" %(parameters[2*i+1])+""" </center></td> """+
+                             """</tr>""")
+        except IndexError:
+
+            solution = ("""<tr>""" +
+                            """<td><center> """ + "t[0]" + """ </center></td> """ + 
+                            """<td><center> """ + "%g" %(parameters[0]) +  """ </center></td> """ + 
+                        """</tr>""")
 
         self.text = """<html>
                            <head>
