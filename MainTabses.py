@@ -14,9 +14,9 @@ class TabMain(QWidget):
 
         self.setLayout(layout)
 
-    def currentIndex(self):
+    def currentTab(self):
 
-        return self.tabMain.currentIndex()
+        return str(self.tabMain.tabText(self.tabMain.currentIndex()))
 
     def deleteTabs(self, int):
 
