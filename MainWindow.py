@@ -94,12 +94,13 @@ class Main_Window_GUI(QMainWindow):
 
     def graphMenuBar(self):
 
-        GraphDots = QAction('Dots', self)
-        GraphDots.setShortcut('Ctrl+G')
-        GraphDots.triggered.connect(self.graphdot)
+        self.GraphDots = QAction('Dots', self)
+        self.GraphDots.setShortcut('Ctrl+G')
+        self.GraphDots.triggered.connect(self.graphdot)
 
-        GraphLine = QAction('Line', self)
-        GraphLine.triggered.connect(self.graphline)
+        self.GraphLine = QAction('Line', self)
+        self.GraphLine.setShortcut('')
+        self.GraphLine.triggered.connect(self.graphline)
 
         linearGraph = QAction('Linear', self)
         linearGraph.setStatusTip('y = a*x + b')
@@ -128,8 +129,8 @@ class Main_Window_GUI(QMainWindow):
         menubar = self.menuBar()
         graphMenu = menubar.addMenu('&Curve Fit')
         simpleGraph = graphMenu.addMenu('Graphic')
-        simpleGraph.addAction(GraphDots)
-        simpleGraph.addAction(GraphLine)
+        simpleGraph.addAction(self.GraphDots)
+        simpleGraph.addAction(self.GraphLine)
         graphMenu.addSeparator()
         graphMenu.addAction(linearGraph)
         graphMenu.addAction(CurveFitGraph)
@@ -310,9 +311,15 @@ class Main_Window_GUI(QMainWindow):
 
         self.TAB[tabLayout.currentIndex()].plotGraph('o')
 
+        self.GraphDots.setShortcut('Ctrl+G')
+        self.GraphLine.setShortcut('')
+
     def graphline(self):
 
         self.TAB[tabLayout.currentIndex()].plotGraph('')
+
+        self.GraphDots.setShortcut('')
+        self.GraphLine.setShortcut('Ctrl+G')
 
     def linearGraph(self):
 
