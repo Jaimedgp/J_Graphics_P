@@ -95,35 +95,35 @@ class GraphPlot():
         std_inter = std_err * np.sqrt(1./len(self.xAxis) + mean*mean/sx2)
 
         self.text = """
-	    <html>
-	    <head>
-	        <title>HTML Table Colspan/Rowspan</title>
-	    </head>
+            <html>
+            <head>
+                <title>HTML Table Colspan/Rowspan</title>
+            </head>
 
-	    <body>
-	        <center>
-	        <table border = "1">
-	            <tr>
-	                <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
-	            </tr>
-	            <tr>
-	                <td><center> m </center></td>
-	                <td><center> """+"%g" %(slope)+""" </center></td>
-	                <td><center> """+"%g" %(std_err)+""" </center></td>
-	            </tr>
-	            <tr>
-	                <td><center> b </center></td>
-	                <td><center> """+"%g" %(intercept)+""" </center></td>
-	                <td><center> """+"%g" %(std_inter)+""" </center></td>
-	            </tr>
-	            <tr>
-	                <td><center> R </center></td>
-	                <td><center> """+"%g" %(r_value)+""" </center></td>
-	            </tr>
-	        </table>
-	        </center>
-	    </body>
-	    </html>"""
+            <body>
+                <center>
+                <table border = "1">
+                    <tr>
+                        <th colspan= "3"><center> """+"y = mx + b"+""" </center></th>
+                    </tr>
+                    <tr>
+                        <td><center> m </center></td>
+                        <td><center> """+"%g" %(slope)+""" </center></td>
+                        <td><center> """+"%g" %(std_err)+""" </center></td>
+                    </tr>
+                    <tr>
+                        <td><center> b </center></td>
+                        <td><center> """+"%g" %(intercept)+""" </center></td>
+                        <td><center> """+"%g" %(std_inter)+""" </center></td>
+                    </tr>
+                    <tr>
+                        <td><center> R </center></td>
+                        <td><center> """+"%g" %(r_value)+""" </center></td>
+                    </tr>
+                </table>
+                </center>
+            </body>
+            </html>"""
 
         return slope, intercept
 
@@ -147,31 +147,31 @@ class GraphPlot():
         intercept = sumY/len(self.xAxis) - slope*sumLnX/len(self.xAxis)
 
         self.text = """
-    <html>
+            <html>
 
-        <head>
-            <title>HTML Table Colspan/Rowspan</title>
-        </head>
+                <head>
+                    <title>HTML Table Colspan/Rowspan</title>
+                </head>
 
-        <body>
-            <center>
-            <table border = "1">
-                <tr>
-                    <th colspan= "2"><center> """+"y = m * ln(x) + b"+""" </center></th>
-                </tr>
-                <tr>
-                    <td><center> m </center></td>
-                    <td><center> """+"%g" %(slope)+""" </center></td>
-                </tr>
-                <tr>
-                    <td><center> b </center></td>
-                    <td><center> """+"%g" %(intercept)+""" </center></td>
-                    <td><center>  </center></td>
-                </tr>
-            </table>
-            </center>
-        </body>
-    </html>"""
+                <body>
+                    <center>
+                    <table border = "1">
+                        <tr>
+                            <th colspan= "2"><center> """+"y = m * ln(x) + b"+""" </center></th>
+                        </tr>
+                        <tr>
+                            <td><center> m </center></td>
+                            <td><center> """+"%g" %(slope)+""" </center></td>
+                        </tr>
+                        <tr>
+                            <td><center> b </center></td>
+                            <td><center> """+"%g" %(intercept)+""" </center></td>
+                            <td><center>  </center></td>
+                        </tr>
+                    </table>
+                    </center>
+                </body>
+            </html>"""
 
         return slope, intercept
 
@@ -192,30 +192,30 @@ class GraphPlot():
         intercept = exp(medy-slope*xMedian)
 
         self.text = """
-        <html>
-            <head>
-                <title>HTML Table Colspan/Rowspan</title>
-            </head>
+            <html>
+                <head>
+                    <title>HTML Table Colspan/Rowspan</title>
+                </head>
 
-            <body>
-                <center>
-                <table border = "1">
-                    <tr>
-                        <th colspan= "2"><center> """+"y = b * e^(m*x)"+""" </center></th>
-                    </tr>
-                    <tr>
-                        <td><center> m </center></td>
-                        <td><center> """+"%g" %(slope)+""" </center></td>
-                    </tr>
-                    <tr>
-                        <td><center> b </center></td>
-                        <td><center> """+"%g" %(intercept)+""" </center></td>
-                        <td><center>  </center></td>
-                    </tr>
-                </table>
-                </center>
-            </body>
-        </html>"""
+                <body>
+                    <center>
+                    <table border = "1">
+                        <tr>
+                            <th colspan= "2"><center> """+"y = b * e^(m*x)"+""" </center></th>
+                        </tr>
+                        <tr>
+                            <td><center> m </center></td>
+                            <td><center> """+"%g" %(slope)+""" </center></td>
+                        </tr>
+                        <tr>
+                            <td><center> b </center></td>
+                            <td><center> """+"%g" %(intercept)+""" </center></td>
+                            <td><center>  </center></td>
+                        </tr>
+                    </table>
+                    </center>
+                </body>
+            </html>"""
 
         return slope, intercept
 
@@ -391,9 +391,6 @@ class GraphPlot():
                               </center>
                            </body>
                         </html>"""
-
-
-
 
         return parameters
 
