@@ -303,7 +303,7 @@ class Main_Window_GUI(QMainWindow):
                                                                  eval(text))
 
         self.TAB[tabLayout.currentTab()].dataTable.reDoTable()
-        self.TAB[tabLayout.currentTab()].dataSaved = True
+        self.TAB[tabLayout.currentTab()].dataSaved = False
 
     def saveFigure(self):
 
