@@ -93,7 +93,6 @@ class Operations():
                     isFloatCol = False
                     finalI = initialI+indexColnum
 
-            print finalI
             involvedColumn = int(self.action[initialI:finalI])
             while boolean:
                 try:
