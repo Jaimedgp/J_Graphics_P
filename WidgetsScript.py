@@ -142,5 +142,12 @@ def derivative(table, index, columns):
         table["Derivative"] = derivative
         index[max(index.keys())+1] = "Derivative"
     else:
-        table["Derivative 1"] = derivative
-        index[max(index.keys())+1] = "Derivative 1"
+        i = 1
+        boolean = True
+        while boolean:
+            if not "Derivative "+str(i) in table:
+                table["Derivative "+str(i)] = derivative
+                index[max(index.keys())+1] = "Derivative "+str(i)
+                boolean = False
+            else:
+                i = i+1
