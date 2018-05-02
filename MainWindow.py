@@ -188,13 +188,13 @@ class Main_Window_GUI(QMainWindow):
 
                 del self.TAB[tabLayout.currentTab()]
 
-                tabLayout.deleteTabs(tabLayout.currentTab())
+                tabLayout.deleteTabs(tabLayout.tabMain.currentIndex())
 
         else:
 
             del self.TAB[tabLayout.currentTab()]
 
-            tabLayout.deleteTabs(tabLayout.currentTab())
+            tabLayout.deleteTabs(tabLayout.tabMain.currentIndex())
 
     def openFile(self):
 
@@ -266,8 +266,10 @@ class Main_Window_GUI(QMainWindow):
 
             self.TAB[tabLayout.currentTab()].dataSaved = True
 
-            tabLayout.tabMain.setTabText(tabLayout.currentTab(),
-                                                                name.split("/")[-1])
+            self.TAB[str(name.split("/")[-1])] = self.TAB.pop(tabLayout.currentTab())
+
+            tabLayout.tabMain.setTabText(tabLayout.tabMain.currentIndex(),
+                                                                str(name.split("/")[-1]))
 
     def saveIntoTex(self):
 
@@ -344,7 +346,7 @@ class Main_Window_GUI(QMainWindow):
         boolean = True
 
         for tab in self.TAB:
-            if not tab.dataSaved:
+            if not self.TAB[tab].dataSaved:
                 boolean = False
 
         if boolean:
