@@ -90,7 +90,7 @@ class Plot_Graph(FigureCanvas):
 
             self.Graph = GraphPlot
 
-            text, ok = QInputDialog.getInt(self, 'Pepe adjust', 'Grade:')
+            text, ok = QInputDialog.getDouble(self, 'Pepe adjust', 'Grade:')
             if ok:
                 m = text
             else:
