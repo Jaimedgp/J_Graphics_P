@@ -46,13 +46,12 @@ class TableData(QWidget):
 
     def addColumnRow(self):
 
-##############################################################################
-        if self.numRows-1 <= max([i for i in 
+        while self.numRows-1 <= max([i for i in 
         	                           [len(i) for i in self.table.values()]]):
             self.tableWidget.insertRow(self.numRows)
             self.numRows = self.numRows + 1
 
-        if self.numColumns == len(self.index): 
+        while self.numColumns <= len(self.index): 
             self.tableWidget.insertColumn(self.numColumns)
             self.numColumns = self.numColumns + 1
 
