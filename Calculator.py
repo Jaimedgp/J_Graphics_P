@@ -115,7 +115,7 @@ class Operations():
                     boolean = False
             values = [ eval(str(self.action)) for i in range(len(self.table[
             	                                self.index[involvedColumn]])) ]
-            self.table[str(self.newIndex)] = values
+            self.table[self.index[self.newIndex]] = values
             self.table, self.index
 
     def name(self, name):
