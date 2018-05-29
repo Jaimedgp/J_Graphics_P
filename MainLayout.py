@@ -135,6 +135,16 @@ class MainLayout(QWidget):
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
             self.Graph.nc = -1
+        else:
+            if graph.xInterval[0] > self.Graph.axes.get_xlim()[0]:
+                graph.xInterval[0] = self.Graph.axes.get_xlim()[0]
+            if graph.xInterval[1] < self.Graph.axes.get_xlim()[1]:
+                graph.xInterval[1] = self.Graph.axes.get_xlim()[1]
+            if graph.yInterval[0] > self.Graph.axes.get_ylim()[0]:
+                graph.yInterval[0] = self.Graph.axes.get_ylim()[0]
+            if graph.yInterval[1] < self.Graph.axes.get_ylim()[1]:
+                graph.yInterval[1] = self.Graph.axes.get_ylim()[1]
+
 
         self.Graph.nc = self.Graph.nc + 1
         if self.Graph.nc >= len(self.Graph.color):
