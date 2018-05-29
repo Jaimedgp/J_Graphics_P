@@ -132,6 +132,15 @@ class MainLayout(QWidget):
            self.Graph = Plot_Graph()
 
         if not self.GrphAxes.checkReplot.isChecked():
+            if graph.xInterval[0] > self.Graph.axes.set_xlim[0]:
+                graph.xInterval[0] = self.Graph.axes.set_xlim[0]
+            if graph.xInterval[1] < self.Graph.axes.set_xlim[1]:
+                graph.xInterval[1] = self.Graph.axes.set_xlim[1]
+            if graph.yInterval[0] > self.Graph.axes.set_ylim[0]:
+                graph.yInterval[0] = self.Graph.axes.set_ylim[0]
+            if graph.yInterval[1] < self.Graph.axes.set_ylim[1]:
+                graph.yInterval[1] = self.Graph.axes.set_ylim[1]
+
             self.Graph.axes.clear()
             self.GrphAxes.result.setText('')
             self.Graph.nc = -1
