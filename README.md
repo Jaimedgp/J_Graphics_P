@@ -1,6 +1,6 @@
 # Just a Graphics Printer (JGP)
 
-  A simple technical graphing and data analysis program developed in order to facilitate operations in performing laboratory practice using python packages as numpy and matplotlib.pyplot.
+_Just a Graphics Printer_ is a simple techincal graphing and data analysis program developed in parallel with the study of the physics degree, using differents python package as numpy, matplotlib or PyQt5. The aim of the project is to facilitate operantions and reports presnetation in performing laboratory practice done during the degree. By this way, the project has been grown as the laboratory practice become more complex and requires more sofisticaton, implementing differents functions.
   
   ![alt text](docs/Photos/Screenshot_JGP.png "Logo Title Text 1")
 
@@ -36,44 +36,23 @@ if you had installed git you could run this command on your shell terminal
 git clone https://github.com/Jaimedgp/J_Graphics_P.git
 ```
 
+if you had not installed git (and you do no t want to install it ;-)) you could install it downloading the zip in this webpage an unzip it (it is recommended to save it in the main directory ~/).
+
+
+``` shell
+cd 
+wget https://github.com/Jaimedgp/J_Graphics_P/archive/master.zip
+unzip master.zip
+```
+Either you use git or the zip file to install the program, you should have a folder called J_Graphics_P (or J_Graphics_Printer-master if you used the zip file) in the main directory. In order to run the program, the MainWindow.py file must be run by the following command.
+
+``` shell
+python ~/J_Graphics_P/src/MainWindow.py #~/J_Graphics_P-master/src/MainWindow.py for the zip file
+```
+
 then you could add an alias on your .bashrc file running this command [Recommended]
 
 ``` shell
 echo "alias JGP='python ~/J_Graphics_P/src/MainWindow.py'" >> ~/.bashrc
 ```
   
-if it is not, you should download the zip with all the repository and unzip it:
-
-``` shell
-cd
-
-unzip J_Graphics_P-master.zip
-```
-
-you could also add an alias on your .bashrc file running this command [Recommended]
-
-``` shell
-echo "alias JGP='python ~/J_Graphics_P-master/src/MainWindow.py'" >> ~/.bashrc
-```
-
-## <a name="UserGuide"></a> 3. User's guide
-
-Working on it
-
-### <a name="PlotaGraph"></a> How to Plot a Graph
-
-
-### <a name="formulaEntry"></a> Formula Entry
-
-![alt text](docs/Photos/FormulaEntry.png "Logo Title Text 1")
-
-
-### <a name="errorsCalculator"></a> Errors Calculator
-
-![alt text](docs/Photos/ErrorCalc.png "Logo Title Text 1")
-
-#### 
-
-### <a name="hamiltonian"></a> Hamiltonian
-
-![alt text](docs/Photos/Hamil.png)
