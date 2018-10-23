@@ -2,7 +2,7 @@
 
   A simple technical graphing and data analysis program developed in order to facilitate operations in performing laboratory practice using python packages as numpy and matplotlib.pyplot.
   
-  ![alt text](/home/jaimedgp/Photos/Screenshot_JGP.png "Logo Title Text 1")
+  ![alt text](docs/Photos/Screenshot_JGP.png "Logo Title Text 1")
 
 ## Index
 
@@ -39,7 +39,7 @@ git clone https://github.com/Jaimedgp/J_Graphics_P.git
 then you could add an alias on your .bashrc file running this command [Recommended]
 
 ``` shell
-echo "alias JGP='python ~/J_Graphics_P/MainWindow.py'" >> ~/.bashrc
+echo "alias JGP='python ~/J_Graphics_P/src/MainWindow.py'" >> ~/.bashrc
 ```
   
 if it is not, you should download the zip with all the repository and unzip it:
@@ -53,7 +53,7 @@ unzip J_Graphics_P-master.zip
 you could also add an alias on your .bashrc file running this command [Recommended]
 
 ``` shell
-echo "alias JGP='python ~/J_Graphics_P-master/MainWindow.py'" >> ~/.bashrc
+echo "alias JGP='python ~/J_Graphics_P-master/src/MainWindow.py'" >> ~/.bashrc
 ```
 
 ## <a name="UserGuide"></a> 3. User's guide
@@ -63,19 +63,17 @@ Working on it
 ### <a name="PlotaGraph"></a> How to Plot a Graph
 
 
-
-
 ### <a name="formulaEntry"></a> Formula Entry
 
-![alt text](/home/jaimedgp/Photos/FormulaEntry.png "Logo Title Text 1")
+![alt text](docs/Photos/FormulaEntry.png "Logo Title Text 1")
 
 
 ### <a name="errorsCalculator"></a> Errors Calculator
 
-![alt text](/home/jaimedgp/Photos/ErrorCalc.png "Logo Title Text 1")
+![alt text](docs/Photos/ErrorCalc.png "Logo Title Text 1")
 
 #### 
 
 ### <a name="hamiltonian"></a> Hamiltonian
 
-![alt text](/home/jaimedgp/Photos/Hamil.png)
+![alt text](docs/Photos/Hamil.png)
